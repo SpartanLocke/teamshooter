@@ -30,8 +30,8 @@ public class playerClass : MonoBehaviour {
     {
         //MoveForward(); // Player Movement
         //TurnRightAndLeft();//Player Turning
-        Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0,(PlayerNumber-1)]), Input.GetAxis(axes[1,(PlayerNumber-1)])));
-        Debug.Log(AxisInput);
+        Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0,(PlayerNumber-1)]), Input.GetAxis(axes[1,(PlayerNumber-1)]))).normalized;
+        //Debug.Log(AxisInput);
         if (AxisInput == new Vector3(0, 0))
         {
             shoot(oldInput);
@@ -75,12 +75,12 @@ public class playerClass : MonoBehaviour {
             }*/
             Vector3 newPosition = transform.position - direction.normalized * offset + Quaternion.Euler(0, 0, -90) * (direction.normalized* i * weight);
             GameObject paint = Instantiate(projectile, newPosition , Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
-            paint.transform.parent = transform;
+            //paint.transform.parent = transform;
             paint.GetComponent<SpriteRenderer>().color = normal;
             paint.GetComponent<shotMovement>().grid = grid;
             Vector3 newPosition2 = transform.position - direction.normalized * offset + Quaternion.Euler(0, 0, -90) * (direction.normalized * -i * weight);
             GameObject paint2 = Instantiate(projectile, newPosition2, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
-            paint2.transform.parent = transform;
+            //paint2.transform.parent = transform;
             paint2.GetComponent<SpriteRenderer>().color = normal;
             paint2.GetComponent<shotMovement>().grid = grid;
             yield return null;
@@ -147,11 +147,16 @@ public class playerClass : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-        if (coll.collider.isTrigger )
+        Debug.Log(coll);
+        if (coll.gameObject.tag == "paint" )
         {
-            coll.gameObject.GetComponent<playerClass>().normal = normal;
+            /*coll.gameObject.GetComponent<playerClass>().normal = normal;
             coll.gameObject.GetComponent<playerClass>().fired = fired;
-            coll.gameObject.GetComponent<SpriteRenderer>().color = normal;
+            coll.gameObject.GetComponent<SpriteRenderer>().color = normal;*/
+
+            normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
+            gameObject.GetComponent<SpriteRenderer>().color = normal;
+
         }
     }
 }

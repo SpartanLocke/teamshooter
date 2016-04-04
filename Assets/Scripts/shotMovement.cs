@@ -10,14 +10,14 @@ public class shotMovement : MonoBehaviour {
     private float moveSpeed;
 	// Use this for initialization
 	void Start () {
-
-	}
+        StartCoroutine(timer());
+    }
 	
 	// Update is called once per frame
 	void Update () {
         transform.Translate(Vector3.up * Time.deltaTime * shotSpeed);
         paintUnderMe();
-        StartCoroutine(timer());
+        
 	}
 
     void paintUnderMe()

@@ -55,8 +55,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d333f983808704045910dee55054691a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 10
-  distance: 2.5
+  shotSpeed: 7
+  distance: 5
   shotWidth: 0.6
   grid: {fileID: 0}
 --- !u!212 &21262262
