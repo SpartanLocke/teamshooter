@@ -108,13 +108,17 @@ MonoBehaviour:
   ownerId: 0
   group: 0
   prefixBackup: -1
-  observed: {fileID: 400000}
+  observed: {fileID: 0}
   synchronization: 3
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   ownershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 400000}
+  ObservedComponentsFoldoutOpen: 1
   viewIdField: 0
   instantiationId: -1
+  isRuntimeInstantiated: 0
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
