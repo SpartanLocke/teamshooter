@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class shotMovement : MonoBehaviour {
@@ -8,46 +8,46 @@ public class shotMovement : MonoBehaviour {
     public float shotWidth;
     public GameObject grid;
     private float moveSpeed;
-	// Use this for initialization
-	void Start () {
+    private SpriteRenderer spriteRenderer;
+
+    void Awake() {
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+    }
+
+    // Use this for initialization
+    void Start() {
         StartCoroutine(timer());
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update() {
         transform.Translate(Vector3.up * Time.deltaTime * shotSpeed);
         paintUnderMe();
-        
-	}
+    }
 
-    void paintUnderMe()
-    {
+    void paintUnderMe() {
         gridController gridController = grid.GetComponent<gridController>();
         float gridSize = gridController.gridBlock.transform.localScale.x;
-        if (gridController.grid[Mathf.RoundToInt(transform.position.x / gridSize), Mathf.RoundToInt(transform.position.y / gridSize)] != null)
-        {
-            gridController.grid[Mathf.RoundToInt(transform.position.x / gridSize), Mathf.RoundToInt(transform.position.y / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
-            /*gridController.grid[Mathf.RoundToInt((transform.position.x + shotWidth * 3 / 8) / gridSize), Mathf.RoundToInt((transform.position.y + shotWidth * 3 / 8) / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
-            gridController.grid[Mathf.RoundToInt((transform.position.x - shotWidth * 3 / 8) / gridSize), Mathf.RoundToInt((transform.position.y - shotWidth * 3 / 8) / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
-            gridController.grid[Mathf.RoundToInt((transform.position.x + shotWidth / 8) / gridSize), Mathf.RoundToInt((transform.position.y + shotWidth / 8) / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
-            gridController.grid[Mathf.RoundToInt((transform.position.x - shotWidth / 8) / gridSize), Mathf.RoundToInt((transform.position.y - shotWidth / 8) / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
-            gridController.grid[Mathf.RoundToInt((transform.position.x + shotWidth / 4) / gridSize), Mathf.RoundToInt((transform.position.y + shotWidth / 4) / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
-            gridController.grid[Mathf.RoundToInt((transform.position.x - shotWidth / 4) / gridSize), Mathf.RoundToInt((transform.position.y - shotWidth / 4) / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;*/
-            gridController.grid[Mathf.RoundToInt((transform.position.x + shotWidth / 2) / gridSize), Mathf.RoundToInt((transform.position.y + shotWidth / 2) / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
-            gridController.grid[Mathf.RoundToInt((transform.position.x - shotWidth / 2) / gridSize), Mathf.RoundToInt((transform.position.y - shotWidth / 2) / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
+        Color myColor = spriteRenderer.color;
+
+        if (gridController.inGridBounds(Mathf.RoundToInt(transform.position.x / gridSize), Mathf.RoundToInt(transform.position.y / gridSize))) {
+            //gridController.grid[Mathf.RoundToInt(transform.position.x / gridSize), Mathf.RoundToInt(transform.position.y / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
+            //gridController.grid[Mathf.RoundToInt((transform.position.x + shotWidth / 2) / gridSize), Mathf.RoundToInt((transform.position.y + shotWidth / 2) / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
+            //gridController.grid[Mathf.RoundToInt((transform.position.x - shotWidth / 2) / gridSize), Mathf.RoundToInt((transform.position.y - shotWidth / 2) / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
+
+            gridController.setGridBlockToColor(Mathf.RoundToInt(transform.position.x / gridSize), Mathf.RoundToInt(transform.position.y / gridSize), myColor);
+            gridController.setGridBlockToColor(Mathf.RoundToInt((transform.position.x + shotWidth / 2) / gridSize), Mathf.RoundToInt((transform.position.y + shotWidth / 2) / gridSize), myColor);
+            gridController.setGridBlockToColor(Mathf.RoundToInt((transform.position.x - shotWidth / 2) / gridSize), Mathf.RoundToInt((transform.position.y - shotWidth / 2) / gridSize), myColor);
         }
     }
-    IEnumerator timer()
-    {
-        yield return new WaitForSeconds(distance/shotSpeed);
+    IEnumerator timer() {
+        yield return new WaitForSeconds(distance / shotSpeed);
         Destroy(gameObject);
     }
 
 
-    void OnCollisionEnter2D(Collision2D coll)
-    {
-        if (coll.gameObject.tag == "wall")
-        {
+    void OnCollisionEnter2D(Collision2D coll) {
+        if (coll.gameObject.tag == "wall") {
             Destroy(gameObject);
         }
     }

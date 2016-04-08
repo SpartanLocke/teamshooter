@@ -24,7 +24,11 @@ public class playerClass : MonoBehaviour {
     public GameObject grid;
 
     private Vector3 oldInput = new Vector3(0, 0);
+    private float nextFire = 0.0f;
+
+    // network data
     private Vector3 lastNetworkInputEvent = new Vector3(0,0);
+    private bool lastNetworkShootEvent = false;
 
     // setup our OnEvent as callback:
     void Awake() {
@@ -42,10 +46,6 @@ public class playerClass : MonoBehaviour {
         //Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
         Vector3 axisInput = getAxisInput();
 
-        // don't log crap
-        if (axisInput != new Vector3(0,0)) {
-            Debug.Log(axisInput);
-        }
         if (axisInput == new Vector3(0, 0)) {
             shoot(oldInput);
         } else {
@@ -88,15 +88,25 @@ public class playerClass : MonoBehaviour {
 
                 // now we have what we need
                 lastNetworkInputEvent = new Vector3(playerInput.x, playerInput.y);
+                lastNetworkShootEvent = playerInput.shoot;
 
                 Debug.Log(lastNetworkInputEvent);
                 break;
         }
     }
 
-    private float nextFire = 0.0f;
     void shoot(Vector3 direction) {
-        if (Input.GetButton(axes[2, (PlayerNumber - 1)]) && Time.time > nextFire) {
+        bool fireButton;
+
+        if (IS_NETWORK_CONTROLLED) {
+            // read from the last event
+            fireButton = lastNetworkShootEvent;
+        } else {
+            // read from the standard axis stuff
+            fireButton = Input.GetButton(axes[2, (PlayerNumber - 1)]);
+        }
+
+        if (fireButton && Time.time > nextFire) {
             nextFire = Time.time + fireRate;
 
             StartCoroutine(cooldownIndicator());
@@ -163,10 +173,17 @@ public class playerClass : MonoBehaviour {
     }
 
     bool isValidPosition(Vector3 position) {
-
         gridController gridController = grid.GetComponent<gridController>();
         float gridSize = gridController.gridBlock.transform.localScale.x;
-        if (normal == gridController.grid[Mathf.RoundToInt(position.x / gridSize), Mathf.RoundToInt(position.y / gridSize)].GetComponent<SpriteRenderer>().color) {
+
+        int gridX = Mathf.RoundToInt(position.x / gridSize);
+        int gridY = Mathf.RoundToInt(position.y / gridSize);
+        if (!gridController.inGridBounds(gridX, gridY)) {
+            // out of bounds, then get outta here
+            return false;
+        }
+
+        if (normal == gridController.getGridColor(gridX, gridY)) {
             return true;
         } else {
             return false;
@@ -181,7 +198,6 @@ public class playerClass : MonoBehaviour {
 
 
     void OnCollisionEnter2D(Collision2D coll) {
-        Debug.Log(coll);
         if (coll.gameObject.tag == "paint") {
             /*coll.gameObject.GetComponent<playerClass>().normal = normal;
             coll.gameObject.GetComponent<playerClass>().fired = fired;

@@ -5,8 +5,8 @@ public class PlayerInputController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        bool shooting = false;
-        Vector3 axisInput = (new Vector3(Input.GetAxis("HorizontalP1"), Input.GetAxis("VerticalP1"))).normalized;
+        bool shooting = Input.GetButton("FireP1");
+        Vector3 axisInput = (new Vector3(Input.GetAxis("HorizontalP1"), Input.GetAxis("VerticalP1")));
 
         if (PhotonNetwork.connectionStateDetailed == PeerState.Joined) {
             sendControllerInput(axisInput, shooting);
@@ -26,5 +26,7 @@ public class PlayerInputController : MonoBehaviour {
 
         // todo: use RaiseEventOptions?
         PhotonNetwork.RaiseEvent(eventCode, content, reliable, null);
+
+        Debug.Log("send input");
     }
 }
