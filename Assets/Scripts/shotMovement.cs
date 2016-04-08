@@ -8,6 +8,9 @@ public class shotMovement : MonoBehaviour {
     public float shotWidth;
     public GameObject grid;
     private float moveSpeed;
+
+	public int playerNumber;
+
 	// Use this for initialization
 	void Start () {
         StartCoroutine(timer());

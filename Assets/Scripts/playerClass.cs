@@ -6,11 +6,18 @@ public class playerClass : MonoBehaviour {
     public float playerSpeedAlt; // speed player turns
 
     public int PlayerNumber;
-    private string[,] axes = new string[,] { {"HorizontalP1", "HorizontalP2", "HorizontalP3", "HorizontalP4" }, { "VerticalP1", "VerticalP2", "VerticalP3", "VerticalP4" }, {"FireP1","FireP2", "FireP3", "FireP4" } };
+    private string[,] axes = new string[,] { {"HorizontalP1", "HorizontalP2", "HorizontalP3", "HorizontalP4" }, { "VerticalP1", "VerticalP2", "VerticalP3", "VerticalP4" }, {"FireP1","FireP2", "FireP3", "FireP4" },
+                                             {"HorizontalShootP1", "HorizontalShootP2", "HorizontalShootP3", "HorizontalShootP4" }, { "VerticalShootP1", "VerticalShootP2", "VerticalShootP3", "VerticalShootP4" }};
 
-
-
-
+    public bool oneJoystick;
+    public bool twoJoystick;
+    public float shootThreshold;
+    public bool m8s4;
+    public bool m8s8;
+    private Vector3 shootDir;
+    private int frames;
+    public int frameDelay;
+    
     public float fireRate;
     public int numShots;
     public float offset;
@@ -32,34 +39,136 @@ public class playerClass : MonoBehaviour {
     }
     void Update()
     {
+        
         //MoveForward(); // Player Movement
         //TurnRightAndLeft();//Player Turning
-        Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0,(PlayerNumber-1)]), Input.GetAxis(axes[1,(PlayerNumber-1)]))).normalized;
-        //Debug.Log(AxisInput);
-        if (AxisInput == new Vector3(0, 0))
+        if (oneJoystick)
         {
-            shoot(oldInput);
-        }
-        else
+            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
+            
+            if (AxisInput == new Vector3(0, 0))
+            {
+                shoot(oldInput);
+            }
+            else
+            {
+                shoot(AxisInput);
+                oldInput = AxisInput;
+            }
+            move(AxisInput);
+        } else if (twoJoystick)
         {
-            shoot(AxisInput);
-            oldInput = AxisInput;
+            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
+            Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
+            
+            if (AxisInput2.magnitude > shootThreshold)
+            {
+                shoot(AxisInput2);
+            }
+            move(AxisInput);
+
+        } else if (m8s4)
+        {
+            Vector3 moveDir = Vector3.zero;
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                moveDir += Vector3.up;
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                moveDir += Vector3.down;
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                moveDir += Vector3.right;
+            }
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                moveDir += Vector3.left;
+            }
+            move(moveDir.normalized);
+            if (Input.GetKeyDown("w"))
+            {
+                shoot(Vector3.up);
+            }
+            if (Input.GetKeyDown("s"))
+            {
+                shoot(Vector3.down);
+            }
+            if (Input.GetKeyDown("d"))
+            {
+                shoot(Vector2.right);
+            }
+            if (Input.GetKeyDown("a"))
+            {
+                shoot(Vector2.left);
+            }
+        } else if (m8s8)
+        {
+            Vector3 moveDir = Vector3.zero;
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                moveDir += Vector3.up;
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                moveDir += Vector3.down;
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                moveDir += Vector3.right;
+            }
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                moveDir += Vector3.left;
+            }
+            move(moveDir.normalized);
+            
+            //this isn't smash so people dont have to be frame perfect to shoot diagonally
+            if (Input.GetKey("w"))
+            {
+                shootDir += Vector3.up;
+            }
+            if (Input.GetKey("s"))
+            {
+                shootDir += Vector3.down;
+            }
+            if (Input.GetKey("d"))
+            {
+                shootDir += Vector3.right;
+            }
+            if (Input.GetKey("a"))
+            {
+                shootDir += Vector3.left;
+            }
+            frames++;
+            if (frames > frameDelay)
+            {
+                shoot(shootDir.normalized);
+                shootDir = Vector3.zero;
+                frames = 0;
+            }
+            
         }
-        move(AxisInput);
-        
+
+
+
     }
 
 
     private float nextFire = 0.0f;
     void shoot(Vector3 direction)
     {
-        if (Input.GetButton(axes[2,(PlayerNumber-1)]) && Time.time > nextFire)
+        if (direction == Vector3.zero) return;
+        if (( Input.GetButton(axes[2,(PlayerNumber-1)]) || (m8s4 || m8s8 || twoJoystick) )
+            && Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
             
             StartCoroutine(cooldownIndicator());
             StartCoroutine(fire(direction));
         }
+        
     }
 
     IEnumerator cooldownIndicator()
@@ -79,11 +188,15 @@ public class playerClass : MonoBehaviour {
             }*/
             Vector3 newPosition = transform.position - direction.normalized * offset + Quaternion.Euler(0, 0, -90) * (direction.normalized* i * weight);
             GameObject paint = Instantiate(projectile, newPosition , Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+			var paintScript = paint.GetComponent<shotMovement>();
+			paintScript.playerNumber = PlayerNumber;
             //paint.transform.parent = transform;
             paint.GetComponent<SpriteRenderer>().color = normal;
             paint.GetComponent<shotMovement>().grid = grid;
             Vector3 newPosition2 = transform.position - direction.normalized * offset + Quaternion.Euler(0, 0, -90) * (direction.normalized * -i * weight);
             GameObject paint2 = Instantiate(projectile, newPosition2, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+			var paintScript2 = paint2.GetComponent<shotMovement>();
+			paintScript2.playerNumber = PlayerNumber;
             //paint2.transform.parent = transform;
             paint2.GetComponent<SpriteRenderer>().color = normal;
             paint2.GetComponent<shotMovement>().grid = grid;
@@ -152,7 +265,7 @@ public class playerClass : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D coll)
     {
         Debug.Log(coll);
-        if (coll.gameObject.tag == "paint" )
+		if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal)
         {
             /*coll.gameObject.GetComponent<playerClass>().normal = normal;
             coll.gameObject.GetComponent<playerClass>().fired = fired;
@@ -162,6 +275,9 @@ public class playerClass : MonoBehaviour {
             gameObject.GetComponent<SpriteRenderer>().color = normal;
 			scoreManager.ChangeScore (PlayerNumber.ToString (), "deaths", 1);
 			scoreManager.ChangeScore (PlayerNumber.ToString (), "score", -1);
+			int playerWhoShotMe = coll.gameObject.GetComponent<shotMovement> ().playerNumber;
+			scoreManager.ChangeScore (playerWhoShotMe.ToString (), "kills", 1);
+			scoreManager.ChangeScore (playerWhoShotMe.ToString (), "score", 1);
         }
     }
 }
