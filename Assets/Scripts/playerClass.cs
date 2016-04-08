@@ -9,10 +9,18 @@ public class playerClass : MonoBehaviour {
     public float playerSpeedAlt; // speed player turns
 
     public int PlayerNumber;
-    private string[,] axes = new string[,] { {"HorizontalP1", "HorizontalP2", "HorizontalP3", "HorizontalP4" },
-        { "VerticalP1", "VerticalP2", "VerticalP3", "VerticalP4" },
-        {"FireP1","FireP2", "FireP3", "FireP4" } };
+    private string[,] axes = new string[,] { {"HorizontalP1", "HorizontalP2", "HorizontalP3", "HorizontalP4" }, { "VerticalP1", "VerticalP2", "VerticalP3", "VerticalP4" }, {"FireP1","FireP2", "FireP3", "FireP4" },
+                                             {"HorizontalShootP1", "HorizontalShootP2", "HorizontalShootP3", "HorizontalShootP4" }, { "VerticalShootP1", "VerticalShootP2", "VerticalShootP3", "VerticalShootP4" }};
 
+    public bool oneJoystick;
+    public bool twoJoystick;
+    public float shootThreshold;
+    public bool m8s4;
+    public bool m8s8;
+    private Vector3 shootDir;
+    private int frames;
+    public int frameDelay;
+    
     public float fireRate;
     public int numShots;
     public float offset;
@@ -20,8 +28,11 @@ public class playerClass : MonoBehaviour {
     public GameObject projectile;
     public Color normal;
     public Color fired;
+    ScoreManager scoreManager;
 
     public GameObject grid;
+    private gridController gridController;
+    private SpriteRenderer spriteRenderer;
 
     private Vector3 oldInput = new Vector3(0, 0);
     private float nextFire = 0.0f;
@@ -38,18 +49,27 @@ public class playerClass : MonoBehaviour {
         if (grid == null) {
             grid = GameObject.FindGameObjectWithTag("gridGameObject");
         }
+
+        gridController = grid.GetComponent<gridController>();
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
 
     void Start() {
-        gameObject.GetComponent<SpriteRenderer>().color = normal;
+        spriteRenderer.color = normal;
         paintUnderMe();
+		scoreManager = GameObject.FindObjectOfType<ScoreManager>();
     }
 
     void Update() {
-        //MoveForward(); // Player Movement
-        //TurnRightAndLeft();//Player Turning
-        //Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
-        Vector3 axisInput = getAxisInput();
+        if (IS_LOCALLY_CONTROLLED) {
+            doLocalUpdate();
+        } else {
+            doNetworkUpdate();
+        }
+    }
+
+    private void doNetworkUpdate() {
+        Vector3 axisInput = lastNetworkInputEvent;
 
         if (axisInput == new Vector3(0, 0)) {
             shoot(oldInput);
@@ -60,47 +80,89 @@ public class playerClass : MonoBehaviour {
         move(axisInput);
     }
 
-    /**
-        If the player is networked controlled, then the axis input is some form of whatever the network last communicated.
+    void doLocalUpdate() {
+        if (oneJoystick) {
+            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
 
-        If not networked controlled, then the axis input is "live" 
-    **/
-    private Vector3 getAxisInput() {
-        Vector3 axisInput = new Vector3();
-        if (!IS_LOCALLY_CONTROLLED) {
-            // read from the last event
-            axisInput = lastNetworkInputEvent;
-        } else {
-            // read from the standard axis stuff
-            axisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
-        }
+            if (AxisInput == new Vector3(0, 0)) {
+                shoot(oldInput);
+            } else {
+                shoot(AxisInput);
+                oldInput = AxisInput;
+            }
+            move(AxisInput);
+        } else if (twoJoystick) {
+            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
+            Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
 
-        return axisInput;
-    }
+            if (AxisInput2.magnitude > shootThreshold) {
+                shoot(AxisInput2);
+            }
+            move(AxisInput);
 
-    // handle events
-    private void OnPhotonNetworkEvent(byte eventcode, object content, int senderid) {
-        // everything is in json format
-        switch (eventcode) {
-            // player input for 0
-            case 0:
-                PhotonPlayer sender = PhotonPlayer.Find(senderid);  // who sent this?
+        } else if (m8s4) {
+            Vector3 moveDir = Vector3.zero;
+            if (Input.GetKey(KeyCode.UpArrow)) {
+                moveDir += Vector3.up;
+            }
+            if (Input.GetKey(KeyCode.DownArrow)) {
+                moveDir += Vector3.down;
+            }
+            if (Input.GetKey(KeyCode.RightArrow)) {
+                moveDir += Vector3.right;
+            }
+            if (Input.GetKey(KeyCode.LeftArrow)) {
+                moveDir += Vector3.left;
+            }
+            move(moveDir.normalized);
+            if (Input.GetKeyDown("w")) {
+                shoot(Vector3.up);
+            }
+            if (Input.GetKeyDown("s")) {
+                shoot(Vector3.down);
+            }
+            if (Input.GetKeyDown("d")) {
+                shoot(Vector2.right);
+            }
+            if (Input.GetKeyDown("a")) {
+                shoot(Vector2.left);
+            }
+        } else if (m8s8) {
+            Vector3 moveDir = Vector3.zero;
+            if (Input.GetKey(KeyCode.UpArrow)) {
+                moveDir += Vector3.up;
+            }
+            if (Input.GetKey(KeyCode.DownArrow)) {
+                moveDir += Vector3.down;
+            }
+            if (Input.GetKey(KeyCode.RightArrow)) {
+                moveDir += Vector3.right;
+            }
+            if (Input.GetKey(KeyCode.LeftArrow)) {
+                moveDir += Vector3.left;
+            }
+            move(moveDir.normalized);
 
-                if (sender.ID != networkPlayerId) {
-                    // not input from our player!
-                    break;
-                }
+            //this isn't smash so people dont have to be frame perfect to shoot diagonally
+            if (Input.GetKey("w")) {
+                shootDir += Vector3.up;
+            }
+            if (Input.GetKey("s")) {
+                shootDir += Vector3.down;
+            }
+            if (Input.GetKey("d")) {
+                shootDir += Vector3.right;
+            }
+            if (Input.GetKey("a")) {
+                shootDir += Vector3.left;
+            }
+            frames++;
+            if (frames > frameDelay) {
+                shoot(shootDir.normalized);
+                shootDir = Vector3.zero;
+                frames = 0;
+            }
 
-                byte[] byteContent = (byte[])content;
-                string contentStringJson = Encoding.UTF8.GetString(byteContent);
-                PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
-
-                // now we have what we need
-                lastNetworkInputEvent = new Vector3(playerInput.x, playerInput.y);
-                lastNetworkShootEvent = playerInput.shoot;
-
-                //Debug.Log(lastNetworkInputEvent);
-                break;
         }
     }
 
@@ -112,7 +174,7 @@ public class playerClass : MonoBehaviour {
             fireButton = lastNetworkShootEvent;
         } else {
             // read from the standard axis stuff
-            fireButton = Input.GetButton(axes[2, (PlayerNumber - 1)]);
+            fireButton = (Input.GetButton(axes[2, (PlayerNumber - 1)]) || (m8s4 || m8s8 || twoJoystick));
         }
 
         if (fireButton && Time.time > nextFire) {
@@ -121,12 +183,13 @@ public class playerClass : MonoBehaviour {
             StartCoroutine(cooldownIndicator());
             StartCoroutine(fire(direction));
         }
+        
     }
 
     IEnumerator cooldownIndicator() {
-        gameObject.GetComponent<SpriteRenderer>().color = fired;
+        spriteRenderer.color = fired;
         yield return new WaitForSeconds(fireRate);
-        gameObject.GetComponent<SpriteRenderer>().color = normal;
+        spriteRenderer.color = normal;
     }
 
     IEnumerator fire(Vector3 direction) {
@@ -135,13 +198,17 @@ public class playerClass : MonoBehaviour {
             {
                 yield return null;
             }*/
-            Vector3 newPosition = transform.position - direction.normalized * offset + Quaternion.Euler(0, 0, -90) * (direction.normalized * i * weight);
-            GameObject paint = Instantiate(projectile, newPosition, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+            Vector3 newPosition = transform.position - direction.normalized * offset + Quaternion.Euler(0, 0, -90) * (direction.normalized* i * weight);
+            GameObject paint = Instantiate(projectile, newPosition , Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+			var paintScript = paint.GetComponent<shotMovement>();
+			paintScript.playerNumber = PlayerNumber;
             //paint.transform.parent = transform;
             paint.GetComponent<SpriteRenderer>().color = normal;
             paint.GetComponent<shotMovement>().grid = grid;
             Vector3 newPosition2 = transform.position - direction.normalized * offset + Quaternion.Euler(0, 0, -90) * (direction.normalized * -i * weight);
             GameObject paint2 = Instantiate(projectile, newPosition2, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+			var paintScript2 = paint2.GetComponent<shotMovement>();
+			paintScript2.playerNumber = PlayerNumber;
             //paint2.transform.parent = transform;
             paint2.GetComponent<SpriteRenderer>().color = normal;
             paint2.GetComponent<shotMovement>().grid = grid;
@@ -182,7 +249,6 @@ public class playerClass : MonoBehaviour {
     }
 
     bool isValidPosition(Vector3 position) {
-        gridController gridController = grid.GetComponent<gridController>();
         float gridSize = gridController.gridBlock.transform.localScale.x;
 
         int gridX = Mathf.RoundToInt(position.x / gridSize);
@@ -200,21 +266,29 @@ public class playerClass : MonoBehaviour {
     }
 
     void paintUnderMe() {
-        gridController gridController = grid.GetComponent<gridController>();
         float gridSize = gridController.gridBlock.transform.localScale.x;
         gridController.grid[Mathf.RoundToInt(transform.position.x / gridSize), Mathf.RoundToInt(transform.position.y / gridSize)].GetComponent<SpriteRenderer>().color = normal;
     }
 
 
     void OnCollisionEnter2D(Collision2D coll) {
-        if (coll.gameObject.tag == "paint") {
+        Debug.Log(coll);
+		if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal)
+        {
             /*coll.gameObject.GetComponent<playerClass>().normal = normal;
             coll.gameObject.GetComponent<playerClass>().fired = fired;
             coll.gameObject.GetComponent<SpriteRenderer>().color = normal;*/
 
             normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
-            gameObject.GetComponent<SpriteRenderer>().color = normal;
+            spriteRenderer.color = normal;
 
+            if (scoreManager != null) {
+                scoreManager.ChangeScore(PlayerNumber.ToString(), "deaths", 1);
+                scoreManager.ChangeScore(PlayerNumber.ToString(), "score", -1);
+                int playerWhoShotMe = coll.gameObject.GetComponent<shotMovement>().playerNumber;
+                scoreManager.ChangeScore(playerWhoShotMe.ToString(), "kills", 1);
+                scoreManager.ChangeScore(playerWhoShotMe.ToString(), "score", 1);
+            }
         }
     }
 
@@ -224,5 +298,31 @@ public class playerClass : MonoBehaviour {
 
     public int getNetworkPlayerId() {
         return networkPlayerId;
+    }
+
+    // handle events
+    private void OnPhotonNetworkEvent(byte eventcode, object content, int senderid) {
+        // everything is in json format
+        switch (eventcode) {
+            // player input for 0
+            case 0:
+                PhotonPlayer sender = PhotonPlayer.Find(senderid);  // who sent this?
+
+                if (sender.ID != networkPlayerId) {
+                    // not input from our player!
+                    break;
+                }
+
+                byte[] byteContent = (byte[])content;
+                string contentStringJson = Encoding.UTF8.GetString(byteContent);
+                PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
+
+                // now we have what we need
+                lastNetworkInputEvent = new Vector3(playerInput.x, playerInput.y);
+                lastNetworkShootEvent = playerInput.shoot;
+
+                //Debug.Log(lastNetworkInputEvent);
+                break;
+        }
     }
 }

@@ -76,6 +76,12 @@ MonoBehaviour:
   playerSpeed: 5
   playerSpeedAlt: 100
   PlayerNumber: 2
+  oneJoystick: 0
+  twoJoystick: 1
+  shootThreshold: 0.5
+  m8s4: 0
+  m8s8: 0
+  frameDelay: 3
   fireRate: 0.7
   numShots: 7
   offset: 0.02
