@@ -3,7 +3,7 @@ using System.Collections;
 using System.Text;
 
 public class playerClass : MonoBehaviour {
-    public bool IS_NETWORK_CONTROLLED;
+    public bool IS_LOCALLY_CONTROLLED;
 
     public float playerSpeed; //speed player moves
     public float playerSpeedAlt; // speed player turns
@@ -29,10 +29,15 @@ public class playerClass : MonoBehaviour {
     // network data
     private Vector3 lastNetworkInputEvent = new Vector3(0,0);
     private bool lastNetworkShootEvent = false;
+    private int networkPlayerId = -1;
 
     // setup our OnEvent as callback:
     void Awake() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
+
+        if (grid == null) {
+            grid = GameObject.FindGameObjectWithTag("gridGameObject");
+        }
     }
 
     void Start() {
@@ -62,7 +67,7 @@ public class playerClass : MonoBehaviour {
     **/
     private Vector3 getAxisInput() {
         Vector3 axisInput = new Vector3();
-        if (IS_NETWORK_CONTROLLED) {
+        if (!IS_LOCALLY_CONTROLLED) {
             // read from the last event
             axisInput = lastNetworkInputEvent;
         } else {
@@ -76,12 +81,16 @@ public class playerClass : MonoBehaviour {
     // handle events
     private void OnPhotonNetworkEvent(byte eventcode, object content, int senderid) {
         // everything is in json format
-        // encoded as class -> json -> base64 -> bytes
-        // decoded as bytes -> base64 -> json -> class
         switch (eventcode) {
             // player input for 0
             case 0:
                 PhotonPlayer sender = PhotonPlayer.Find(senderid);  // who sent this?
+
+                if (sender.ID != networkPlayerId) {
+                    // not input from our player!
+                    break;
+                }
+
                 byte[] byteContent = (byte[])content;
                 string contentStringJson = Encoding.UTF8.GetString(byteContent);
                 PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
@@ -90,7 +99,7 @@ public class playerClass : MonoBehaviour {
                 lastNetworkInputEvent = new Vector3(playerInput.x, playerInput.y);
                 lastNetworkShootEvent = playerInput.shoot;
 
-                Debug.Log(lastNetworkInputEvent);
+                //Debug.Log(lastNetworkInputEvent);
                 break;
         }
     }
@@ -98,7 +107,7 @@ public class playerClass : MonoBehaviour {
     void shoot(Vector3 direction) {
         bool fireButton;
 
-        if (IS_NETWORK_CONTROLLED) {
+        if (!IS_LOCALLY_CONTROLLED) {
             // read from the last event
             fireButton = lastNetworkShootEvent;
         } else {
@@ -207,5 +216,13 @@ public class playerClass : MonoBehaviour {
             gameObject.GetComponent<SpriteRenderer>().color = normal;
 
         }
+    }
+
+    public void setNetworkPlayerId(int id) {
+        networkPlayerId = id;
+    }
+
+    public int getNetworkPlayerId() {
+        return networkPlayerId;
     }
 }

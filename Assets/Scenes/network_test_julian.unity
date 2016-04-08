@@ -124,6 +124,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 157890, guid: 33cabc942907abc4b96345d96ea42269, type: 2}
+      propertyPath: m_TagString
+      value: gridGameObject
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 33cabc942907abc4b96345d96ea42269, type: 2}
   m_IsPrefabParent: 0
@@ -137,6 +141,7 @@ GameObject:
   - 4: {fileID: 434511958}
   - 114: {fileID: 434511959}
   - 114: {fileID: 434511960}
+  - 114: {fileID: 434511961}
   m_Layer: 0
   m_Name: NetworkControlObjects
   m_TagString: Untagged
@@ -181,6 +186,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Skin: {fileID: 0}
+--- !u!114 &434511961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 434511957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d08ea9455e2b29c4da07ab228fb5264f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 129322, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
 --- !u!1 &665663685
 GameObject:
   m_ObjectHideFlags: 0
@@ -496,7 +513,7 @@ GameObject:
   - 114: {fileID: 1569415823}
   m_Layer: 0
   m_Name: grid
-  m_TagString: Untagged
+  m_TagString: gridGameObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -597,6 +614,10 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: IS_NETWORK_CONTROLLED
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: IS_LOCALLY_CONTROLLED
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
