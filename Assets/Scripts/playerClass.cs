@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Text;
 
 public class playerClass : MonoBehaviour {
     public bool IS_NETWORK_CONTROLLED;
@@ -82,8 +83,8 @@ public class playerClass : MonoBehaviour {
             case 0:
                 PhotonPlayer sender = PhotonPlayer.Find(senderid);  // who sent this?
                 byte[] byteContent = (byte[])content;
-                string contentString = System.Convert.ToBase64String(byteContent);
-                PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentString);
+                string contentStringJson = Encoding.UTF8.GetString(byteContent);
+                PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
 
                 // now we have what we need
                 lastNetworkInputEvent = new Vector3(playerInput.x, playerInput.y);
