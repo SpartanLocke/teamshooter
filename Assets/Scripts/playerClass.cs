@@ -21,10 +21,14 @@ public class playerClass : MonoBehaviour {
     
     public GameObject grid;
     private Vector3 oldInput = new Vector3 (0,0);
+
+	ScoreManager scoreManager;
+
     void Start()
     {
         gameObject.GetComponent<SpriteRenderer>().color = normal;
         paintUnderMe();
+		scoreManager = GameObject.FindObjectOfType<ScoreManager>();
     }
     void Update()
     {
@@ -156,7 +160,8 @@ public class playerClass : MonoBehaviour {
 
             normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
             gameObject.GetComponent<SpriteRenderer>().color = normal;
-
+			scoreManager.ChangeScore (PlayerNumber.ToString (), "deaths", 1);
+			scoreManager.ChangeScore (PlayerNumber.ToString (), "score", -1);
         }
     }
 }

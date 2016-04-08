@@ -37,7 +37,7 @@ public class PlayerScoreList : MonoBehaviour {
 			Destroy (c.gameObject);
 		}
 
-		string[] names = scoreManager.GetPlayerNames("kills");
+		string[] names = scoreManager.GetPlayerNames("score");
 		
 		foreach(string name in names) {
 			GameObject go = (GameObject)Instantiate(playerScoreEntryPrefab);
@@ -45,7 +45,7 @@ public class PlayerScoreList : MonoBehaviour {
 			go.transform.Find ("Username").GetComponent<Text>().text = name;
 			go.transform.Find ("Kills").GetComponent<Text>().text = scoreManager.GetScore(name, "kills").ToString();
 			go.transform.Find ("Deaths").GetComponent<Text>().text = scoreManager.GetScore(name, "deaths").ToString();
-			// go.transform.Find ("KD").GetComponent<Text>().text = scoreManager.GetScore(name, "kd").ToString();
+			go.transform.Find ("Score").GetComponent<Text>().text = scoreManager.GetScore(name, "score").ToString();
 		}
 	}
 }

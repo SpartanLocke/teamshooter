@@ -13,8 +13,19 @@ public class ScoreManager : MonoBehaviour {
 
 	int changeCounter = 0;
 
+	int numPlayers = 4;
+	// TODO make this a public variable, or read all game objects starting with "player", or something else
+
 	void Start() {
-		DEBUG_INITIAL_SETUP ();
+		int playerNumber = 0;
+		while (playerNumber < numPlayers)
+		{
+			playerNumber++;
+			string username = playerNumber.ToString();
+			SetScore(username, "score", 0);
+			SetScore(username, "kills", 0);
+			SetScore(username, "deaths", 0);
+		}
 	}
 
 	void Init() {
@@ -77,23 +88,10 @@ public class ScoreManager : MonoBehaviour {
 		return changeCounter;
 	}
 
-	public void DEBUG_ADD_KILL_TO_QUILL() {
-		ChangeScore("quill18", "kills", 1);
-	}
-
-	public void DEBUG_INITIAL_SETUP() {
-		SetScore("quill18", "kills", 0);
-		SetScore("quill18", "assists", 345);
-
-		SetScore("bob", "kills", 1000);
-		SetScore("bob", "deaths", 14345);
-
-		SetScore("AAAAAA", "kills", 3);
-		SetScore("BBBBBB", "kills", 2);
-		SetScore("CCCCCC", "kills", 1);
-
-
-		Debug.Log (  GetScore("quill18", "kills") );
+	public void DEBUG_ADD_KILL_TO_4() {
+		Debug.Log("adding score to 4");
+		ChangeScore("4", "kills", 1);
+		ChangeScore("4", "score", 1);
 	}
 
 }
