@@ -75,13 +75,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IS_LOCALLY_CONTROLLED: 0
   playerSpeed: 3
-  playerSpeedAlt: 100
+  playerSpeedAlt: 50
+  timeDelay: 0
+  delayTime: 0.4
   PlayerNumber: 2
-  oneJoystick: 0
-  twoJoystick: 1
+  oneJoystick: 1
+  twoJoystick: 0
   shootThreshold: 0.5
+  moveThreshold: 0
   m8s4: 0
-  m8s8: 1
+  m8s8: 0
+  gridMovement: 0
   frameDelay: 3
   fireRate: 0.7
   numShots: 7

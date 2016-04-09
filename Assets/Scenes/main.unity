@@ -246,11 +246,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: IS_LOCALLY_CONTROLLED
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m8s8
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: gridMovement
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: playerSpeedAlt
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
@@ -459,6 +467,14 @@ Prefab:
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m8s8
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: gridMovement
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: playerSpeedAlt
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
@@ -942,6 +958,14 @@ Prefab:
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m8s8
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: gridMovement
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: playerSpeedAlt
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
@@ -1761,6 +1785,22 @@ Prefab:
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m8s4
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: gridMovement
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: delayTime
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: playerSpeedAlt
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: moveThreshold
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}

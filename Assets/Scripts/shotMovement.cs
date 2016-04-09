@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class shotMovement : MonoBehaviour {
-
+    public bool pinned;
     public float shotSpeed;
     public float distance;
     public float shotWidth;
@@ -11,10 +11,14 @@ public class shotMovement : MonoBehaviour {
 
     public int playerNumber;
 
-    private SpriteRenderer spriteRenderer;
+    private SpriteRenderer mySpriteRenderer;
 
     void Awake() {
-        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        mySpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        if (pinned)
+        {
+            gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+        }
     }
 
     // Use this for initialization
@@ -26,12 +30,14 @@ public class shotMovement : MonoBehaviour {
     void Update() {
         transform.Translate(Vector3.up * Time.deltaTime * shotSpeed);
         paintUnderMe();
+       
+        
     }
 
     void paintUnderMe() {
         gridController gridController = grid.GetComponent<gridController>();
         float gridSize = gridController.gridBlock.transform.localScale.x;
-        Color myColor = spriteRenderer.color;
+        Color myColor = mySpriteRenderer.color;
 
         if (gridController.inGridBounds(Mathf.RoundToInt(transform.position.x / gridSize), Mathf.RoundToInt(transform.position.y / gridSize))) {
             //gridController.grid[Mathf.RoundToInt(transform.position.x / gridSize), Mathf.RoundToInt(transform.position.y / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
@@ -50,7 +56,11 @@ public class shotMovement : MonoBehaviour {
 
 
     void OnCollisionEnter2D(Collision2D coll) {
-        if (coll.gameObject.tag == "wall") {
+        if (coll.gameObject.tag == "wall" ) {
+            Destroy(gameObject);
+        }
+        else if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != mySpriteRenderer.color)
+        {
             Destroy(gameObject);
         }
     }
