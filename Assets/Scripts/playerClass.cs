@@ -8,8 +8,10 @@ public class playerClass : MonoBehaviour {
     public int PlayerNumber;
     private string[,] axes = new string[,] { {"HorizontalP1", "HorizontalP2", "HorizontalP3", "HorizontalP4" }, { "VerticalP1", "VerticalP2", "VerticalP3", "VerticalP4" }, {"FireP1","FireP2", "FireP3", "FireP4" } };
 
-
-
+	//Debug tool for the type of movement
+	//If movementType = "touchblock", a player only needs to be touching their color to move
+	//If movementType = "immerse", a player has to be surrounded by their color to move
+	private string movementType = "touchblock";
 
     public float fireRate;
     public int numShots;
@@ -91,13 +93,12 @@ public class playerClass : MonoBehaviour {
 
     void move(Vector3 direction)
     {
-        
-        if(isValidPosition(gameObject.transform.position + playerSpeed * direction * Time.deltaTime))
-        {
-            transform.Translate(playerSpeed * direction * Time.deltaTime);
-        }
-        
+	    if (isValidPosition(gameObject.transform.position + playerSpeed * direction * Time.deltaTime))
+	    {
+	        transform.Translate(playerSpeed * direction * Time.deltaTime);
+	    }		
     }
+
     void moveAlt()
     {
         Vector3 movement = new Vector3(0,0);
@@ -122,19 +123,28 @@ public class playerClass : MonoBehaviour {
 
     }
 
-    bool isValidPosition(Vector3 position)
-    {
-       
+    bool isValidPosition(Vector3 position) {
         gridController gridController = grid.GetComponent<gridController>();
         float gridSize = gridController.gridBlock.transform.localScale.x;
-        if (normal == gridController.grid[Mathf.RoundToInt(position.x / gridSize), Mathf.RoundToInt(position.y / gridSize)].GetComponent<SpriteRenderer>().color)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+		if (movementType.Equals ("touchblock")) {
+			if (normal == gridController.grid [Mathf.RoundToInt (position.x / gridSize), Mathf.RoundToInt (position.y / gridSize)].GetComponent<SpriteRenderer> ().color) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if (movementType.Equals ("immerse")) {
+			float playerRadius = GetComponent<SpriteRenderer> ().bounds.size.x / 2;
+			if (normal == gridController.grid [Mathf.RoundToInt ((position.x + playerRadius) / gridSize), Mathf.RoundToInt (position.y / gridSize)].GetComponent<SpriteRenderer> ().color &&
+			    normal == gridController.grid [Mathf.RoundToInt ((position.x - playerRadius) / gridSize), Mathf.RoundToInt (position.y / gridSize)].GetComponent<SpriteRenderer> ().color &&
+			    normal == gridController.grid [Mathf.RoundToInt (position.x / gridSize), Mathf.RoundToInt ((position.y + playerRadius) / gridSize)].GetComponent<SpriteRenderer> ().color &&
+			    normal == gridController.grid [Mathf.RoundToInt (position.x / gridSize), Mathf.RoundToInt ((position.y - playerRadius) / gridSize)].GetComponent<SpriteRenderer> ().color) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
     }
 
     void paintUnderMe()
