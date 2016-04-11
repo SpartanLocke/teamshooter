@@ -238,11 +238,11 @@ Prefab:
       objectReference: {fileID: 1569415822}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: oneJoystick
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: twoJoystick
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: IS_LOCALLY_CONTROLLED
@@ -259,6 +259,18 @@ Prefab:
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: playerSpeedAlt
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 21232388, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 470754, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 470754, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
@@ -301,6 +313,10 @@ Prefab:
     - target: {fileID: 496806, guid: 33cabc942907abc4b96345d96ea42269, type: 2}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11429970, guid: 33cabc942907abc4b96345d96ea42269, type: 2}
+      propertyPath: height
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 33cabc942907abc4b96345d96ea42269, type: 2}
@@ -454,11 +470,11 @@ Prefab:
       objectReference: {fileID: 1569415822}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: oneJoystick
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: twoJoystick
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: IS_LOCALLY_CONTROLLED
@@ -479,15 +495,14 @@ Prefab:
     - target: {fileID: 21232388, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 933644dd26383e44682a2d7bd8caeda8,
-        type: 3}
+      objectReference: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 470754, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m_LocalScale.x
-      value: 1.7167412
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 470754, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m_LocalScale.y
-      value: 1.5801632
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
@@ -562,7 +577,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 539, y: 4}
+  m_AnchoredPosition: {x: 701, y: -1}
   m_SizeDelta: {x: 309, y: 602}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &630624477
@@ -957,11 +972,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: oneJoystick
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: twoJoystick
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: IS_LOCALLY_CONTROLLED
@@ -982,15 +997,14 @@ Prefab:
     - target: {fileID: 21232388, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 282f98acbbfb6184c9d742682c8b0812,
-        type: 3}
+      objectReference: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 470754, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m_LocalScale.y
-      value: 1.9358119
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 470754, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m_LocalScale.x
-      value: 2.0665884
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
@@ -1198,7 +1212,6 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -1374,7 +1387,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridBlock: {fileID: 172854, guid: 7d00a576dc3cf3345872929f10d605b0, type: 2}
   width: 18
-  height: 10.5
+  height: 11
 --- !u!4 &1569415824
 Transform:
   m_ObjectHideFlags: 0
@@ -1421,7 +1434,7 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 539, y: -202}
+  m_AnchoredPosition: {x: 0, y: 250}
   m_SizeDelta: {x: 244, y: 44}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1767231549
@@ -1669,11 +1682,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: twoJoystick
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: oneJoystick
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: IS_LOCALLY_CONTROLLED
@@ -1706,15 +1719,14 @@ Prefab:
     - target: {fileID: 21232388, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: ad716021616c2bd40b3b22fe0d327346,
-        type: 3}
+      objectReference: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 470754, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m_LocalScale.y
-      value: 2.7610111
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 470754, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m_LocalScale.x
-      value: 3.1057746
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
@@ -2091,7 +2103,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2119164310}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.62, y: 5.04, z: -10}
+  m_LocalPosition: {x: 9.1, y: 5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
