@@ -15,7 +15,7 @@ public class playerClass : MonoBehaviour {
 	//Debug tool for the type of movement
 	//If movementType = "touchblock", a player only needs to be touching their color to move
 	//If movementType = "immerse", a player has to be surrounded by their color to move
-	private string movementType = "touchblock";
+	private string movementType = "immerse";
 
     private string[,] axes = new string[,] { {"HorizontalP1", "HorizontalP2", "HorizontalP3", "HorizontalP4" }, { "VerticalP1", "VerticalP2", "VerticalP3", "VerticalP4" }, {"FireP1","FireP2", "FireP3", "FireP4" },
 		{"HorizontalShootP1", "HorizontalShootP2", "HorizontalShootP3", "HorizontalShootP4" }, { "VerticalShootP1", "VerticalShootP2", "VerticalShootP3", "VerticalShootP4" }};
@@ -318,18 +318,41 @@ public class playerClass : MonoBehaviour {
     bool isValidPosition(Vector3 position) {
         float gridSize = gridController.gridBlock.transform.localScale.x;
 
-        int gridX = Mathf.RoundToInt(position.x / gridSize);
-        int gridY = Mathf.RoundToInt(position.y / gridSize);
-        if (!gridController.inGridBounds(gridX, gridY)) {
-            // out of bounds, then get outta here
-            return false;
-        }
+		//sprite only has to touch color
+		if (movementType.Equals ("touchblock")) {
+			int gridX = Mathf.RoundToInt (position.x / gridSize);
+			int gridY = Mathf.RoundToInt (position.y / gridSize);
+			if (!gridController.inGridBounds (gridX, gridY)) {
+				// out of bounds, then get outta here
+				return false;
+			}
 
-        if (normal == gridController.getGridColor(gridX, gridY)) {
-            return true;
-        } else {
-            return false;
-        }
+			if (normal == gridController.getGridColor (gridX, gridY)) {
+				return true;
+			} else {
+				return false;
+			}
+			//sprite has to be within color
+		} else if (movementType.Equals ("immerse")) {
+			float playerRadius = GetComponent<SpriteRenderer> ().bounds.size.x / 2;
+			int gridLeft = Mathf.RoundToInt ((position.x + playerRadius) / gridSize);
+			int gridRight = Mathf.RoundToInt ((position.x - playerRadius) / gridSize);
+			int gridUp = Mathf.RoundToInt ((position.y + playerRadius) / gridSize);
+			int gridDown = Mathf.RoundToInt ((position.y - playerRadius) / gridSize);
+			if (!gridController.inGridBounds (gridLeft, gridUp) || !gridController.inGridBounds (gridRight, gridUp) ||
+			    !gridController.inGridBounds (gridLeft, gridDown) || !gridController.inGridBounds (gridRight, gridDown)) {
+				return false;
+			}
+
+			if (normal == gridController.getGridColor (gridLeft, gridUp) && normal == gridController.getGridColor (gridRight, gridUp) &&
+			    normal == gridController.getGridColor (gridLeft, gridDown) && normal == gridController.getGridColor (gridRight, gridDown)) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
     }
 
     void paintUnderMe() {
