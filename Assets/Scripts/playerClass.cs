@@ -45,7 +45,6 @@ public class playerClass : MonoBehaviour {
     // network data
     private Vector3 lastNetworkInputLeftEvent = new Vector3(0,0);
     private Vector3 lastNetworkInputRightEvent = new Vector3(0, 0);
-    private bool lastNetworkShootEvent = false;
 
     private int networkPlayerId = -1;
 
@@ -80,16 +79,6 @@ public class playerClass : MonoBehaviour {
     ///  Using the dual joystick control scheme.
     /// </summary>
     private void doNetworkUpdate() {
-        //Vector3 axisInput = lastNetworkInputLeftEvent;
-
-        //if (axisInput == new Vector3(0, 0)) {
-        //    shoot(oldInput);
-        //} else {
-        //    shoot(axisInput);
-        //    oldInput = axisInput;
-        //}
-        //move(axisInput);
-
         if (lastNetworkInputRightEvent.magnitude > shootThreshold) {
             shoot(lastNetworkInputRightEvent);
         }
@@ -222,7 +211,9 @@ public class playerClass : MonoBehaviour {
 
         if (!IS_LOCALLY_CONTROLLED) {
             // read from the last event
-            fireButton = lastNetworkShootEvent;
+            // twoJoystick is essentially true here, so just return true.
+            // also, shoot is only called if the second stick is active
+            fireButton = true;
         } else {
             // read from the standard axis stuff
             fireButton = (Input.GetButton(axes[2, (PlayerNumber - 1)]) || (m8s4 || m8s8 || twoJoystick || gridMovement));
@@ -367,7 +358,6 @@ public class playerClass : MonoBehaviour {
                 // now we have what we need
                 lastNetworkInputLeftEvent = new Vector3(playerInput.left_x, playerInput.left_y);
                 lastNetworkInputRightEvent = new Vector3(playerInput.right_x, playerInput.right_y);
-                lastNetworkShootEvent = playerInput.shoot;
 
                 //Debug.Log(lastNetworkInputEvent);
                 break;

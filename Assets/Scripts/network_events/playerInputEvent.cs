@@ -8,16 +8,13 @@ using System.Text;
 public class PlayerInputEvent {
     public float left_x, left_y;
     public float right_x, right_y;
-    public bool shoot;
 
-    public PlayerInputEvent(float left_input_x, float left_input_y, float right_input_x, float right_input_y, bool input_shoot) {
+    public PlayerInputEvent(float left_input_x, float left_input_y, float right_input_x, float right_input_y) {
         left_x = left_input_x;
         left_y = left_input_y;
 
         right_x = right_input_x;
         right_y = right_input_y;
-
-        shoot = input_shoot;
     }
 
     public static PlayerInputEvent CreateFromJSON(string jsonString) {
