@@ -6,16 +6,13 @@ using System.Collections;
 /// This script automatically connects to Photon (using the settings file),
 /// tries to join a random room and creates one if none was found (which is ok).
 /// </summary>
-public class ConnectAndJoinRandom : Photon.MonoBehaviour
-{
-    /// <summary>Connect automatically? If false you can set this to true later on or call ConnectUsingSettings in your own scripts.</summary>
-    public bool AutoConnect = true;
-
-    public byte Version = 1;
+public class ConnectAndJoinRandom : Photon.MonoBehaviour {
+    private byte Version = 1;
 
     /// <summary>if we don't want to connect in Start(), we have to "remember" if we called ConnectUsingSettings()</summary>
     private bool ConnectInUpdate = true;
 
+    public string LobbyName = Environment.UserName;
 
     public virtual void Start()
     {
@@ -24,13 +21,13 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
 
     public virtual void Update()
     {
-        if (ConnectInUpdate && AutoConnect && !PhotonNetwork.connected)
+        if (ConnectInUpdate && !PhotonNetwork.connected)
         {
             Debug.Log("Update() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
 
             ConnectInUpdate = false;
             //PhotonNetwork.ConnectUsingSettings(Version + "." + SceneManagerHelper.ActiveSceneBuildIndex);
-            PhotonNetwork.ConnectUsingSettings(Version + "." + Environment.UserName);
+            PhotonNetwork.ConnectUsingSettings("lobby." + LobbyName);
 
         }
     }

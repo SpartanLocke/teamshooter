@@ -43,8 +43,10 @@ public class playerClass : MonoBehaviour {
     private float nextFire = 0.0f;
 
     // network data
-    private Vector3 lastNetworkInputEvent = new Vector3(0,0);
+    private Vector3 lastNetworkInputLeftEvent = new Vector3(0,0);
+    private Vector3 lastNetworkInputRightEvent = new Vector3(0, 0);
     private bool lastNetworkShootEvent = false;
+
     private int networkPlayerId = -1;
 
     // setup our OnEvent as callback:
@@ -74,16 +76,24 @@ public class playerClass : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    ///  Using the dual joystick control scheme.
+    /// </summary>
     private void doNetworkUpdate() {
-        Vector3 axisInput = lastNetworkInputEvent;
+        //Vector3 axisInput = lastNetworkInputLeftEvent;
 
-        if (axisInput == new Vector3(0, 0)) {
-            shoot(oldInput);
-        } else {
-            shoot(axisInput);
-            oldInput = axisInput;
+        //if (axisInput == new Vector3(0, 0)) {
+        //    shoot(oldInput);
+        //} else {
+        //    shoot(axisInput);
+        //    oldInput = axisInput;
+        //}
+        //move(axisInput);
+
+        if (lastNetworkInputRightEvent.magnitude > shootThreshold) {
+            shoot(lastNetworkInputRightEvent);
         }
-        move(axisInput);
+        move(lastNetworkInputLeftEvent);
     }
 
     void doLocalUpdate() {
@@ -309,7 +319,7 @@ public class playerClass : MonoBehaviour {
 
 
     void OnCollisionEnter2D(Collision2D coll) {
-        Debug.Log(coll);
+        //Debug.Log(coll);
 		if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal)
         {
             /*coll.gameObject.GetComponent<playerClass>().normal = normal;
@@ -355,7 +365,8 @@ public class playerClass : MonoBehaviour {
                 PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
 
                 // now we have what we need
-                lastNetworkInputEvent = new Vector3(playerInput.x, playerInput.y);
+                lastNetworkInputLeftEvent = new Vector3(playerInput.left_x, playerInput.left_y);
+                lastNetworkInputRightEvent = new Vector3(playerInput.right_x, playerInput.right_y);
                 lastNetworkShootEvent = playerInput.shoot;
 
                 //Debug.Log(lastNetworkInputEvent);
