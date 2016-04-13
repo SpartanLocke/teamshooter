@@ -19,5 +19,6 @@ public class PlayerUIInputController : MonoBehaviour {
 
     void OnLeftRoom() {
         Debug.Log("left the room!");
+        Application.Quit();
     }
 }

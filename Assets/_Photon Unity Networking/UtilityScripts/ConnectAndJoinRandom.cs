@@ -7,7 +7,7 @@ using System.Collections;
 /// tries to join a random room and creates one if none was found (which is ok).
 /// </summary>
 public class ConnectAndJoinRandom : Photon.MonoBehaviour {
-    private byte Version = 1;
+    private byte Version = 2;
 
     /// <summary>if we don't want to connect in Start(), we have to "remember" if we called ConnectUsingSettings()</summary>
     private bool ConnectInUpdate = true;
@@ -27,7 +27,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour {
 
             ConnectInUpdate = false;
             //PhotonNetwork.ConnectUsingSettings(Version + "." + SceneManagerHelper.ActiveSceneBuildIndex);
-            PhotonNetwork.ConnectUsingSettings("lobby." + LobbyName);
+            PhotonNetwork.ConnectUsingSettings(Version + "." + LobbyName);
         }
     }
 
