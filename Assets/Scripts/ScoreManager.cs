@@ -21,7 +21,8 @@ public class ScoreManager : MonoBehaviour {
 
 	void Start() {
 		int playerNumber = 0;
-		while (playerNumber < numPlayers)
+        currentColors = new Dictionary<int, List<string>>();
+        while (playerNumber < numPlayers)
 		{
 			playerNumber++;
 			string username = playerNumber.ToString();
@@ -30,7 +31,7 @@ public class ScoreManager : MonoBehaviour {
 			SetScore(username, "deaths", 0);
             List<string> playerList = new List<string>();
             playerList.Add(username);
-            currentColors.Add(playerNumber, playerList);
+            currentColors.Add(playerNumber-1, playerList);
 		}
 	}
 
@@ -48,7 +49,7 @@ public class ScoreManager : MonoBehaviour {
         {
             //make each player list only contain one player
             List<string> playerList = new List<string>();
-            playerList.Add(key.ToString());
+            playerList.Add(key+1.ToString());
             currentColors[key] = playerList;
         }
     }
