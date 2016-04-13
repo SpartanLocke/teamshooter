@@ -335,18 +335,20 @@ public class playerClass : MonoBehaviour {
 			}
 			//sprite has to be within color
 		} else if (movementType.Equals ("immerse")) {
-			float playerRadius = GetComponent<SpriteRenderer> ().bounds.size.x / 2;
+            int gridX = Mathf.RoundToInt(position.x / gridSize);
+            int gridY = Mathf.RoundToInt(position.y / gridSize);
+            float playerRadius = GetComponent<SpriteRenderer> ().bounds.size.x / 2;
 			int gridLeft = Mathf.RoundToInt ((position.x + playerRadius) / gridSize);
 			int gridRight = Mathf.RoundToInt ((position.x - playerRadius) / gridSize);
 			int gridUp = Mathf.RoundToInt ((position.y + playerRadius) / gridSize);
 			int gridDown = Mathf.RoundToInt ((position.y - playerRadius) / gridSize);
-			if (!gridController.inGridBounds (gridLeft, gridUp) || !gridController.inGridBounds (gridRight, gridUp) ||
-			    !gridController.inGridBounds (gridLeft, gridDown) || !gridController.inGridBounds (gridRight, gridDown)) {
+			if (!gridController.inGridBounds (gridLeft, gridY) || !gridController.inGridBounds (gridRight, gridY) ||
+			    !gridController.inGridBounds (gridX, gridUp) || !gridController.inGridBounds (gridX, gridDown)) {
 				return false;
 			}
 
-			if (normal == gridController.getGridColor (gridLeft, gridUp) && normal == gridController.getGridColor (gridRight, gridUp) &&
-			    normal == gridController.getGridColor (gridLeft, gridDown) && normal == gridController.getGridColor (gridRight, gridDown)) {
+			if (normal == gridController.getGridColor (gridLeft, gridY) && normal == gridController.getGridColor (gridRight, gridY) &&
+			    normal == gridController.getGridColor (gridX, gridUp) && normal == gridController.getGridColor (gridX, gridDown)) {
 				return true;
 			} else {
 				return false;
