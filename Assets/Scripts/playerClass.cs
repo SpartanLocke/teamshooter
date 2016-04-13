@@ -11,8 +11,14 @@ public class playerClass : MonoBehaviour {
     public float delayTime;
 
     public int PlayerNumber;
+
+	//Debug tool for the type of movement
+	//If movementType = "touchblock", a player only needs to be touching their color to move
+	//If movementType = "immerse", a player has to be surrounded by their color to move
+	private string movementType = "immerse";
+
     private string[,] axes = new string[,] { {"HorizontalP1", "HorizontalP2", "HorizontalP3", "HorizontalP4" }, { "VerticalP1", "VerticalP2", "VerticalP3", "VerticalP4" }, {"FireP1","FireP2", "FireP3", "FireP4" },
-                                             {"HorizontalShootP1", "HorizontalShootP2", "HorizontalShootP3", "HorizontalShootP4" }, { "VerticalShootP1", "VerticalShootP2", "VerticalShootP3", "VerticalShootP4" }};
+		{"HorizontalShootP1", "HorizontalShootP2", "HorizontalShootP3", "HorizontalShootP4" }, { "VerticalShootP1", "VerticalShootP2", "VerticalShootP3", "VerticalShootP4" }};
 
     public bool oneJoystick;
     public bool twoJoystick;
@@ -43,8 +49,9 @@ public class playerClass : MonoBehaviour {
     private float nextFire = 0.0f;
 
     // network data
-    private Vector3 lastNetworkInputEvent = new Vector3(0,0);
-    private bool lastNetworkShootEvent = false;
+    private Vector3 lastNetworkInputLeftEvent = new Vector3(0,0);
+    private Vector3 lastNetworkInputRightEvent = new Vector3(0, 0);
+
     private int networkPlayerId = -1;
 
     // setup our OnEvent as callback:
@@ -74,16 +81,14 @@ public class playerClass : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    ///  Using the dual joystick control scheme.
+    /// </summary>
     private void doNetworkUpdate() {
-        Vector3 axisInput = lastNetworkInputEvent;
-
-        if (axisInput == new Vector3(0, 0)) {
-            shoot(oldInput);
-        } else {
-            shoot(axisInput);
-            oldInput = axisInput;
+        if (lastNetworkInputRightEvent.magnitude > shootThreshold) {
+            shoot(lastNetworkInputRightEvent);
         }
-        move(axisInput);
+        move(lastNetworkInputLeftEvent);
     }
 
     void doLocalUpdate() {
@@ -212,7 +217,9 @@ public class playerClass : MonoBehaviour {
 
         if (!IS_LOCALLY_CONTROLLED) {
             // read from the last event
-            fireButton = lastNetworkShootEvent;
+            // twoJoystick is essentially true here, so just return true.
+            // also, shoot is only called if the second stick is active
+            fireButton = true;
         } else {
             // read from the standard axis stuff
             fireButton = (Input.GetButton(axes[2, (PlayerNumber - 1)]) || (m8s4 || m8s8 || twoJoystick || gridMovement));
@@ -277,6 +284,30 @@ public class playerClass : MonoBehaviour {
             transform.position = gridController.grid[Mathf.RoundToInt(newPos.x / gridSize), Mathf.RoundToInt(newPos.y / gridSize)].transform.position;
         }
     }
+		
+//    bool isValidPosition(Vector3 position) {
+//        gridController gridController = grid.GetComponent<gridController>();
+//        float gridSize = gridController.gridBlock.transform.localScale.x;
+//		if (movementType.Equals ("touchblock")) {
+//			if (normal == gridController.grid [Mathf.RoundToInt (position.x / gridSize), Mathf.RoundToInt (position.y / gridSize)].GetComponent<SpriteRenderer> ().color) {
+//				return true;
+//			} else {
+//				return false;
+//			}
+//		} else if (movementType.Equals ("immerse")) {
+//			float playerRadius = GetComponent<SpriteRenderer> ().bounds.size.x / 2;
+//			if (normal == gridController.grid [Mathf.RoundToInt ((position.x + playerRadius) / gridSize), Mathf.RoundToInt (position.y / gridSize)].GetComponent<SpriteRenderer> ().color &&
+//			    normal == gridController.grid [Mathf.RoundToInt ((position.x - playerRadius) / gridSize), Mathf.RoundToInt (position.y / gridSize)].GetComponent<SpriteRenderer> ().color &&
+//			    normal == gridController.grid [Mathf.RoundToInt (position.x / gridSize), Mathf.RoundToInt ((position.y + playerRadius) / gridSize)].GetComponent<SpriteRenderer> ().color &&
+//			    normal == gridController.grid [Mathf.RoundToInt (position.x / gridSize), Mathf.RoundToInt ((position.y - playerRadius) / gridSize)].GetComponent<SpriteRenderer> ().color) {
+//				return true;
+//			} else {
+//				return false;
+//			}
+//		} else {
+//			return false;
+//		}
+//	}
 
     IEnumerator timer(float time)
     {
@@ -288,18 +319,41 @@ public class playerClass : MonoBehaviour {
     bool isValidPosition(Vector3 position) {
         float gridSize = gridController.gridBlock.transform.localScale.x;
 
-        int gridX = Mathf.RoundToInt(position.x / gridSize);
-        int gridY = Mathf.RoundToInt(position.y / gridSize);
-        if (!gridController.inGridBounds(gridX, gridY)) {
-            // out of bounds, then get outta here
-            return false;
-        }
+		//sprite only has to touch color
+		if (movementType.Equals ("touchblock")) {
+			int gridX = Mathf.RoundToInt (position.x / gridSize);
+			int gridY = Mathf.RoundToInt (position.y / gridSize);
+			if (!gridController.inGridBounds (gridX, gridY)) {
+				// out of bounds, then get outta here
+				return false;
+			}
 
-        if (normal == gridController.getGridColor(gridX, gridY)) {
-            return true;
-        } else {
-            return false;
-        }
+			if (normal == gridController.getGridColor (gridX, gridY)) {
+				return true;
+			} else {
+				return false;
+			}
+			//sprite has to be within color
+		} else if (movementType.Equals ("immerse")) {
+			float playerRadius = GetComponent<SpriteRenderer> ().bounds.size.x / 2;
+			int gridLeft = Mathf.RoundToInt ((position.x + playerRadius) / gridSize);
+			int gridRight = Mathf.RoundToInt ((position.x - playerRadius) / gridSize);
+			int gridUp = Mathf.RoundToInt ((position.y + playerRadius) / gridSize);
+			int gridDown = Mathf.RoundToInt ((position.y - playerRadius) / gridSize);
+			if (!gridController.inGridBounds (gridLeft, gridUp) || !gridController.inGridBounds (gridRight, gridUp) ||
+			    !gridController.inGridBounds (gridLeft, gridDown) || !gridController.inGridBounds (gridRight, gridDown)) {
+				return false;
+			}
+
+			if (normal == gridController.getGridColor (gridLeft, gridUp) && normal == gridController.getGridColor (gridRight, gridUp) &&
+			    normal == gridController.getGridColor (gridLeft, gridDown) && normal == gridController.getGridColor (gridRight, gridDown)) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
     }
 
     void paintUnderMe() {
@@ -309,7 +363,7 @@ public class playerClass : MonoBehaviour {
 
 
     void OnCollisionEnter2D(Collision2D coll) {
-        Debug.Log(coll);
+        //Debug.Log(coll);
 		if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal)
         {
             /*coll.gameObject.GetComponent<playerClass>().normal = normal;
@@ -355,8 +409,8 @@ public class playerClass : MonoBehaviour {
                 PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
 
                 // now we have what we need
-                lastNetworkInputEvent = new Vector3(playerInput.x, playerInput.y);
-                lastNetworkShootEvent = playerInput.shoot;
+                lastNetworkInputLeftEvent = new Vector3(playerInput.left_x, playerInput.left_y);
+                lastNetworkInputRightEvent = new Vector3(playerInput.right_x, playerInput.right_y);
 
                 //Debug.Log(lastNetworkInputEvent);
                 break;

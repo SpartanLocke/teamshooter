@@ -1,2 +1,14 @@
+<<<<<<< HEAD
 m_EditorVersion: 5.3.3f1
+=======
+<<<<<<< HEAD
+m_EditorVersion: 5.3.4f1
+=======
+<<<<<<< HEAD
+m_EditorVersion: 5.3.2f1
+=======
+m_EditorVersion: 5.3.4f1
+>>>>>>> master
+>>>>>>> 876d387b71638fad6826a9c608821ae974d9eca6
+>>>>>>> 78b1ee423a61354d21108f0ebcc23599fbbd1f74
 m_StandardAssetsVersion: 0

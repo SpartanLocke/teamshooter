@@ -6,13 +6,15 @@ using System.Text;
 // everything is in json format
 [System.Serializable]
 public class PlayerInputEvent {
-    public float x, y;
-    public bool shoot;
+    public float left_x, left_y;
+    public float right_x, right_y;
 
-    public PlayerInputEvent(float input_x, float input_y, bool input_shoot) {
-        x = input_x;
-        y = input_y;
-        shoot = input_shoot;
+    public PlayerInputEvent(float left_input_x, float left_input_y, float right_input_x, float right_input_y) {
+        left_x = left_input_x;
+        left_y = left_input_y;
+
+        right_x = right_input_x;
+        right_y = right_input_y;
     }
 
     public static PlayerInputEvent CreateFromJSON(string jsonString) {
