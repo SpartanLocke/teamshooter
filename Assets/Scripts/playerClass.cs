@@ -41,6 +41,7 @@ public class playerClass : MonoBehaviour {
     ScoreManager scoreManager;
 
     public GameObject grid;
+    public int teamNum;
     private float gridSize;
     private gridController gridController;
     private SpriteRenderer spriteRenderer;
@@ -250,6 +251,7 @@ public class playerClass : MonoBehaviour {
             GameObject paint = Instantiate(projectile, newPosition , Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
 			var paintScript = paint.GetComponent<shotMovement>();
 			paintScript.playerNumber = PlayerNumber;
+            paintScript.teamNum = teamNum;
             //paint.transform.parent = transform;
             paint.GetComponent<SpriteRenderer>().color = normal;
             paint.GetComponent<shotMovement>().grid = grid;
@@ -257,6 +259,7 @@ public class playerClass : MonoBehaviour {
             GameObject paint2 = Instantiate(projectile, newPosition2, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
 			var paintScript2 = paint2.GetComponent<shotMovement>();
 			paintScript2.playerNumber = PlayerNumber;
+            paintScript.teamNum = teamNum;
             //paint2.transform.parent = transform;
             paint2.GetComponent<SpriteRenderer>().color = normal;
             paint2.GetComponent<shotMovement>().grid = grid;
@@ -372,10 +375,12 @@ public class playerClass : MonoBehaviour {
 
             normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
             spriteRenderer.color = normal;
+            teamNum = coll.gameObject.GetComponent<shotMovement>().teamNum;
 
             if (scoreManager != null) {
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "deaths", 1);
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "score", -1);
+                scoreManager.changeColorCount(teamNum, PlayerNumber.ToString());
                 int playerWhoShotMe = coll.gameObject.GetComponent<shotMovement>().playerNumber;
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "kills", 1);
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "score", 1);

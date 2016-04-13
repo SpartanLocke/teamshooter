@@ -10,7 +10,7 @@ public class shotMovement : MonoBehaviour {
     private float moveSpeed;
 
     public int playerNumber;
-
+    public int teamNum;
     private SpriteRenderer mySpriteRenderer;
 
     void Awake() {
@@ -19,6 +19,7 @@ public class shotMovement : MonoBehaviour {
         {
             gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
         }
+        teamNum = playerNumber;
     }
 
     // Use this for initialization
