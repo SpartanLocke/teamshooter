@@ -7,6 +7,7 @@ TagManager:
   - gridBlock
   - paint
   - wall
+  - gridGameObject
   layers:
   - Default
   - TransparentFX

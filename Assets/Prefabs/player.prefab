@@ -73,9 +73,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e00d68c1d9de5a4fb50a40c23167c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 5
-  playerSpeedAlt: 100
+  IS_LOCALLY_CONTROLLED: 0
+  playerSpeed: 3
+  playerSpeedAlt: 50
+  timeDelay: 0
+  delayTime: 0.4
   PlayerNumber: 2
+  oneJoystick: 1
+  twoJoystick: 0
+  shootThreshold: 0.5
+  moveThreshold: 0
+  m8s4: 0
+  m8s8: 0
+  gridMovement: 0
+  frameDelay: 3
   fireRate: 0.7
   numShots: 7
   offset: 0.02
