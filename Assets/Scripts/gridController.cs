@@ -5,7 +5,7 @@ public class gridController : MonoBehaviour {
     public GameObject gridBlock;
     public float width;
     public float height;
-
+    public float zpos;
     // todo: make this private
     public GameObject[,] grid;
 
@@ -47,7 +47,7 @@ public class gridController : MonoBehaviour {
     void createGrid() {
         for (int i = 0; i < grid.GetLength(0); i++) {
             for (int j = 0; j < grid.GetLength(1); j++) {
-                Vector3 position = new Vector3((i * gridBlock.transform.localScale.x), (j * gridBlock.transform.localScale.x));
+                Vector3 position = new Vector3((i * gridBlock.transform.localScale.x), (j * gridBlock.transform.localScale.x), zpos);
                 GameObject newBlock = Instantiate(gridBlock, position, Quaternion.identity) as GameObject;
                 grid[i, j] = newBlock;
                 newBlock.transform.parent = transform;

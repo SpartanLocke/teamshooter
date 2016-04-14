@@ -6,30 +6,48 @@ Direct3D:
     Vendor:   Intel
     VRAM:     2103 MB
 Begin MonoManager ReloadAssembly
-Platform assembly: C:\Users\Sam\Downloads\joytestmain_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading C:\Users\Sam\Downloads\joytestmain_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: C:\Users\Sam\Downloads\joytestmain_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
-Loading C:\Users\Sam\Downloads\joytestmain_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
-Platform assembly: C:\Users\Sam\Downloads\joytestmain_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading C:\Users\Sam\Downloads\joytestmain_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: C:\Users\Sam\Downloads\joytestmain_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading C:\Users\Sam\Downloads\joytestmain_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-Platform assembly: C:\Users\Sam\Downloads\joytestmain_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading C:\Users\Sam\Downloads\joytestmain_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: C:\Users\Sam\Downloads\joytestmain_Data\Managed\Photon3Unity3D.dll (this message is harmless)
-Loading C:\Users\Sam\Downloads\joytestmain_Data\Managed\Photon3Unity3D.dll into Unity Child Domain
-Platform assembly: C:\Users\Sam\Downloads\joytestmain_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading C:\Users\Sam\Downloads\joytestmain_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: C:\Users\Sam\Downloads\joytestmain_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading C:\Users\Sam\Downloads\joytestmain_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-- Completed reload, in  0.058 seconds
-Platform assembly: C:\Users\Sam\Downloads\joytestmain_Data\Managed\System.Core.dll (this message is harmless)
-Platform assembly: C:\Users\Sam\Downloads\joytestmain_Data\Managed\System.dll (this message is harmless)
-desktop: 1366x768 60Hz; virtual: 2646x1024 at -1280,-122
+Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\Photon3Unity3D.dll (this message is harmless)
+Loading C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\Photon3Unity3D.dll into Unity Child Domain
+Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+- Completed reload, in  0.059 seconds
+Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\System.dll (this message is harmless)
+desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
 <RI> Initializing input.
+<RI.Hid> Failed to create device file:
+ 2 The system cannot find the file specified.
+
+ 
+(Filename:  Line: 54)
+
+<RI.Hid> Failed to create device file:
+ 2 The system cannot find the file specified.
+
+ 
+(Filename:  Line: 54)
+
+<RI.Hid> Failed to create device file:
+ 2 The system cannot find the file specified.
+
+ 
+(Filename:  Line: 54)
+
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 0.771915 ms
+UnloadTime: 1.534423 ms
 Update() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
@@ -55,4 +73,4 @@ playerJoined
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 1200 -> priority: 1 
+  Thread -> id: 1250 -> priority: 1 
