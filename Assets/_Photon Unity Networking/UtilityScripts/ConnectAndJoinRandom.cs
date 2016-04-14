@@ -12,10 +12,10 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour {
     /// <summary>if we don't want to connect in Start(), we have to "remember" if we called ConnectUsingSettings()</summary>
     private bool ConnectInUpdate = true;
 
-    public string LobbyName = Environment.UserName;
+    public string defaultLobbyName = Environment.UserName;
 
     // only try to join random rooms if we haven't left one already
-    private bool attemptJoinRandomRoom = true;
+    private static bool attemptJoinRandomRoom = true;
 
     public virtual void Start() {
         PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
@@ -26,8 +26,15 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour {
             Debug.Log("Update() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
 
             ConnectInUpdate = false;
-            //PhotonNetwork.ConnectUsingSettings(Version + "." + SceneManagerHelper.ActiveSceneBuildIndex);
-            PhotonNetwork.ConnectUsingSettings(Version + "." + LobbyName);
+            string connectionString = "";
+            if (ControllerMenuUiController.lobbyName == "") {
+                connectionString = Version + "." + defaultLobbyName;
+            } else {
+                connectionString = Version + "." + ControllerMenuUiController.lobbyName;
+            }
+
+            Debug.Log("connecting to lobby: " + connectionString);
+            PhotonNetwork.ConnectUsingSettings(connectionString);
         }
     }
 
@@ -62,7 +69,12 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour {
     }
 
     public void OnLeftRoom() {
-        Debug.Log("not joining random rooms anymore!");
-        attemptJoinRandomRoom = false;
+        Debug.Log("left room");
+        //attemptJoinRandomRoom = false;
+    }
+
+    public static void setJoinRandomRooms(bool joinRandoms) {
+        Debug.Log("join random room?: " + joinRandoms);
+        attemptJoinRandomRoom = joinRandoms;
     }
 }
