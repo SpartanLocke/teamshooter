@@ -13,7 +13,9 @@ public class PlayerVirtualJoystickInputController : MonoBehaviour {
 
         //Debug.Log(left_x + " " + left_y + " " + right_x + " " + right_y + " ");
 
-        sendControllerNetworkInput(left_x, left_y, right_x, right_y);
+        if (PhotonNetwork.connectionStateDetailed == PeerState.Joined) {
+            sendControllerNetworkInput(left_x, left_y, right_x, right_y);
+        }
     }
 
     private void sendControllerNetworkInput(float left_x, float left_y, float right_x, float right_y) {
