@@ -352,12 +352,12 @@ public class playerClass : MonoBehaviour {
         spriteRenderer.color = normal;
     }
 
-    IEnumerator fire(Vector3 direction) {
+    /*IEnumerator fire(Vector3 direction) {
         for (int i = 0; i < numShots; i++) {
             /*for (int j = 0; j < 1; j++)
             {
                 yield return null;
-            }*/
+            }
             Vector3 newPosition = transform.position - direction.normalized * offset + Quaternion.Euler(0, 0, -90) * (direction.normalized* i * weight);
             GameObject paint = Instantiate(projectile, newPosition , Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
 			var paintScript = paint.GetComponent<shotMovement>();
@@ -378,7 +378,7 @@ public class playerClass : MonoBehaviour {
 
         }
 
-    }
+    }*/
 
     void move(Vector3 direction) {
 
