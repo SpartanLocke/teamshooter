@@ -9,6 +9,8 @@ public class shotMovement : MonoBehaviour {
     public GameObject grid;
     private float moveSpeed;
 
+    public Light myLight;
+
     public int playerNumber;
     public int teamNum;
     private SpriteRenderer mySpriteRenderer;
@@ -20,10 +22,12 @@ public class shotMovement : MonoBehaviour {
             gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
         }
         teamNum = playerNumber;
+        myLight = gameObject.GetComponentInChildren<Light>();
     }
 
     // Use this for initialization
     void Start() {
+        myLight.color = mySpriteRenderer.color;
         StartCoroutine(timer());
     }
 
