@@ -42,7 +42,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 129322}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.69, y: 1.51, z: 0}
+  m_LocalPosition: {x: 1.75, y: 8.17, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children:
   - {fileID: 498734}
@@ -101,8 +101,8 @@ Light:
   serializedVersion: 6
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2.27
-  m_Range: 5
+  m_Intensity: 4.1
+  m_Range: 3
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -136,12 +136,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IS_LOCALLY_CONTROLLED: 1
-  tauntNum: 1
+  tauntNum: 2
   playerSpeed: 3
   playerSpeedAlt: 50
   timeDelay: 0
   delayTime: 0.4
-  PlayerNumber: 1
+  PlayerNumber: 2
   movementType: touchblock
   oneJoystick: 0
   twoJoystick: 1
@@ -157,7 +157,8 @@ MonoBehaviour:
   offset: 0.02
   weight: 0.06
   projectile: {fileID: 106674, guid: 48dd2ffb0758bc641ade4f3a6a88c616, type: 2}
-  normal: {r: 1, g: 0.10196079, b: 0.10196079, a: 0.759}
+  explosion: {fileID: 150628, guid: a803ef02aa9e6f54882b080299625dee, type: 2}
+  normal: {r: 0, g: 0.5, b: 1, a: 0.766}
   fired: {r: 0.19607843, g: 0, b: 0, a: 0.353}
   light: {fileID: 0}
   grid: {fileID: 0}

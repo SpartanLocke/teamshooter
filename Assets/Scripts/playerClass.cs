@@ -37,6 +37,7 @@ public class playerClass : MonoBehaviour {
     public float offset;
     public float weight;
     public GameObject projectile;
+    public GameObject explosion;
     public Color normal;
     public Color fired;
     public Light light;
@@ -334,15 +335,15 @@ public class playerClass : MonoBehaviour {
     }
 
     IEnumerator cooldownIndicator() {
-        //spriteRenderer.color = fired;
+        spriteRenderer.color = fired;
         //transform.GetChild(0).gameObject.SetActive(false);
         //light.color = Color.white;
-        light.intensity = 1.25f;
+        //light.intensity = 1.25f;
         yield return new WaitForSeconds(fireRate);
-        light.intensity = normalIntensity;
+        //light.intensity = normalIntensity;
         //light.color = normal;
         //transform.GetChild(0).gameObject.SetActive(true);
-        //spriteRenderer.color = normal;
+        spriteRenderer.color = normal;
     }
 
     IEnumerator fire(Vector3 direction) {
@@ -479,6 +480,8 @@ public class playerClass : MonoBehaviour {
 
             normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
             spriteRenderer.color = normal;
+            GameObject hitIndicator = Instantiate(explosion, transform.position, Quaternion.identity) as GameObject;
+            hitIndicator.GetComponent<ParticleSystem>().startColor = normal;
 
             if (scoreManager != null) {
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "deaths", 1);
