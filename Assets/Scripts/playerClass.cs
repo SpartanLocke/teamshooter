@@ -37,6 +37,7 @@ public class playerClass : MonoBehaviour {
     public float offset;
     public float weight;
     public GameObject projectile;
+    public GameObject projectileParent;
     public GameObject explosion;
     public Color normal;
     public Color fired;
@@ -330,7 +331,11 @@ public class playerClass : MonoBehaviour {
             nextFire = Time.time + fireRate;
 
             StartCoroutine(cooldownIndicator());
-            StartCoroutine(fire(direction));
+            //StartCoroutine(fire(direction));
+            GameObject paint = Instantiate(projectileParent, transform.position , Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+            projectileParent parent = paint.GetComponent<projectileParent>();
+            parent.myColor = normal;
+            parent.grid = grid;
         }
         
     }

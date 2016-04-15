@@ -154,14 +154,16 @@ MonoBehaviour:
   fireRate: 0.7
   tauntRate: 0.29
   numShots: 7
-  offset: 0.02
+  offset: 0.6
   weight: 0.06
   projectile: {fileID: 106674, guid: 48dd2ffb0758bc641ade4f3a6a88c616, type: 2}
+  projectileParent: {fileID: 198766, guid: 8895587ded817bc4181994970ab022bb, type: 2}
   explosion: {fileID: 150628, guid: a803ef02aa9e6f54882b080299625dee, type: 2}
   normal: {r: 0, g: 0.5, b: 1, a: 0.766}
   fired: {r: 0.19607843, g: 0, b: 0, a: 0.353}
   light: {fileID: 0}
   grid: {fileID: 0}
+  teamNum: 0
 --- !u!212 &21232388
 SpriteRenderer:
   m_ObjectHideFlags: 1
