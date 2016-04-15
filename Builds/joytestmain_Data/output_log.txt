@@ -22,7 +22,7 @@ Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_
 Loading C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.UI.dll (this message is harmless)
 Loading C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-- Completed reload, in  0.059 seconds
+- Completed reload, in  0.201 seconds
 Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\Sam\OneDrive\CMS.611\teamshooter\Builds\joytestmain_Data\Managed\System.dll (this message is harmless)
 desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
@@ -45,9 +45,33 @@ desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
  
 (Filename:  Line: 54)
 
+<RI.Hid> Failed to create device file:
+ 2 The system cannot find the file specified.
+
+ 
+(Filename:  Line: 54)
+
+<RI.Hid> Failed to create device file:
+ 2 The system cannot find the file specified.
+
+ 
+(Filename:  Line: 54)
+
+<RI.Hid> Failed to create device file:
+ 2 The system cannot find the file specified.
+
+ 
+(Filename:  Line: 54)
+
+<RI.Hid> Failed to create device file:
+ 2 The system cannot find the file specified.
+
+ 
+(Filename:  Line: 54)
+
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.534423 ms
+UnloadTime: 0.787311 ms
 Update() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
@@ -73,4 +97,4 @@ playerJoined
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 1250 -> priority: 1 
+  Thread -> id: 4be4 -> priority: 1 

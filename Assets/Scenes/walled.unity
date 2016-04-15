@@ -1528,19 +1528,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 125.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -17.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 251
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 35
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchorMin.x
@@ -1548,7 +1548,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchorMax.x
@@ -1556,7 +1556,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_Pivot.x
@@ -1600,6 +1600,7 @@ MonoBehaviour:
   gridBlock: {fileID: 172854, guid: 7d00a576dc3cf3345872929f10d605b0, type: 2}
   width: 18
   height: 10.5
+  zpos: 0
 --- !u!4 &1569415824
 Transform:
   m_ObjectHideFlags: 0
@@ -1957,7 +1958,7 @@ RectTransform:
   - {fileID: 1722934643}
   - {fileID: 255163481}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -1991,6 +1992,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5541d613337814ff6afdc6ab64e73b94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  conversionScores: 
 --- !u!4 &1975144324
 Transform:
   m_ObjectHideFlags: 0
