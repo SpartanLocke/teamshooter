@@ -161,6 +161,14 @@ public class playerClass : MonoBehaviour {
                 yield return null;
             }
         }
+        else if (i == 3)
+        {
+            for (int j = 0; j < 20; j++)
+            {
+                transform.Rotate(18f * Vector3.forward);
+                yield return null;
+            }
+        }
     }
 
     void getInputs()

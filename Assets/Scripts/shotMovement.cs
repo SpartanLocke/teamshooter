@@ -58,8 +58,8 @@ public class shotMovement : MonoBehaviour {
             //gridController.grid[Mathf.RoundToInt((transform.position.x - shotWidth / 2) / gridSize), Mathf.RoundToInt((transform.position.y - shotWidth / 2) / gridSize)].GetComponent<SpriteRenderer>().color = gameObject.GetComponent<SpriteRenderer>().color;
 
             gridController.setGridBlockToColor(Mathf.RoundToInt(transform.position.x / gridSize), Mathf.RoundToInt(transform.position.y / gridSize), myColor);
-            gridController.setGridBlockToColor(Mathf.RoundToInt((transform.position.x + shotWidth / 2) / gridSize), Mathf.RoundToInt((transform.position.y + shotWidth / 2) / gridSize), myColor);
-            gridController.setGridBlockToColor(Mathf.RoundToInt((transform.position.x - shotWidth / 2) / gridSize), Mathf.RoundToInt((transform.position.y - shotWidth / 2) / gridSize), myColor);
+            gridController.setGridBlockToColor(Mathf.RoundToInt((transform.position.x) / gridSize), Mathf.RoundToInt((transform.position.y + shotWidth / 2) / gridSize), myColor);
+            gridController.setGridBlockToColor(Mathf.RoundToInt((transform.position.x) / gridSize), Mathf.RoundToInt((transform.position.y - shotWidth / 2) / gridSize), myColor);
         }
     }
     IEnumerator timer() {
