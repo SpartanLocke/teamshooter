@@ -370,12 +370,12 @@ ParticleSystem:
       minMaxState: 3
     randomizeRotationDirection: 1
     gravityModifier: 0
-    maxNumParticles: 10
+    maxNumParticles: 100
     rotation3D: 0
   ShapeModule:
     serializedVersion: 2
     enabled: 1
-    type: 11
+    type: 10
     radius: 0.5
     angle: 25
     length: 5

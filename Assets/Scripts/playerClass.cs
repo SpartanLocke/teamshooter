@@ -44,7 +44,7 @@ public class playerClass : MonoBehaviour {
     public Light light;
     private float normalIntensity;
     ScoreManager scoreManager;
-
+    private GameObject myProjectile;
     public GameObject grid;
     public int teamNum;
     private float gridSize;
@@ -52,7 +52,6 @@ public class playerClass : MonoBehaviour {
     private SpriteRenderer spriteRenderer;
 
     private Vector3 oldInput = new Vector3(0, 0);
-    private float nextFire = 0.0f;
     private float nextTaunt = 0.0f;
 
     // network data
@@ -166,7 +165,17 @@ public class playerClass : MonoBehaviour {
 
     void getInputs()
     {
-        if (oneJoystick)
+        //else if (twoJoystick) {
+            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
+            Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
+
+            if (AxisInput2.magnitude > shootThreshold)
+            {
+                shoot(AxisInput2);
+            }
+            move(AxisInput);
+        //}
+        /*if (oneJoystick)
         {
             Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
 
@@ -180,7 +189,7 @@ public class playerClass : MonoBehaviour {
             }
             move(AxisInput);
         }
-        else if (gridMovement)
+        /*else if (gridMovement)
         {
             Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
             Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
@@ -216,20 +225,9 @@ public class playerClass : MonoBehaviour {
             }
 
 
-        }
-        else if (twoJoystick)
-        {
-            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
-            Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
+        }*/
 
-            if (AxisInput2.magnitude > shootThreshold)
-            {
-                shoot(AxisInput2);
-            }
-            move(AxisInput);
-
-        }
-        else if (m8s4)
+        /*else if (m8s4)
         {
             Vector3 moveDir = Vector3.zero;
             if (Input.GetKey(KeyCode.UpArrow))
@@ -312,7 +310,7 @@ public class playerClass : MonoBehaviour {
                 frames = 0;
             }
 
-        }
+        }*/
     }
     void shoot(Vector3 direction) {
         bool fireButton;
@@ -327,13 +325,12 @@ public class playerClass : MonoBehaviour {
             fireButton = (Input.GetButton(axes[2, (PlayerNumber - 1)]) || (m8s4 || m8s8 || twoJoystick || gridMovement));
         }
 
-        if (fireButton && Time.time > nextFire) {
-            nextFire = Time.time + fireRate;
-
-            StartCoroutine(cooldownIndicator());
+        if (fireButton &&  myProjectile == null)
+        {    StartCoroutine(cooldownIndicator());
             //StartCoroutine(fire(direction));
-            GameObject paint = Instantiate(projectileParent, transform.position , Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+            GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized*offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
             projectileParent parent = paint.GetComponent<projectileParent>();
+            myProjectile = paint;
             parent.myColor = normal;
             parent.grid = grid;
         }
@@ -387,7 +384,7 @@ public class playerClass : MonoBehaviour {
         }
 
     }
-    void moveAlt(Vector3 direction)
+/*    void moveAlt(Vector3 direction)
     {
         Vector3 newPos = gameObject.transform.position + playerSpeedAlt * direction * Time.deltaTime;
         if (isValidPosition(newPos) && !timeDelay)
@@ -397,7 +394,7 @@ public class playerClass : MonoBehaviour {
             StartCoroutine(timer(delayTime));
             transform.position = gridController.grid[Mathf.RoundToInt(newPos.x / gridSize), Mathf.RoundToInt(newPos.y / gridSize)].transform.position;
         }
-    }
+    }*/
 		
 //    bool isValidPosition(Vector3 position) {
 //        gridController gridController = grid.GetComponent<gridController>();
@@ -482,10 +479,6 @@ public class playerClass : MonoBehaviour {
         //Debug.Log(coll);
 		if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal)
         {
-            /*coll.gameObject.GetComponent<playerClass>().normal = normal;
-            coll.gameObject.GetComponent<playerClass>().fired = fired;
-            coll.gameObject.GetComponent<SpriteRenderer>().color = normal;*/
-
             normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
             spriteRenderer.color = normal;
             teamNum = coll.gameObject.GetComponent<shotMovement>().teamNum;
