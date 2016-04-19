@@ -9,7 +9,8 @@ public class playerClass : MonoBehaviour {
     public float playerSpeedAlt;
     public bool timeDelay = false;
     public float delayTime;
-
+    public bool dodgeAbility;
+    public bool dodging;
     public int PlayerNumber;
 
 	//Debug tool for the type of movement
@@ -78,7 +79,7 @@ public class playerClass : MonoBehaviour {
     void Start() {
         spriteRenderer.color = normal;
         light.color = normal;
-        paintUnderMe();
+        paintUnderMe(1);
 		scoreManager = GameObject.FindObjectOfType<ScoreManager>();
     }
 
@@ -107,68 +108,80 @@ public class playerClass : MonoBehaviour {
 
     void taunt()
     {
-        if ( Time.time > nextTaunt && (Input.GetButton(axes[2,(PlayerNumber - 1)]))){
+        if ( Time.time > nextTaunt && (Input.GetButton(axes[2,(PlayerNumber - 1)]) && (myProjectile ==null))){
             //put the taunting action here
             nextTaunt = Time.time + tauntRate;
-            Debug.Log("taunt");
+            if (dodgeAbility)
+            {
+                dodging = true;
+            }
             StartCoroutine(tauntNumber(tauntNum));
         }
     }
     IEnumerator tauntNumber(int i)
     {
-        
-        if (i == 0 || i == 1)
-        {
-            for (int k = 0; k < 4; k++)
+        for (int f = 0; f< 2; f++) {
+            if (f == 0)
             {
-                for (int j = 0; j < 5; j++)
+                if (i == 0 || i == 1)
                 {
-                    if (k == 0 || k == 2)
+                    for (int k = 0; k < 4; k++)
                     {
-                        if (i == 0)
+                        for (int j = 0; j < 5; j++)
                         {
-                            light.color = Color.white;
-                            yield return null;
-                        }
-                        else if (i == 1)
-                        {
-                            spriteRenderer.color = Color.white;
-                            yield return null;
-                        }
-                    }
-                    if (k == 1 || k == 3)
-                    {
-                        if (i == 0)
-                        {
-                            light.color = normal;
-                            yield return null;
-                        }
-                        else if (i == 1)
-                        {
-                            spriteRenderer.color = normal;
-                            yield return null;
-                        }
-                    }
+                            if (k == 0 || k == 2)
+                            {
+                                if (i == 0)
+                                {
+                                    light.color = Color.white;
+                                    yield return null;
+                                }
+                                else if (i == 1)
+                                {
+                                    spriteRenderer.color = Color.white;
+                                    yield return null;
+                                }
+                            }
+                            if (k == 1 || k == 3)
+                            {
+                                if (i == 0)
+                                {
+                                    light.color = normal;
+                                    yield return null;
+                                }
+                                else if (i == 1)
+                                {
+                                    spriteRenderer.color = normal;
+                                    yield return null;
+                                }
+                            }
 
+                        }
+                    }
+                }
+                else if (i == 2)
+                {
+                    for (int j = 0; j < 20; j++)
+                    {
+                        transform.Rotate(18f * Vector3.up);
+                        yield return null;
+                    }
+                }
+                else if (i == 3)
+                {
+                    for (int j = 0; j < 40; j++)
+                    {
+                        transform.Rotate(9f * Vector3.forward);
+                        yield return null;
+                    }
                 }
             }
-        }
-        else if (i == 2)
-        {
-            for(int j = 0; j < 20; j++)
+            else if (f == 1)
             {
-                transform.Rotate(18f*Vector3.up);
-                yield return null;
+                dodging = false;
             }
         }
-        else if (i == 3)
-        {
-            for (int j = 0; j < 20; j++)
-            {
-                transform.Rotate(18f * Vector3.forward);
-                yield return null;
-            }
-        }
+        
     }
 
     void getInputs()
@@ -333,9 +346,10 @@ public class playerClass : MonoBehaviour {
             fireButton = (Input.GetButton(axes[2, (PlayerNumber - 1)]) || (m8s4 || m8s8 || twoJoystick || gridMovement));
         }
 
-        if (fireButton &&  myProjectile == null)
+        if (fireButton &&  myProjectile == null && !dodging)
         {    StartCoroutine(cooldownIndicator());
             //StartCoroutine(fire(direction));
+            paintUnderMe(3);
             GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized*offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
             projectileParent parent = paint.GetComponent<projectileParent>();
             myProjectile = paint;
@@ -477,15 +491,23 @@ public class playerClass : MonoBehaviour {
 		}
     }
 
-    void paintUnderMe() {
-        
-        gridController.grid[Mathf.RoundToInt(transform.position.x / gridSize), Mathf.RoundToInt(transform.position.y / gridSize)].GetComponent<SpriteRenderer>().color = normal;
+    void paintUnderMe(int size)
+    {
+        int x = Mathf.RoundToInt(transform.position.x / gridSize);
+        int y = Mathf.RoundToInt(transform.position.y / gridSize);
+        for(int i = 0; i < 2*size; i++)
+        {
+            for( int j = 0; j < 2*size; j++)
+            {
+                gridController.grid[x + i -size, y + j - size].GetComponent<SpriteRenderer>().color = normal;
+            }
+        }
     }
 
 
     void OnCollisionEnter2D(Collision2D coll) {
         //Debug.Log(coll);
-		if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal)
+		if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal && !dodging)
         {
             normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
             spriteRenderer.color = normal;

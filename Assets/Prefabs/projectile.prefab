@@ -140,7 +140,7 @@ MonoBehaviour:
   distance: 5
   shotWidth: 0.6
   grid: {fileID: 0}
-  explosion: {fileID: 186792, guid: 688cc15adb1336e45bac5aaf98f7d71b, type: 2}
+  explosion: {fileID: 150628, guid: a803ef02aa9e6f54882b080299625dee, type: 2}
   myLight: {fileID: 0}
   playerNumber: 0
   teamNum: 0
