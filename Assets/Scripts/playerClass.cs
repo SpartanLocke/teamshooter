@@ -499,7 +499,8 @@ public class playerClass : MonoBehaviour {
         {
             for( int j = 0; j < 2*size; j++)
             {
-                gridController.grid[x + i -size, y + j - size].GetComponent<SpriteRenderer>().color = normal;
+                //gridController.grid[x + i -size, y + j - size].GetComponent<SpriteRenderer>().color = normal;
+                gridController.setGridBlockToColor(x + i - size, y + j - size, normal);
             }
         }
     }
