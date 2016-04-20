@@ -27,7 +27,6 @@ public class shotMovement : MonoBehaviour {
         {
             gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
         }
-        teamNum = playerNumber;
         myLight = gameObject.GetComponentInChildren<Light>();
     }
 

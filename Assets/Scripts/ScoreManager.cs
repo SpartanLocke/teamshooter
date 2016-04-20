@@ -73,7 +73,7 @@ public class ScoreManager : MonoBehaviour {
 		Init ();
 
 		changeCounter++;
-        //Debug.Log(username+" "+ scoreType+" "+ value);
+        Debug.Log(username+" "+ scoreType+" "+ value);
 		if(playerScores.ContainsKey(username) == false) {
 			playerScores[username] = new Dictionary<string, int>();
 		}
@@ -89,7 +89,7 @@ public class ScoreManager : MonoBehaviour {
 
     public void changeColorCount(int teamNum, string username)
     {
-        currentColors[teamNum].Add(username);
+        currentColors[teamNum-1].Add(username);
         checkEndCondition();
     }
 

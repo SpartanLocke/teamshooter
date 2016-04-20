@@ -77,6 +77,7 @@ public class playerClass : MonoBehaviour {
     }
 
     void Start() {
+        teamNum = PlayerNumber;
         spriteRenderer.color = normal;
         light.color = normal;
         paintUnderMe(1);
@@ -355,6 +356,8 @@ public class playerClass : MonoBehaviour {
             myProjectile = paint;
             parent.myColor = normal;
             parent.grid = grid;
+            parent.playerNumber = PlayerNumber;
+            parent.teamNum = teamNum;
         }
         
     }
@@ -518,11 +521,11 @@ public class playerClass : MonoBehaviour {
 
             if (scoreManager != null) {
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "deaths", 1);
-                scoreManager.ChangeScore(PlayerNumber.ToString(), "score", -1);
-                scoreManager.changeColorCount(teamNum, PlayerNumber.ToString());
+                scoreManager.ChangeScore(PlayerNumber.ToString(), "score", -1);                
                 int playerWhoShotMe = coll.gameObject.GetComponent<shotMovement>().playerNumber;
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "kills", 1);
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "score", 1);
+                scoreManager.changeColorCount(teamNum, PlayerNumber.ToString());
             }
         }
     }

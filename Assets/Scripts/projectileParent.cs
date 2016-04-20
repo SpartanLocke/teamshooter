@@ -7,6 +7,8 @@ public class projectileParent : MonoBehaviour {
     public Color myColor;
     public GameObject grid;
     public GameObject explosion;
+    public int playerNumber;
+    public int teamNum;
     // Use this for initialization
     void Start () {
         for (int i = 0; i < positionArray.Length; i++)
@@ -15,6 +17,8 @@ public class projectileParent : MonoBehaviour {
             newPaint.transform.parent = transform;
             newPaint.GetComponent<SpriteRenderer>().color = myColor;
             newPaint.GetComponent<shotMovement>().grid = grid;
+            newPaint.GetComponent<shotMovement>().teamNum = teamNum;
+            newPaint.GetComponent<shotMovement>().playerNumber = playerNumber;
 
         }
 	}
