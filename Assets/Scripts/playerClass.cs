@@ -284,30 +284,6 @@ public class playerClass : MonoBehaviour {
             transform.position = gridController.grid[Mathf.RoundToInt(newPos.x / gridSize), Mathf.RoundToInt(newPos.y / gridSize)].transform.position;
         }
     }
-		
-//    bool isValidPosition(Vector3 position) {
-//        gridController gridController = grid.GetComponent<gridController>();
-//        float gridSize = gridController.gridBlock.transform.localScale.x;
-//		if (movementType.Equals ("touchblock")) {
-//			if (normal == gridController.grid [Mathf.RoundToInt (position.x / gridSize), Mathf.RoundToInt (position.y / gridSize)].GetComponent<SpriteRenderer> ().color) {
-//				return true;
-//			} else {
-//				return false;
-//			}
-//		} else if (movementType.Equals ("immerse")) {
-//			float playerRadius = GetComponent<SpriteRenderer> ().bounds.size.x / 2;
-//			if (normal == gridController.grid [Mathf.RoundToInt ((position.x + playerRadius) / gridSize), Mathf.RoundToInt (position.y / gridSize)].GetComponent<SpriteRenderer> ().color &&
-//			    normal == gridController.grid [Mathf.RoundToInt ((position.x - playerRadius) / gridSize), Mathf.RoundToInt (position.y / gridSize)].GetComponent<SpriteRenderer> ().color &&
-//			    normal == gridController.grid [Mathf.RoundToInt (position.x / gridSize), Mathf.RoundToInt ((position.y + playerRadius) / gridSize)].GetComponent<SpriteRenderer> ().color &&
-//			    normal == gridController.grid [Mathf.RoundToInt (position.x / gridSize), Mathf.RoundToInt ((position.y - playerRadius) / gridSize)].GetComponent<SpriteRenderer> ().color) {
-//				return true;
-//			} else {
-//				return false;
-//			}
-//		} else {
-//			return false;
-//		}
-//	}
 
     IEnumerator timer(float time)
     {
