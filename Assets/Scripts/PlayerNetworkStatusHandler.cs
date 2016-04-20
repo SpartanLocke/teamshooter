@@ -27,16 +27,6 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 
         int playerId = player.ID;
         spawnPlayer(playerId);
-        //float randomX = Random.Range(1, gridController.width-1);
-        //float randomY = Random.Range(1, gridController.height-1);
-
-        //GameObject playerGameObject = Instantiate(playerPrefab, new Vector3(randomX, randomY, 0), Quaternion.identity) as GameObject;
-
-        //// initialize the player values
-        //// TODO: get the grid object and randomly place inside it
-        //playerClass playerScript = playerGameObject.GetComponent<playerClass>();
-        //playerScript.setNetworkPlayerId(playerId);
-        //playerScript.normal = colorChoices[Random.Range(0, (colorChoices.GetLength(0)))];
     }
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player) {

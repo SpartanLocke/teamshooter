@@ -10,21 +10,28 @@ public class ScoreManager : MonoBehaviour {
 	//
 
 	Dictionary< string, Dictionary<string, int> > playerScores;
+    public List<int> conversionScores;
 
 	int changeCounter = 0;
+
+    Dictionary<int, List<string>> currentColors;
 
 	int numPlayers = 4;
 	// TODO make this a public variable, or read all game objects starting with "player", or something else
 
 	void Start() {
 		int playerNumber = 0;
-		while (playerNumber < numPlayers)
+        currentColors = new Dictionary<int, List<string>>();
+        while (playerNumber < numPlayers)
 		{
 			playerNumber++;
 			string username = playerNumber.ToString();
 			SetScore(username, "score", 0);
 			SetScore(username, "kills", 0);
 			SetScore(username, "deaths", 0);
+            List<string> playerList = new List<string>();
+            playerList.Add(username);
+            currentColors.Add(playerNumber-1, playerList);
 		}
 	}
 
@@ -33,12 +40,19 @@ public class ScoreManager : MonoBehaviour {
 			return;
 
 		playerScores = new Dictionary<string, Dictionary<string, int>>();
-	}
+    }
 
 	public void Reset() {
 		changeCounter++;
 		playerScores = null;
-	}
+        foreach (int key in currentColors.Keys)
+        {
+            //make each player list only contain one player
+            List<string> playerList = new List<string>();
+            playerList.Add(key+1.ToString());
+            currentColors[key] = playerList;
+        }
+    }
 
 	public int GetScore(string username, string scoreType) {
 		Init ();
@@ -59,7 +73,7 @@ public class ScoreManager : MonoBehaviour {
 		Init ();
 
 		changeCounter++;
-
+        //Debug.Log(username+" "+ scoreType+" "+ value);
 		if(playerScores.ContainsKey(username) == false) {
 			playerScores[username] = new Dictionary<string, int>();
 		}
@@ -73,7 +87,28 @@ public class ScoreManager : MonoBehaviour {
 		SetScore(username, scoreType, currScore + amount);
 	}
 
-	public string[] GetPlayerNames() {
+    public void changeColorCount(int teamNum, string username)
+    {
+        currentColors[teamNum].Add(username);
+        checkEndCondition();
+    }
+
+    public void checkEndCondition()
+    {
+        foreach (int key in currentColors.Keys)
+        {
+            List<string> converts = currentColors[key];
+            if (converts.Count == numPlayers) //everyone is one color
+            {
+                for (int i=0; i < converts.Count; i++)
+                {
+                    ChangeScore(converts[i], "score", conversionScores[i]);
+                }
+            }
+        }
+    }
+
+    public string[] GetPlayerNames() {
 		Init ();
 		return playerScores.Keys.ToArray();
 	}
