@@ -1957,7 +1957,7 @@ RectTransform:
   - {fileID: 1722934643}
   - {fileID: 255163481}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
