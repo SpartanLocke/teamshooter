@@ -73,7 +73,7 @@ public class ScoreManager : MonoBehaviour {
 		Init ();
 
 		changeCounter++;
-
+        //Debug.Log(username+" "+ scoreType+" "+ value);
 		if(playerScores.ContainsKey(username) == false) {
 			playerScores[username] = new Dictionary<string, int>();
 		}
