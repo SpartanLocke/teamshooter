@@ -61,6 +61,8 @@ public class playerClass : MonoBehaviour {
 
     private int networkPlayerId = -1;
 
+    private Color lastNetworkColor = Color.clear;
+
     // setup our OnEvent as callback:
     void Awake() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
@@ -103,12 +105,15 @@ public class playerClass : MonoBehaviour {
 
     void doLocalUpdate() {
         getInputs();
-        taunt();
+
+        if ((Input.GetButton(axes[2, (PlayerNumber - 1)]))) {
+            taunt();
+        }
     }
 
     void taunt()
     {
-        if ( Time.time > nextTaunt && (Input.GetButton(axes[2,(PlayerNumber - 1)]) && (myProjectile ==null))){
+        if ( Time.time > nextTaunt && (myProjectile ==null)){
             //put the taunting action here
             nextTaunt = Time.time + tauntRate;
             if (dodgeAbility)
@@ -118,6 +123,7 @@ public class playerClass : MonoBehaviour {
             StartCoroutine(tauntNumber(tauntNum));
         }
     }
+
     IEnumerator tauntNumber(int i)
     {
         for (int f = 0; f< 2; f++) {
@@ -184,155 +190,17 @@ public class playerClass : MonoBehaviour {
         
     }
 
-    void getInputs()
-    {
-        //else if (twoJoystick) {
-            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
-            Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
+    void getInputs() {
+        Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
+        Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
 
-            if (AxisInput2.magnitude > shootThreshold)
-            {
-                shoot(AxisInput2);
-            }
-            move(AxisInput);
-        //}
-        /*if (oneJoystick)
-        {
-            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
-
-            if (AxisInput == new Vector3(0, 0))
-            {
-                shoot(oldInput);
-            }
-            else {
-                shoot(AxisInput);
-                oldInput = AxisInput;
-            }
-            move(AxisInput);
+        if (AxisInput2.magnitude > shootThreshold) {
+            shoot(AxisInput2);
         }
-        /*else if (gridMovement)
-        {
-            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
-            Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
+        move(AxisInput);
 
-            if (AxisInput2.magnitude > shootThreshold)
-            {
-                if (Mathf.Abs(AxisInput2.x) > Mathf.Abs(AxisInput2.y))
-                {
-                    AxisInput2.y = 0;
-                    // Debug.Log("shoot horizontal");
-                }
-                else
-                {
-                    AxisInput2.x = 0;
-                    //Debug.Log("shoot vertical");
-                }
-                shoot(AxisInput2.normalized);
-            }
-            if (AxisInput.magnitude > moveThreshold)
-            {
-                if (Mathf.Abs(AxisInput.x) > Mathf.Abs(AxisInput.y))
-                {
-                    AxisInput.y = 0;
-                    //Debug.Log("move horizontal");
-                }
-                else
-                {
-                    AxisInput.x = 0;
-                    //Debug.Log("move vertical");
-                }
-                Debug.Log(AxisInput.normalized);
-                moveAlt(AxisInput.normalized);
-            }
-
-
-        }*/
-
-        /*else if (m8s4)
-        {
-            Vector3 moveDir = Vector3.zero;
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                moveDir += Vector3.up;
-            }
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                moveDir += Vector3.down;
-            }
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                moveDir += Vector3.right;
-            }
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                moveDir += Vector3.left;
-            }
-            move(moveDir.normalized);
-            if (Input.GetKeyDown("w"))
-            {
-                shoot(Vector3.up);
-            }
-            if (Input.GetKeyDown("s"))
-            {
-                shoot(Vector3.down);
-            }
-            if (Input.GetKeyDown("d"))
-            {
-                shoot(Vector2.right);
-            }
-            if (Input.GetKeyDown("a"))
-            {
-                shoot(Vector2.left);
-            }
-        }
-        else if (m8s8)
-        {
-            Vector3 moveDir = Vector3.zero;
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                moveDir += Vector3.up;
-            }
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                moveDir += Vector3.down;
-            }
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                moveDir += Vector3.right;
-            }
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                moveDir += Vector3.left;
-            }
-            move(moveDir.normalized);
-
-            //this isn't smash so people dont have to be frame perfect to shoot diagonally
-            if (Input.GetKey("w"))
-            {
-                shootDir += Vector3.up;
-            }
-            if (Input.GetKey("s"))
-            {
-                shootDir += Vector3.down;
-            }
-            if (Input.GetKey("d"))
-            {
-                shootDir += Vector3.right;
-            }
-            if (Input.GetKey("a"))
-            {
-                shootDir += Vector3.left;
-            }
-            frames++;
-            if (frames > frameDelay)
-            {
-                shoot(shootDir.normalized);
-                shootDir = Vector3.zero;
-                frames = 0;
-            }
-
-        }*/
     }
+
     void shoot(Vector3 direction) {
         bool fireButton;
 
@@ -406,41 +274,6 @@ public class playerClass : MonoBehaviour {
         }
 
     }
-/*    void moveAlt(Vector3 direction)
-    {
-        Vector3 newPos = gameObject.transform.position + playerSpeedAlt * direction * Time.deltaTime;
-        if (isValidPosition(newPos) && !timeDelay)
-        {
-            Debug.Log("entered");
-            timeDelay = true;
-            StartCoroutine(timer(delayTime));
-            transform.position = gridController.grid[Mathf.RoundToInt(newPos.x / gridSize), Mathf.RoundToInt(newPos.y / gridSize)].transform.position;
-        }
-    }*/
-		
-//    bool isValidPosition(Vector3 position) {
-//        gridController gridController = grid.GetComponent<gridController>();
-//        float gridSize = gridController.gridBlock.transform.localScale.x;
-//		if (movementType.Equals ("touchblock")) {
-//			if (normal == gridController.grid [Mathf.RoundToInt (position.x / gridSize), Mathf.RoundToInt (position.y / gridSize)].GetComponent<SpriteRenderer> ().color) {
-//				return true;
-//			} else {
-//				return false;
-//			}
-//		} else if (movementType.Equals ("immerse")) {
-//			float playerRadius = GetComponent<SpriteRenderer> ().bounds.size.x / 2;
-//			if (normal == gridController.grid [Mathf.RoundToInt ((position.x + playerRadius) / gridSize), Mathf.RoundToInt (position.y / gridSize)].GetComponent<SpriteRenderer> ().color &&
-//			    normal == gridController.grid [Mathf.RoundToInt ((position.x - playerRadius) / gridSize), Mathf.RoundToInt (position.y / gridSize)].GetComponent<SpriteRenderer> ().color &&
-//			    normal == gridController.grid [Mathf.RoundToInt (position.x / gridSize), Mathf.RoundToInt ((position.y + playerRadius) / gridSize)].GetComponent<SpriteRenderer> ().color &&
-//			    normal == gridController.grid [Mathf.RoundToInt (position.x / gridSize), Mathf.RoundToInt ((position.y - playerRadius) / gridSize)].GetComponent<SpriteRenderer> ().color) {
-//				return true;
-//			} else {
-//				return false;
-//			}
-//		} else {
-//			return false;
-//		}
-//	}
 
     IEnumerator timer(float time)
     {
@@ -538,16 +371,16 @@ public class playerClass : MonoBehaviour {
     // handle events
     private void OnPhotonNetworkEvent(byte eventcode, object content, int senderid) {
         // everything is in json format
+
+        PhotonPlayer sender = PhotonPlayer.Find(senderid);  // who sent this?
+        if (sender.ID != networkPlayerId) {
+            // not input from our player!
+            return;
+        }
+
         switch (eventcode) {
             // player input for 0
-            case 0:
-                PhotonPlayer sender = PhotonPlayer.Find(senderid);  // who sent this?
-
-                if (sender.ID != networkPlayerId) {
-                    // not input from our player!
-                    break;
-                }
-
+            case Constants.PLAYER_INPUT_EVENT_CODE:
                 byte[] byteContent = (byte[])content;
                 string contentStringJson = Encoding.UTF8.GetString(byteContent);
                 PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
@@ -558,6 +391,35 @@ public class playerClass : MonoBehaviour {
 
                 //Debug.Log(lastNetworkInputEvent);
                 break;
+
+            case Constants.PLAYER_TAUNT_EVENT_CODE:
+                // do the taunt here
+                Debug.Log("performing taunt from network call");
+                taunt();
+                break;
         }
+    }
+
+    // If the player's color changed, then send that as a network event.
+    private void checkForPlayerColorChange() {
+        if (spriteRenderer.color != lastNetworkColor) {
+            Debug.Log("player color changed! sending as event");
+            lastNetworkColor = spriteRenderer.color;
+
+            controllerColorChangeEvent colorEvent = new controllerColorChangeEvent(lastNetworkColor, getNetworkPlayerId());
+
+            // color change
+            byte[] content = colorEvent.getBytes();
+
+            sendNetworkEvent(Constants.PLAYER_COLOR_CHANGE_EVENT_CODE, content);
+        }
+    }
+
+    private void sendNetworkEvent(byte eventCode, byte[] content) {
+        // todo: is false the best here? (its the fastest)
+        bool reliable = false;
+
+        // todo: use RaiseEventOptions?
+        PhotonNetwork.RaiseEvent(eventCode, content, reliable, null);
     }
 }
