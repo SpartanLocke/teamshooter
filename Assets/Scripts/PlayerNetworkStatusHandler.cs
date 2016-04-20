@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerNetworkStatusHandler : MonoBehaviour {
     private Color[] colorChoices = new Color[] {Color.red, Color.blue, Color.cyan, Color.green};
@@ -9,6 +10,26 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 
     void Start() {
         gridController = GameObject.FindGameObjectWithTag("gridGameObject").GetComponent<gridController>();
+    }
+
+    public void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            Debug.Log("escape button pressed. going back to main menu");
+
+            if (PhotonNetwork.connectionStateDetailed == PeerState.Joined) {
+                ConnectAndJoinRandom.setJoinRandomRooms(false);
+                PhotonNetwork.LeaveRoom();
+                PhotonNetwork.Disconnect();
+            } else {
+                Debug.Log("some networking status failed on exit button press");
+                SceneManager.LoadScene("controller menu");
+            }
+        }
+    }
+
+    void OnLeftRoom() {
+        Debug.Log("left the room!");
+        SceneManager.LoadScene("controller menu");
     }
 
     public void OnJoinedRoom() {
