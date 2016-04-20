@@ -312,6 +312,48 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
   m_IsPrefabParent: 0
+--- !u!1001 &208839516
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 489444, guid: cf4a6b4ec7bb41a4f9a38803c66b1a25, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 8.8849
+      objectReference: {fileID: 0}
+    - target: {fileID: 489444, guid: cf4a6b4ec7bb41a4f9a38803c66b1a25, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 489444, guid: cf4a6b4ec7bb41a4f9a38803c66b1a25, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 489444, guid: cf4a6b4ec7bb41a4f9a38803c66b1a25, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 489444, guid: cf4a6b4ec7bb41a4f9a38803c66b1a25, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 489444, guid: cf4a6b4ec7bb41a4f9a38803c66b1a25, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 489444, guid: cf4a6b4ec7bb41a4f9a38803c66b1a25, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 489444, guid: cf4a6b4ec7bb41a4f9a38803c66b1a25, type: 2}
+      propertyPath: m_RootOrder
+      value: 12
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: cf4a6b4ec7bb41a4f9a38803c66b1a25, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &265020029
 Prefab:
   m_ObjectHideFlags: 0
@@ -366,6 +408,10 @@ Prefab:
     - target: {fileID: 11429970, guid: 33cabc942907abc4b96345d96ea42269, type: 2}
       propertyPath: width
       value: 29
+      objectReference: {fileID: 0}
+    - target: {fileID: 157890, guid: 33cabc942907abc4b96345d96ea42269, type: 2}
+      propertyPath: m_TagString
+      value: gridGameObject
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 33cabc942907abc4b96345d96ea42269, type: 2}
@@ -1786,7 +1832,7 @@ GameObject:
   - 114: {fileID: 1569415823}
   m_Layer: 0
   m_Name: grid
-  m_TagString: Untagged
+  m_TagString: gridGameObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
