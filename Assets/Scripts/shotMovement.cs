@@ -14,6 +14,7 @@ public class shotMovement : MonoBehaviour {
 
     public int playerNumber;
     public int teamNum;
+    public int colorNumber;
     private SpriteRenderer mySpriteRenderer;
 
 

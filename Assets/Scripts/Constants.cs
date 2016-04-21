@@ -8,5 +8,27 @@ public class Constants : MonoBehaviour {
     public const byte PLAYER_TAUNT_EVENT_CODE = 2;
 
     // http://stackoverflow.com/questions/5142349/declare-a-const-array
-    public static readonly Color[] playerColorChoices = new Color[] { Color.red, Color.blue, Color.cyan, Color.green };
+    public readonly Color[] playerColorChoices = new Color[] {
+       new Color32(255,28,28,195),
+        new Color32(0,128,255,195),
+        new Color32(0,255,0,195),
+        new Color32(255,165,0,195) };
+    public readonly Color[] lightColors = new Color[]
+    {
+        new Color32(255,28,28,195),
+        new Color32(0,128,255,195),
+        new Color32(0,255,0,195),
+        new Color32(255,165,0,195) };
+    public readonly Color[] paintColors = new Color[]
+    {
+        new Color32(255,28,28,195),
+        new Color32(0,128,255,195),
+        new Color32(0,255,0,195),
+        new Color32(255,165,0,195) };
+    public readonly Color[] firedColors = new Color[]
+   {
+        new Color32(50,0,0,90),
+        new Color32(0,72,143,90),
+        new Color32(50,89,0,90),
+        new Color32(135,101,26,90) };
 }

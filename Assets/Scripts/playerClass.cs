@@ -31,7 +31,6 @@ public class playerClass : MonoBehaviour {
     private Vector3 shootDir;
     private int frames;
     public int frameDelay;
-    
     public float fireRate;
     public float tauntRate;
     public int numShots;
@@ -40,7 +39,10 @@ public class playerClass : MonoBehaviour {
     public GameObject projectile;
     public GameObject projectileParent;
     public GameObject explosion;
+    public int colorNumber;
     public Color normal;
+    public Color paintColor;
+    public Color lightColor;
     public Color fired;
     public Light light;
     private float normalIntensity;
@@ -62,7 +64,6 @@ public class playerClass : MonoBehaviour {
     private int networkPlayerId = -1;
 
     private Color lastNetworkColor = Color.clear;
-
     // setup our OnEvent as callback:
     void Awake() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
@@ -79,8 +80,11 @@ public class playerClass : MonoBehaviour {
     }
 
     void Start() {
-        spriteRenderer.color = normal;
-        light.color = normal;
+        if (IS_LOCALLY_CONTROLLED)
+        {
+            colorNumber = PlayerNumber - 1;
+        }
+        setColor(colorNumber);
         paintUnderMe(1);
 		scoreManager = GameObject.FindObjectOfType<ScoreManager>();
     }
@@ -152,7 +156,7 @@ public class playerClass : MonoBehaviour {
                             {
                                 if (i == 0)
                                 {
-                                    light.color = normal;
+                                    light.color = lightColor;
                                     yield return null;
                                 }
                                 else if (i == 1)
@@ -221,10 +225,11 @@ public class playerClass : MonoBehaviour {
             GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized*offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
             projectileParent parent = paint.GetComponent<projectileParent>();
             myProjectile = paint;
-            parent.myColor = normal;
+            parent.myColor = paintColor;
             parent.grid = grid;
             parent.teamNum = teamNum;
             parent.playerNumber = PlayerNumber;
+            parent.colorNumber = colorNumber;
         }
         
     }
@@ -296,7 +301,7 @@ public class playerClass : MonoBehaviour {
 				return false;
 			}
 
-			if (normal == gridController.getGridColor (gridX, gridY)) {
+			if (paintColor == gridController.getGridColor (gridX, gridY)) {
 				return true;
 			} else {
 				return false;
@@ -315,8 +320,8 @@ public class playerClass : MonoBehaviour {
 				return false;
 			}
 
-			if (normal == gridController.getGridColor (gridLeft, gridY) && normal == gridController.getGridColor (gridRight, gridY) &&
-			    normal == gridController.getGridColor (gridX, gridUp) && normal == gridController.getGridColor (gridX, gridDown)) {
+			if (paintColor == gridController.getGridColor (gridLeft, gridY) && paintColor == gridController.getGridColor (gridRight, gridY) &&
+			    paintColor == gridController.getGridColor (gridX, gridUp) && paintColor == gridController.getGridColor (gridX, gridDown)) {
 				return true;
 			} else {
 				return false;
@@ -324,6 +329,18 @@ public class playerClass : MonoBehaviour {
 		} else {
 			return false;
 		}
+    }
+
+    void setColor(int i)
+    {
+        Constants constants = grid.GetComponent<Constants>();
+        normal = constants.playerColorChoices[i];
+        spriteRenderer.color = normal;
+        fired = constants.firedColors[i];
+        lightColor = constants.lightColors[i];
+        light.color = lightColor;
+        paintColor = constants.paintColors[i];
+
     }
 
     void paintUnderMe(int size)
@@ -335,7 +352,7 @@ public class playerClass : MonoBehaviour {
             for( int j = 0; j < 2*size; j++)
             {
                 //gridController.grid[x + i -size, y + j - size].GetComponent<SpriteRenderer>().color = normal;
-                gridController.setGridBlockToColor(x + i - size, y + j - size, normal);
+                gridController.setGridBlockToColor(x + i - size, y + j - size, paintColor);
             }
         }
     }
@@ -343,10 +360,9 @@ public class playerClass : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll) {
         //Debug.Log(coll);
-		if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal && !dodging)
+		if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != paintColor && !dodging)
         {
-            normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
-            spriteRenderer.color = normal;
+            setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
             teamNum = coll.gameObject.GetComponent<shotMovement>().teamNum;
             GameObject hitIndicator = Instantiate(explosion, transform.position, Quaternion.identity) as GameObject;
             hitIndicator.GetComponent<ParticleSystem>().startColor = normal;

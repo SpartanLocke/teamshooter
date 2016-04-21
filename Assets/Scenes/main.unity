@@ -1267,6 +1267,18 @@ Prefab:
       propertyPath: teamNum
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: fired.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: fired.g
+      value: 0.28213656
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+      propertyPath: fired.b
+      value: 0.56206894
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
   m_IsPrefabParent: 0
@@ -1830,6 +1842,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1569415824}
   - 114: {fileID: 1569415823}
+  - 114: {fileID: 1569415825}
   m_Layer: 0
   m_Name: grid
   m_TagString: gridGameObject
@@ -1865,6 +1878,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
+--- !u!114 &1569415825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1569415822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0916166ae4c4f2a4db478e37b8fc0b61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1767231547
 GameObject:
   m_ObjectHideFlags: 0
