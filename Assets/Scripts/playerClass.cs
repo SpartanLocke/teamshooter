@@ -195,6 +195,7 @@ public class playerClass : MonoBehaviour {
     }
 
     void getInputs() {
+		/*
         Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
         Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
 
@@ -202,7 +203,35 @@ public class playerClass : MonoBehaviour {
             shoot(AxisInput2);
         }
         move(AxisInput);
-
+        */
+		if (m8s4) {
+			Vector3 moveDir = Vector3.zero;
+			if (Input.GetKey (KeyCode.UpArrow)) {
+				moveDir += Vector3.up;
+			}
+			if (Input.GetKey (KeyCode.DownArrow)) {
+				moveDir += Vector3.down;
+			}
+			if (Input.GetKey (KeyCode.RightArrow)) {
+				moveDir += Vector3.right;
+			}
+			if (Input.GetKey (KeyCode.LeftArrow)) {
+				moveDir += Vector3.left;
+			}
+			move (moveDir.normalized);
+			if (Input.GetKeyDown ("w")) {
+				shoot (Vector3.up);
+			}
+			if (Input.GetKeyDown ("s")) {
+				shoot (Vector3.down);
+			}
+			if (Input.GetKeyDown ("d")) {
+				shoot (Vector2.right);
+			}
+			if (Input.GetKeyDown ("a")) {
+				shoot (Vector2.left);
+			}
+		}
     }
 
     void shoot(Vector3 direction) {
