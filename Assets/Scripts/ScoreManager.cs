@@ -191,7 +191,8 @@ public class ScoreManager : MonoBehaviour {
 				ScoreboardCanvas.GetComponent<CanvasGroup> ().alpha = 1f;
 				// GameObject.Find ("Reset Button").SetActive (true);
 				// Destroy (gameObject);
-
+				// GameObject resetButton = GameObject.Find("ResetButton");
+				// resetButton.SetActive (true);
 				Debug.Log ("final round");
 			}
 		}
