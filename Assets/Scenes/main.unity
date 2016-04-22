@@ -242,7 +242,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: twoJoystick
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: IS_LOCALLY_CONTROLLED
@@ -311,7 +311,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: m8s4
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: playerSpeed
@@ -1111,7 +1111,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Play Again!
+  m_Text: Restart Game Entirely!
 --- !u!222 &795340005
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1901,7 +1901,7 @@ GameObject:
   - 114: {fileID: 1767231550}
   - 114: {fileID: 1767231549}
   m_Layer: 5
-  m_Name: Reset Button
+  m_Name: ResetButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
