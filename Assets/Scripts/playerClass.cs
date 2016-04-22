@@ -248,8 +248,9 @@ public class playerClass : MonoBehaviour {
         }
 
         if (fireButton &&  myProjectile == null && !dodging)
-        {    StartCoroutine(cooldownIndicator());
+        {    //StartCoroutine(cooldownIndicator());
             //StartCoroutine(fire(direction));
+            StartCoroutine(fireAnimation());
             paintUnderMe(3);
             GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized*offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
             projectileParent parent = paint.GetComponent<projectileParent>();
@@ -259,6 +260,23 @@ public class playerClass : MonoBehaviour {
             parent.teamNum = teamNum;
             parent.playerNumber = PlayerNumber;
             parent.colorNumber = colorNumber;
+        }
+        
+    }
+
+    IEnumerator fireAnimation()
+    {
+        for(int i = 0; i < 30; i++)
+        {
+            if (i < 10)
+            {
+                light.range += .4f;
+            }
+            else
+            {
+                light.range -= .2f;
+            }
+            yield return null;
         }
         
     }
@@ -394,7 +412,7 @@ public class playerClass : MonoBehaviour {
             setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
             teamNum = coll.gameObject.GetComponent<shotMovement>().teamNum;
             GameObject hitIndicator = Instantiate(explosion, transform.position, Quaternion.identity) as GameObject;
-            hitIndicator.GetComponent<ParticleSystem>().startColor = normal;
+            hitIndicator.GetComponent<ParticleSystem>().startColor = paintColor;
 
             if (scoreManager != null) {
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "deaths", 1);
