@@ -321,6 +321,10 @@ RectTransform:
   m_PrefabParentObject: {fileID: 22400004, guid: bb945e2a87718084184a72db9cf1ee27,
     type: 2}
   m_PrefabInternal: {fileID: 262674049}
+--- !u!1 &267305484 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 189116, guid: 81acfa4b78dfa47499a6c2fd6e521ebd, type: 2}
+  m_PrefabInternal: {fileID: 1601475710}
 --- !u!1001 &377425925
 Prefab:
   m_ObjectHideFlags: 0
@@ -939,6 +943,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 935cbf2679c42fe489b527d7344644ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tauntButtonInside: {fileID: 1906329764}
+  tauntButtonOutside: {fileID: 267305484}
 --- !u!4 &1735548601
 Transform:
   m_ObjectHideFlags: 0

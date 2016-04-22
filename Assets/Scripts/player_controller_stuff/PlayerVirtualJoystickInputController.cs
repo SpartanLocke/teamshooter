@@ -1,19 +1,43 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Text;
 using CnControls;
 
 public class PlayerVirtualJoystickInputController : MonoBehaviour {
-	// Update is called once per frame
-	void Update () {
-        float left_x = CnInputManager.GetAxis("HorizontalP1");
-        float left_y = CnInputManager.GetAxis("VerticalP1");
+    public GameObject tauntButtonInside, tauntButtonOutside;
 
-        float right_x = CnInputManager.GetAxis("HorizontalShootP1");
-        float right_y = CnInputManager.GetAxis("VerticalShootP1");
+    private Image playerColorInside, playerColorOutside;
 
+    void Awake() {
+        PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
+    }
+
+    void Start() {
+        // setting of colors
+        playerColorInside = tauntButtonInside.GetComponent<Image>();
+        playerColorOutside = tauntButtonOutside.GetComponent<Image>();
+
+        playerColorInside.color = Color.white;
+        playerColorOutside.color = Color.white;
+    }
+
+    // Update is called once per frame
+    void Update () {
         if (PhotonNetwork.connectionStateDetailed == PeerState.Joined) {
+            float left_x = CnInputManager.GetAxis("HorizontalP1");
+            float left_y = CnInputManager.GetAxis("VerticalP1");
+
+            float right_x = CnInputManager.GetAxis("HorizontalShootP1");
+            float right_y = CnInputManager.GetAxis("VerticalShootP1");
+
             sendControllerNetworkInput(left_x, left_y, right_x, right_y);
+
+            // support the onscreen and joystic taunt
+            if (CnInputManager.GetButtonDown("Taunt") || Input.GetButton("FireP1")) {
+                Debug.Log("taunt pressed");
+                sendPlayerTaunt();
+            }
         }
     }
 
@@ -22,14 +46,16 @@ public class PlayerVirtualJoystickInputController : MonoBehaviour {
 
         // player input
         byte[] content = inputEvent.getBytes();
-
         sendNetworkEvent(Constants.PLAYER_INPUT_EVENT_CODE, content);
     }
 
     private void sendPlayerTaunt() {
-        // code 2
         // there's no data being sent, just the taunting
         sendNetworkEvent(Constants.PLAYER_TAUNT_EVENT_CODE, new byte[1]);
+    }
+
+    private void setControllerColor(Color someColor) {
+        playerColorOutside.color = someColor;
     }
 
     private void sendNetworkEvent(byte eventCode, byte[] content) {
@@ -49,16 +75,12 @@ public class PlayerVirtualJoystickInputController : MonoBehaviour {
                 string contentStringJson = Encoding.UTF8.GetString(byteContent);
                 controllerColorChangeEvent colorChangeEvent = controllerColorChangeEvent.CreateFromJSON(contentStringJson);
 
-                if (colorChangeEvent.sendingPlayerId != PhotonNetwork.player.ID) {
-                    setControllerColor(colorChangeEvent.newPlayerColor);
+                if (colorChangeEvent.sendingPlayerId == PhotonNetwork.player.ID) {
+                    Color newPlayerColor = Constants.lightColors[colorChangeEvent.newPlayerColor];
+                    setControllerColor(newPlayerColor);
+                    Debug.Log(newPlayerColor);
                 }
-
-
                 break;
         }
-    }
-
-    private void setControllerColor(Color someColor) {
-        
     }
 }

@@ -1,14 +1,14 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Text;
 
 // http://docs.unity3d.com/Manual/JSONSerialization.html
 // everything is in json format
 public class controllerColorChangeEvent {
-    public Color newPlayerColor;
+    public int newPlayerColor;
     public int sendingPlayerId;
 
-    public controllerColorChangeEvent(Color _newPlayerColor, int _playerId) {
+    public controllerColorChangeEvent(int _newPlayerColor, int _playerId) {
         newPlayerColor = _newPlayerColor;
         sendingPlayerId = _playerId;
     }

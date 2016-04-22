@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class PlayerNetworkStatusHandler : MonoBehaviour {
-    private Color[] colorChoices = new Color[] {Color.red, Color.blue, Color.cyan, Color.green};
     private gridController gridController;
 
     public GameObject playerPrefab;
@@ -75,9 +74,11 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
         GameObject playerGameObject = Instantiate(playerPrefab, new Vector3(randomX, randomY, 0), Quaternion.identity) as GameObject;
 
         // initialize the player values
-        // TODO: get the grid object and randomly place inside it
         playerClass playerScript = playerGameObject.GetComponent<playerClass>();
         playerScript.setNetworkPlayerId(playerId);
-        playerScript.normal = colorChoices[Random.Range(0, (colorChoices.GetLength(0)))];
+        playerScript.IS_LOCALLY_CONTROLLED = false;
+
+        int colorChoice = Random.Range(0, (Constants.playerColorChoices.GetLength(0)));
+        playerScript.setColor(colorChoice);
     }
 }
