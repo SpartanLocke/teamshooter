@@ -9,10 +9,10 @@ public class Constants : MonoBehaviour {
 
     // http://stackoverflow.com/questions/5142349/declare-a-const-array
     public readonly Color[] playerColorChoices = new Color[] {
-       new Color32(255,28,28,195),
-        new Color32(0,128,255,195),
-        new Color32(0,255,0,195),
-        new Color32(255,165,0,195) };
+       new Color32(77 ,0,0,195),
+        new Color32(0,38,77,195),
+        new Color32(0, 77, 0,195),
+        new Color32(77, 50, 0,195) };
     public readonly Color[] lightColors = new Color[]
     {
         new Color32(255,28,28,195),

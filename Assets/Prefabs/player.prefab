@@ -42,7 +42,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 129322}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.75, y: 8.17, z: 0}
+  m_LocalPosition: {x: 2, y: 14, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children:
   - {fileID: 498734}
@@ -90,7 +90,7 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.1
+  m_Radius: 0.08
 --- !u!108 &10806078
 Light:
   m_ObjectHideFlags: 1
@@ -101,7 +101,7 @@ Light:
   serializedVersion: 6
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 4.1
+  m_Intensity: 5.68
   m_Range: 3
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -136,11 +136,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IS_LOCALLY_CONTROLLED: 1
-  tauntNum: 3
+  tauntNum: 1
   playerSpeed: 3
   playerSpeedAlt: 50
   timeDelay: 0
   delayTime: 0.4
+  dodgeAbility: 1
+  dodging: 0
   PlayerNumber: 2
   movementType: touchblock
   oneJoystick: 0
@@ -152,18 +154,21 @@ MonoBehaviour:
   gridMovement: 0
   frameDelay: 3
   fireRate: 0.7
-  tauntRate: 0.29
+  tauntRate: 0.7
   numShots: 7
   offset: 0.6
   weight: 0.06
   projectile: {fileID: 106674, guid: 48dd2ffb0758bc641ade4f3a6a88c616, type: 2}
   projectileParent: {fileID: 198766, guid: 8895587ded817bc4181994970ab022bb, type: 2}
   explosion: {fileID: 150628, guid: a803ef02aa9e6f54882b080299625dee, type: 2}
+  colorNumber: 0
   normal: {r: 0, g: 0.5, b: 1, a: 0.766}
-  fired: {r: 0.19607843, g: 0, b: 0, a: 0.353}
+  paintColor: {r: 0, g: 0, b: 0, a: 0}
+  lightColor: {r: 0, g: 0, b: 0, a: 0}
+  fired: {r: 0, g: 0.28213656, b: 0.56206894, a: 0.353}
   light: {fileID: 0}
   grid: {fileID: 0}
-  teamNum: 0
+  teamNum: 2
 --- !u!212 &21232388
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -190,7 +195,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: c54282f3b929493478ca05c23fe675e3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a3ab56f6d378a0548a6b9d9a74c69c3f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
