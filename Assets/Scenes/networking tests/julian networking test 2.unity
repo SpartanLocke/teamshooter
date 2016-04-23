@@ -925,6 +925,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   conversionScores: 0a000000060000000300000003000000020000000200000001000000010000000100000000000000
+  numRounds: 0
+  delayBetweenRounds: 0
 --- !u!4 &997709056
 Transform:
   m_ObjectHideFlags: 0

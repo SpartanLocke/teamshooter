@@ -170,6 +170,7 @@ public class playerClass : MonoBehaviour {
     }
 
     void getInputs() {
+		/*
         Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
         Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
 
@@ -177,7 +178,35 @@ public class playerClass : MonoBehaviour {
             shoot(AxisInput2);
         }
         move(AxisInput);
-
+        */
+		if (m8s4) {
+			Vector3 moveDir = Vector3.zero;
+			if (Input.GetKey (KeyCode.UpArrow)) {
+				moveDir += Vector3.up;
+			}
+			if (Input.GetKey (KeyCode.DownArrow)) {
+				moveDir += Vector3.down;
+			}
+			if (Input.GetKey (KeyCode.RightArrow)) {
+				moveDir += Vector3.right;
+			}
+			if (Input.GetKey (KeyCode.LeftArrow)) {
+				moveDir += Vector3.left;
+			}
+			move (moveDir.normalized);
+			if (Input.GetKeyDown ("w")) {
+				shoot (Vector3.up);
+			}
+			if (Input.GetKeyDown ("s")) {
+				shoot (Vector3.down);
+			}
+			if (Input.GetKeyDown ("d")) {
+				shoot (Vector2.right);
+			}
+			if (Input.GetKeyDown ("a")) {
+				shoot (Vector2.left);
+			}
+		}
     }
 
     void shoot(Vector3 direction) {
@@ -193,9 +222,10 @@ public class playerClass : MonoBehaviour {
             fireButton = (Input.GetButton(axes[2, (PlayerNumber - 1)]) || (m8s4 || m8s8 || twoJoystick || gridMovement));
         }
 
-        if (fireButton && myProjectile == null && !dodging) {
-            StartCoroutine(cooldownIndicator());
+        if (fireButton &&  myProjectile == null && !dodging) {
+            //StartCoroutine(cooldownIndicator());
             //StartCoroutine(fire(direction));
+            StartCoroutine(fireAnimation());
             paintUnderMe(3);
             GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized * offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
             projectileParent parent = paint.GetComponent<projectileParent>();
@@ -207,6 +237,23 @@ public class playerClass : MonoBehaviour {
             parent.colorNumber = colorNumber;
         }
 
+    }
+
+    IEnumerator fireAnimation()
+    {
+        for(int i = 0; i < 30; i++)
+        {
+            if (i < 10)
+            {
+                light.range += .4f;
+            }
+            else
+            {
+                light.range -= .2f;
+            }
+            yield return null;
+        }
+        
     }
 
     IEnumerator cooldownIndicator() {
@@ -309,7 +356,7 @@ public class playerClass : MonoBehaviour {
             setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
             teamNum = coll.gameObject.GetComponent<shotMovement>().teamNum;
             GameObject hitIndicator = Instantiate(explosion, transform.position, Quaternion.identity) as GameObject;
-            hitIndicator.GetComponent<ParticleSystem>().startColor = normal;
+            hitIndicator.GetComponent<ParticleSystem>().startColor = paintColor;
 
             if (scoreManager != null) {
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "deaths", 1);
