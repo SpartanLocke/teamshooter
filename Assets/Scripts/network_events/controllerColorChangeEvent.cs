@@ -4,6 +4,7 @@ using System.Text;
 
 // http://docs.unity3d.com/Manual/JSONSerialization.html
 // everything is in json format
+[System.Serializable]
 public class controllerColorChangeEvent {
     public int newPlayerColor;
     public int sendingPlayerId;

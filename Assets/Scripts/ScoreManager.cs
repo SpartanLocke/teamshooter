@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
@@ -164,7 +164,7 @@ public class ScoreManager : MonoBehaviour {
         foreach (int key in currentColors.Keys)
         {
             List<string> converts = currentColors[key];
-			Debug.Log (converts.Count);
+			//Debug.Log (converts.Count);
             if (converts.Count == numPlayers) //everyone is one color
             {
                 for (int i=0; i < converts.Count; i++)

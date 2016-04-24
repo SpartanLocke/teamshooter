@@ -7,10 +7,15 @@ using CnControls;
 public class PlayerVirtualJoystickInputController : MonoBehaviour {
     public GameObject tauntButtonInside, tauntButtonOutside;
 
+    private int STARTING_PLAYER_COLOR;
+    private bool sentInitData = false;
     private Image playerColorInside, playerColorOutside;
 
     void Awake() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
+        STARTING_PLAYER_COLOR = ControllerDropdownOptionsScript.PLAYER_COLOR_CHOICE_VALUE;
+
+        Debug.Log("start color: " + STARTING_PLAYER_COLOR);
     }
 
     void Start() {
@@ -38,7 +43,22 @@ public class PlayerVirtualJoystickInputController : MonoBehaviour {
                 Debug.Log("taunt pressed");
                 sendPlayerTaunt();
             }
+
+            if (!sentInitData) {
+                sendPlayerInitializationData();
+                sentInitData = true;
+            }
         }
+    }
+
+    private void sendPlayerInitializationData() {
+        // send the init data via reliable transmission
+        playerDataInitEvent dataInitEvent = new playerDataInitEvent(STARTING_PLAYER_COLOR);
+        byte[] content = dataInitEvent.getBytes();
+        bool reliable = true;
+
+        PhotonNetwork.RaiseEvent(Constants.PLAYER_DATA_INIT_EVENT_CODE, content, reliable, null);
+        Debug.Log("send init data");
     }
 
     private void sendControllerNetworkInput(float left_x, float left_y, float right_x, float right_y) {
@@ -80,6 +100,10 @@ public class PlayerVirtualJoystickInputController : MonoBehaviour {
                     setControllerColor(newPlayerColor);
                     Debug.Log(newPlayerColor);
                 }
+                break;
+
+            case Constants.SERVER_REQUEST_INIT_DATA_EVENT_CODE:
+                sendPlayerInitializationData();
                 break;
         }
     }

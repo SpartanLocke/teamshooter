@@ -63,6 +63,8 @@ public class playerClass : MonoBehaviour {
 
     private int networkPlayerId = -1;
 
+    private bool hasReceievedNetworkInitData = false;
+
     // setup our OnEvent as callback:
     void Awake() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
@@ -387,11 +389,14 @@ public class playerClass : MonoBehaviour {
             return;
         }
 
+        byte[] byteContent;
+        string contentStringJson;
+
         switch (eventcode) {
             // player input for 0
             case Constants.PLAYER_INPUT_EVENT_CODE:
-                byte[] byteContent = (byte[])content;
-                string contentStringJson = Encoding.UTF8.GetString(byteContent);
+                byteContent = (byte[])content;
+                contentStringJson = Encoding.UTF8.GetString(byteContent);
                 PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
 
                 // now we have what we need
@@ -401,6 +406,21 @@ public class playerClass : MonoBehaviour {
 
             case Constants.PLAYER_TAUNT_EVENT_CODE:
                 taunt();
+                break;
+
+            case Constants.PLAYER_DATA_INIT_EVENT_CODE:
+                if (!hasReceievedNetworkInitData) {
+                    byteContent = (byte[])content;
+                    contentStringJson = Encoding.UTF8.GetString(byteContent);
+                    playerDataInitEvent playerInitEvent = playerDataInitEvent.CreateFromJSON(contentStringJson);
+
+                    // just set the color for now
+                    setColor(playerInitEvent.startingColor);
+                    Debug.Log("set init color to: " + playerInitEvent.startingColor);
+
+                    hasReceievedNetworkInitData = true;
+                }
+
                 break;
         }
     }

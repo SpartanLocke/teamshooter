@@ -26,6 +26,15 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
         }
     }
 
+    private void sendPlayerInitDataRequest() {
+        // send the init data via reliable transmission
+        byte[] content = new byte[1];
+        bool reliable = true;
+
+        PhotonNetwork.RaiseEvent(Constants.SERVER_REQUEST_INIT_DATA_EVENT_CODE, content, reliable, null);
+        Debug.Log("send init data request");
+    }
+
     void OnLeftRoom() {
         Debug.Log("left the room!");
         SceneManager.LoadScene("controller menu");
@@ -40,6 +49,8 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 
             spawnPlayer(playerId);
         }
+
+        sendPlayerInitDataRequest();
     }
 
     void OnPhotonPlayerConnected(PhotonPlayer player) {
@@ -47,6 +58,7 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 
         int playerId = player.ID;
         spawnPlayer(playerId);
+        sendPlayerInitDataRequest();
     }
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player) {
@@ -78,7 +90,7 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
         playerScript.setNetworkPlayerId(playerId);
         playerScript.IS_LOCALLY_CONTROLLED = false;
 
-        int colorChoice = Random.Range(0, (Constants.playerColorChoices.GetLength(0)));
-        playerScript.setColor(colorChoice);
+        // set the color to red to start since we don't know the player color yet
+        playerScript.setColor(0);
     }
 }

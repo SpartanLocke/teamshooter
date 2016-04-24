@@ -1,11 +1,18 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Constants : MonoBehaviour {
     // const means static in c# !!!
     public const byte PLAYER_INPUT_EVENT_CODE = 0;
     public const byte PLAYER_COLOR_CHANGE_EVENT_CODE = 1;
     public const byte PLAYER_TAUNT_EVENT_CODE = 2;
+    public const byte PLAYER_DATA_INIT_EVENT_CODE = 3;
+    public const byte SERVER_REQUEST_INIT_DATA_EVENT_CODE = 4;
+
+
+    // The player chooses their color from this list
+    public static List<string> playerColorChoiceStrings = new List<string>() { "red", "blue", "green", "yellow" };
 
     // http://stackoverflow.com/questions/5142349/declare-a-const-array
     public static readonly Color[] playerColorChoices = new Color[] {
