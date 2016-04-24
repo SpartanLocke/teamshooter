@@ -1925,6 +1925,10 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 11412660, guid: fe49d36266ae2d945b1fa4a2787c1597, type: 2}
+      propertyPath: m_Text
+      value: Press F to start the game
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fe49d36266ae2d945b1fa4a2787c1597, type: 2}
   m_IsPrefabParent: 0
