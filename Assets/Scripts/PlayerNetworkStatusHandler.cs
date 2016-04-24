@@ -1,14 +1,31 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.SceneManagement;
 
 public class PlayerNetworkStatusHandler : MonoBehaviour {
+    public static bool isGameStarted = false;
+
     private gridController gridController;
+    private HashSet<int> spawnedPlayersTable;
 
     public GameObject playerPrefab;
+    public GameObject hideableStartGamePrompt;
+
+    void Awake() {
+        gridController = GameObject.FindGameObjectWithTag("gridGameObject").GetComponent<gridController>();
+
+        isGameStarted = false;
+        spawnedPlayersTable = new HashSet<int>();
+
+        if (PhotonNetwork.connectionStateDetailed == PeerState.Joined) {
+            // we just restarted. respawn everybody
+            onNewRound();
+        }
+    }
 
     void Start() {
-        gridController = GameObject.FindGameObjectWithTag("gridGameObject").GetComponent<gridController>();
     }
 
     public void Update() {
@@ -24,6 +41,20 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
                 SceneManager.LoadScene("controller menu");
             }
         }
+
+        if (!isGameStarted) {
+            // we're waiting on the server person to pop off
+            if (Input.GetKeyDown(KeyCode.A)) {
+                PlayerNetworkStatusHandler.isGameStarted = true;
+
+                // hide the prompt, if its there
+                if (hideableStartGamePrompt != null) {
+                    hideableStartGamePrompt.SetActive(false);
+                } else {
+                    Debug.Log("couldn't hide the null hideable prompt");
+                }
+            }
+        }
     }
 
     private void sendPlayerInitDataRequest() {
@@ -37,7 +68,28 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 
     void OnLeftRoom() {
         Debug.Log("left the room!");
+
+        //// delete all the players
+        //GameObject[] gos = GameObject.FindGameObjectsWithTag("Player");
+        //foreach (GameObject go in gos) {
+        //    playerClass playerScript = go.GetComponent<playerClass>();
+        //    Destroy(playerScript.gameObject);
+        //}
+
         SceneManager.LoadScene("controller menu");
+    }
+
+    public void onNewRound() {
+        Debug.Log("round just restarted. checking for previous players!");
+
+        foreach (PhotonPlayer ply in PhotonNetwork.otherPlayers) {
+            int playerId = ply.ID;
+            Debug.Log("spawning " + playerId);
+
+            spawnPlayer(playerId);
+        }
+
+        sendPlayerInitDataRequest();
     }
 
     public void OnJoinedRoom() {
@@ -80,6 +132,13 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
     }
 
     private void spawnPlayer(int playerId) {
+        if (spawnedPlayersTable.Contains(playerId)) {
+            // skip it
+            Debug.Log("skipping the repeat spawning of player: " + playerId);
+            return;
+        }
+
+        spawnedPlayersTable.Add(playerId);
         float randomX = Random.Range(1, gridController.width - 1);
         float randomY = Random.Range(1, gridController.height - 1);
 

@@ -68,12 +68,12 @@ public class ScoreManager : MonoBehaviour {
 			List<string> playerList = new List<string> ();
 			playerList.Add (username);
 			currentColors[playerNumber - 1] = playerList;
-			Debug.Log (currentColors [playerNumber - 1].Count);
+			//Debug.Log (currentColors [playerNumber - 1].Count);
 		}
 	}
 
 	void Start() {
-		Debug.Log ("Start");
+		//Debug.Log ("Start");
 		ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
 		ScoreboardCanvas.GetComponent<CanvasGroup>().alpha = 0f;
 		playerScores = ScoreManager.Instance.playerScores;
@@ -155,6 +155,7 @@ public class ScoreManager : MonoBehaviour {
 			yield return new WaitForSeconds (1);
 			timeRemaining--;
 		}
+        Debug.Log("starting new game");
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 

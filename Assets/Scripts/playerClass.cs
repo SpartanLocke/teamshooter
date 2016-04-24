@@ -80,6 +80,11 @@ public class playerClass : MonoBehaviour {
         normalIntensity = light.intensity;
     }
 
+    void OnDestroy() {
+        Debug.Log("player was destroyed");
+        PhotonNetwork.OnEventCall -= this.OnPhotonNetworkEvent;
+    }
+
     void Start() {
         if (IS_LOCALLY_CONTROLLED) {
             colorNumber = PlayerNumber - 1;
@@ -90,6 +95,10 @@ public class playerClass : MonoBehaviour {
     }
 
     void Update() {
+        if (grid == null) {
+            grid = GameObject.FindGameObjectWithTag("gridGameObject");
+        }
+
         if (IS_LOCALLY_CONTROLLED) {
             doLocalUpdate();
         } else {
@@ -395,13 +404,15 @@ public class playerClass : MonoBehaviour {
         switch (eventcode) {
             // player input for 0
             case Constants.PLAYER_INPUT_EVENT_CODE:
-                byteContent = (byte[])content;
-                contentStringJson = Encoding.UTF8.GetString(byteContent);
-                PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
+                if (PlayerNetworkStatusHandler.isGameStarted) {
+                    byteContent = (byte[])content;
+                    contentStringJson = Encoding.UTF8.GetString(byteContent);
+                    PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
 
-                // now we have what we need
-                lastNetworkInputLeftEvent = new Vector3(playerInput.left_x, playerInput.left_y);
-                lastNetworkInputRightEvent = new Vector3(playerInput.right_x, playerInput.right_y);
+                    // now we have what we need
+                    lastNetworkInputLeftEvent = new Vector3(playerInput.left_x, playerInput.left_y);
+                    lastNetworkInputRightEvent = new Vector3(playerInput.right_x, playerInput.right_y);
+                }
                 break;
 
             case Constants.PLAYER_TAUNT_EVENT_CODE:
