@@ -181,16 +181,19 @@ public class playerClass : MonoBehaviour {
     }
 
     void getInputs() {
-		/*
-        Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
-        Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
+        if (twoJoystick)
+        {
+            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
+            Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
 
-        if (AxisInput2.magnitude > shootThreshold) {
-            shoot(AxisInput2);
+
+            if (AxisInput2.magnitude > shootThreshold)
+            {
+                shoot(AxisInput2);
+            }
+            move(AxisInput);
         }
-        move(AxisInput);
-        */
-		if (m8s4) {
+		else if (m8s4) {
 			Vector3 moveDir = Vector3.zero;
 			if (Input.GetKey (KeyCode.UpArrow)) {
 				moveDir += Vector3.up;

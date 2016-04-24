@@ -530,9 +530,9 @@ InputManager:
     sensitivity: 1
     snap: 0
     invert: 0
-    type: 0
+    type: 2
     axis: 3
-    joyNum: 2
+    joyNum: 4
   - serializedVersion: 3
     m_Name: VerticalP4
     descriptiveName: 
@@ -561,10 +561,10 @@ InputManager:
     dead: 0.3
     sensitivity: 1
     snap: 0
-    invert: 0
-    type: 0
+    invert: 1
+    type: 2
     axis: 4
-    joyNum: 2
+    joyNum: 4
   - serializedVersion: 3
     m_Name: FireP4
     descriptiveName: 
