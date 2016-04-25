@@ -678,48 +678,6 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 727368552}
---- !u!1001 &923424061
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 480750, guid: 961d7c1dd8117cc4dbdd3ae0c8889338, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 13.754303
-      objectReference: {fileID: 0}
-    - target: {fileID: 480750, guid: 961d7c1dd8117cc4dbdd3ae0c8889338, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 7.9651804
-      objectReference: {fileID: 0}
-    - target: {fileID: 480750, guid: 961d7c1dd8117cc4dbdd3ae0c8889338, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 480750, guid: 961d7c1dd8117cc4dbdd3ae0c8889338, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 480750, guid: 961d7c1dd8117cc4dbdd3ae0c8889338, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 480750, guid: 961d7c1dd8117cc4dbdd3ae0c8889338, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 480750, guid: 961d7c1dd8117cc4dbdd3ae0c8889338, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 480750, guid: 961d7c1dd8117cc4dbdd3ae0c8889338, type: 2}
-      propertyPath: m_RootOrder
-      value: 8
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 961d7c1dd8117cc4dbdd3ae0c8889338, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &998238502
 GameObject:
   m_ObjectHideFlags: 0
@@ -794,6 +752,48 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 998238502}
+--- !u!1001 &1099347698
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 447690, guid: 9a87982bded1efe4aba41b56c8de626a, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 13.754303
+      objectReference: {fileID: 0}
+    - target: {fileID: 447690, guid: 9a87982bded1efe4aba41b56c8de626a, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 7.9651804
+      objectReference: {fileID: 0}
+    - target: {fileID: 447690, guid: 9a87982bded1efe4aba41b56c8de626a, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 447690, guid: 9a87982bded1efe4aba41b56c8de626a, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 447690, guid: 9a87982bded1efe4aba41b56c8de626a, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 447690, guid: 9a87982bded1efe4aba41b56c8de626a, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 447690, guid: 9a87982bded1efe4aba41b56c8de626a, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 447690, guid: 9a87982bded1efe4aba41b56c8de626a, type: 2}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 9a87982bded1efe4aba41b56c8de626a, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1178811554
 GameObject:
   m_ObjectHideFlags: 0
@@ -1701,7 +1701,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_RootOrder
-      value: 9
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchoredPosition.x
