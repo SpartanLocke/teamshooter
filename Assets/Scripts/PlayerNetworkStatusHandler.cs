@@ -46,7 +46,7 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
             // we're waiting on the server person to pop off
             if (Input.GetKeyDown(KeyCode.F)) {
                 PlayerNetworkStatusHandler.isGameStarted = true;
-
+                ScoreManager.Instance.startGame();
                 // hide the prompt, if its there
                 if (hideableStartGamePrompt != null) {
                     hideableStartGamePrompt.SetActive(false);

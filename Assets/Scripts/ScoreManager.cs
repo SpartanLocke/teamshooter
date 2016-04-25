@@ -28,8 +28,7 @@ public class ScoreManager : MonoBehaviour {
 
     Dictionary<int, List<string>> currentColors;
 
-	int numPlayers = 4;
-	// TODO make this a public variable, or read all game objects starting with "player", or something else
+    int numPlayers;
 
 	void Awake() {
 		Debug.Log ("Awake");
@@ -40,18 +39,7 @@ public class ScoreManager : MonoBehaviour {
 			DontDestroyOnLoad (gameObject);
 			// DontDestroyOnLoad (ScoreboardCanvas);
 			Instance = this;
-			int playerNumber = 0;
 			currentColors = new Dictionary<int, List<string>> ();
-			while (playerNumber < numPlayers) {
-				playerNumber++;
-				string username = playerNumber.ToString ();
-				SetScore (username, "score", 0);
-				SetScore (username, "kills", 0);
-				SetScore (username, "deaths", 0);
-				List<string> playerList = new List<string> ();
-				playerList.Add (username);
-				currentColors.Add (playerNumber - 1, playerList);
-			}
 			roundNumber = 1;
 		} else {
 			resetCurrentColors ();
@@ -60,7 +48,8 @@ public class ScoreManager : MonoBehaviour {
 	}
 
 	void resetCurrentColors() {
-		currentColors = new Dictionary<int, List<string>> ();
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        currentColors = new Dictionary<int, List<string>> ();
 		int playerNumber = 0;
 		while (playerNumber < numPlayers) {
 			playerNumber++;
@@ -68,9 +57,29 @@ public class ScoreManager : MonoBehaviour {
 			List<string> playerList = new List<string> ();
 			playerList.Add (username);
 			currentColors[playerNumber - 1] = playerList;
+
+            playerClass player = players[playerNumber - 1].GetComponent<playerClass>();
+            player.resetTeamNum();
 			//Debug.Log (currentColors [playerNumber - 1].Count);
 		}
 	}
+
+    public void startGame()
+    {
+        numPlayers = GameObject.FindGameObjectsWithTag("Player").Length;
+        int playerNumber = 0;
+        while (playerNumber < numPlayers)
+        {
+            playerNumber++;
+            string username = playerNumber.ToString();
+            SetScore(username, "score", 0);
+            SetScore(username, "kills", 0);
+            SetScore(username, "deaths", 0);
+            List<string> playerList = new List<string>();
+            playerList.Add(username);
+            currentColors.Add(playerNumber - 1, playerList);
+        }
+    }
 
 	void Start() {
 		//Debug.Log ("Start");
@@ -78,7 +87,6 @@ public class ScoreManager : MonoBehaviour {
 		ScoreboardCanvas.GetComponent<CanvasGroup>().alpha = 0f;
 		playerScores = ScoreManager.Instance.playerScores;
 		roundNumber = ScoreManager.Instance.roundNumber;
-		resetCurrentColors ();
 
 		GameObject ScoreboardTitle = GameObject.Find ("Title");
 		ScoreboardTitle.GetComponent<UnityEngine.UI.Text> ().text = "Round " + roundNumber.ToString () + "/" + numRounds.ToString ();
@@ -144,6 +152,7 @@ public class ScoreManager : MonoBehaviour {
 
     public void changeColorCount(int oldTeamNum, int newTeamNum, string username)
 	{
+        //Debug.Log(oldTeamNum + " " + newTeamNum + " "+currentColors.Keys.Count);
         currentColors[oldTeamNum - 1].Remove(username);
         currentColors [newTeamNum - 1].Add (username);
 		checkEndCondition ();

@@ -296,6 +296,11 @@ public class playerClass : MonoBehaviour {
         Debug.Log("timer expired");
     }
 
+    public void resetTeamNum()
+    {
+        teamNum = PlayerNumber;
+    }
+
     bool isValidPosition(Vector3 position) {
         float gridSize = gridController.gridBlock.transform.localScale.x;
 
