@@ -55,4 +55,11 @@ public class gridController : MonoBehaviour {
             }
         }
     }
+    public void resetGrid()
+    {
+        foreach(Transform child in transform)
+        {
+            child.gameObject.GetComponent<SpriteRenderer>().color = Color.black;
+        }
+    }
 }
