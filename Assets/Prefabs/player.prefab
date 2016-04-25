@@ -19,6 +19,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &177802
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 498734}
+  - 108: {fileID: 10806078}
+  m_Layer: 0
+  m_Name: Point light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &470754
 Transform:
   m_ObjectHideFlags: 1
@@ -26,10 +42,23 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 129322}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.87, y: 6.2, z: 0}
+  m_LocalPosition: {x: 1.75, y: 8.17, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 498734}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!4 &498734
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 177802}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 1}
+  m_Children: []
+  m_Father: {fileID: 470754}
   m_RootOrder: 0
 --- !u!50 &5099080
 Rigidbody2D:
@@ -61,7 +90,40 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.09
+  m_Radius: 0.1
+--- !u!108 &10806078
+Light:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 177802}
+  m_Enabled: 1
+  serializedVersion: 6
+  m_Type: 2
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 4.1
+  m_Range: 3
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 4
+  m_BounceIntensity: 8
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+  m_AreaSize: {x: 1, y: 1}
 --- !u!114 &11496436
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -73,28 +135,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e00d68c1d9de5a4fb50a40c23167c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IS_LOCALLY_CONTROLLED: 0
+  IS_LOCALLY_CONTROLLED: 1
+  tauntNum: 3
   playerSpeed: 3
   playerSpeedAlt: 50
   timeDelay: 0
   delayTime: 0.4
   PlayerNumber: 2
-  oneJoystick: 1
-  twoJoystick: 0
+  movementType: touchblock
+  oneJoystick: 0
+  twoJoystick: 1
   shootThreshold: 0.5
-  moveThreshold: 0
+  moveThreshold: 0.5
   m8s4: 0
   m8s8: 0
   gridMovement: 0
   frameDelay: 3
   fireRate: 0.7
+  tauntRate: 0.29
   numShots: 7
-  offset: 0.02
+  offset: 0.6
   weight: 0.06
   projectile: {fileID: 106674, guid: 48dd2ffb0758bc641ade4f3a6a88c616, type: 2}
-  normal: {r: 0, g: 0, b: 1, a: 0.359}
-  fired: {r: 0, g: 0, b: 0.19607843, a: 0.353}
+  projectileParent: {fileID: 198766, guid: 8895587ded817bc4181994970ab022bb, type: 2}
+  explosion: {fileID: 150628, guid: a803ef02aa9e6f54882b080299625dee, type: 2}
+  normal: {r: 0, g: 0.5, b: 1, a: 0.766}
+  fired: {r: 0.19607843, g: 0, b: 0, a: 0.353}
+  light: {fileID: 0}
   grid: {fileID: 0}
+  teamNum: 0
 --- !u!212 &21232388
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -121,7 +190,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: c54282f3b929493478ca05c23fe675e3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
