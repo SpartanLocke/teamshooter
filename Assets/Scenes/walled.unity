@@ -1483,6 +1483,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   conversionScores: 
+  numRounds: 0
+  delayBetweenRounds: 0
 --- !u!4 &1975144324
 Transform:
   m_ObjectHideFlags: 0
