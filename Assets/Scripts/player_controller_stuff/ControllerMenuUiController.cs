@@ -9,6 +9,10 @@ public class ControllerMenuUiController : MonoBehaviour {
         lobbyName = currentLobby;
     }
 
+    void Start() {
+        Debug.Log("main menu start");
+    }
+
     public void onJoinButtonPressed() {
         // going to the team options page first!
         //ConnectAndJoinRandom.setJoinRandomRooms(true);
@@ -18,6 +22,7 @@ public class ControllerMenuUiController : MonoBehaviour {
     public void onStartAsServerButtonPressed() {
         ConnectAndJoinRandom.setJoinRandomRooms(true);
         Debug.Log("started as server");
-        SceneManager.LoadScene("main");
+        //SceneManager.LoadScene("main");
+        SceneManager.LoadScene("network_bug");
     }
 }

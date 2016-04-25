@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class colorSweep2 : MonoBehaviour
 {
     public bool isSweeping;
+    public bool dontSweep = false;
     public HSBColor col;
     public Image image;
     public float h = 0f;
@@ -43,10 +44,19 @@ public class colorSweep2 : MonoBehaviour
     public void gridSweep(int num)
     {
         input = num;
-        h = 0;
-        grid = gameObject.GetComponent<gridController>().grid;
-        Debug.Log("gridSweep");
-        StartCoroutine(sweepGrid());
+
+        if (dontSweep) {
+            if (input == 1) {
+                UI.GetComponent<ControllerMenuUiController>().onStartAsServerButtonPressed();
+            } else if (input == 0) {
+                UI.GetComponent<ControllerMenuUiController>().onJoinButtonPressed();
+            }
+        } else {
+            h = 0;
+            grid = gameObject.GetComponent<gridController>().grid;
+            Debug.Log("gridSweep");
+            StartCoroutine(sweepGrid());
+        }
     }
 
     IEnumerator sweepGrid()

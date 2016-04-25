@@ -38,6 +38,9 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
                 PhotonNetwork.Disconnect();
             } else {
                 Debug.Log("some networking status failed on exit button press");
+                ConnectAndJoinRandom.setJoinRandomRooms(false);
+                PhotonNetwork.LeaveRoom();
+                PhotonNetwork.Disconnect();
                 SceneManager.LoadScene("controller menu");
             }
         }
@@ -68,13 +71,6 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 
     void OnLeftRoom() {
         Debug.Log("left the room!");
-
-        //// delete all the players
-        //GameObject[] gos = GameObject.FindGameObjectsWithTag("Player");
-        //foreach (GameObject go in gos) {
-        //    playerClass playerScript = go.GetComponent<playerClass>();
-        //    Destroy(playerScript.gameObject);
-        //}
 
         SceneManager.LoadScene("controller menu");
     }
