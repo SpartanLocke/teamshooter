@@ -141,8 +141,13 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
         }
 
         spawnedPlayersTable.Add(playerId);
-		Vector3 spawnpoint = spawnpointsPrefab.transform.GetChild (count).transform.position;
-		count++;
+		Vector3 spawnpoint = spawnpointsPrefab.transform.GetChild(count).transform.position;
+		if (count < 8) {
+			count++;
+		} else {
+			Debug.Log("too many players counter reset to 0");
+			count = 0;
+		}
 
 //        float randomX = Random.Range(1, gridController.width - 1);
 //        float randomY = Random.Range(1, gridController.height - 1);
