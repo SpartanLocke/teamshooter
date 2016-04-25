@@ -12,11 +12,17 @@ public class playerClass : MonoBehaviour {
     public bool dodgeAbility;
     public bool dodging;
     public int PlayerNumber;
+    public AudioClip shootSound;
+    public AudioClip convertSound;
+    private AudioSource[] source;
+    private AudioSource shootSource;
+    private AudioSource convertSource;
 
-    //Debug tool for the type of movement
-    //If movementType = "touchblock", a player only needs to be touching their color to move
-    //If movementType = "immerse", a player has to be surrounded by their color to move
-    public string movementType = "immerse";
+	//Debug tool for the type of movement
+	//If movementType = "touchblock", a player only needs to be touching their color to move
+	//If movementType = "immerse", a player has to be surrounded by their color to move
+	public string movementType = "immerse";
+	public bool hitWall = false;
 
     private string[,] axes = new string[,] { {"HorizontalP1", "HorizontalP2", "HorizontalP3", "HorizontalP4" }, { "VerticalP1", "VerticalP2", "VerticalP3", "VerticalP4" }, {"FireP1","FireP2", "FireP3", "FireP4" },
         {"HorizontalShootP1", "HorizontalShootP2", "HorizontalShootP3", "HorizontalShootP4" }, { "VerticalShootP1", "VerticalShootP2", "VerticalShootP3", "VerticalShootP4" }};
@@ -68,6 +74,10 @@ public class playerClass : MonoBehaviour {
     // setup our OnEvent as callback:
     void Awake() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
+
+        source = GetComponents<AudioSource>();
+        shootSource = source[0];
+        convertSource = source[1];
 
         if (grid == null) {
             grid = GameObject.FindGameObjectWithTag("gridGameObject");
@@ -193,6 +203,142 @@ public class playerClass : MonoBehaviour {
             }
             move(AxisInput);
         }
+        else if (oneJoystick)
+        {
+            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
+
+            if (AxisInput == new Vector3(0, 0))
+            {
+                shoot(oldInput);
+            }
+            else {
+                shoot(AxisInput);
+                oldInput = AxisInput;
+            }
+            move(AxisInput);
+        }
+        else if (gridMovement)
+        {
+            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
+            Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
+
+            if (AxisInput2.magnitude > shootThreshold)
+            {
+                if (Mathf.Abs(AxisInput2.x) > Mathf.Abs(AxisInput2.y))
+                {
+                    AxisInput2.y = 0;
+                    // Debug.Log("shoot horizontal");
+                }
+                else
+                {
+                    AxisInput2.x = 0;
+                    //Debug.Log("shoot vertical");
+                }
+                shoot(AxisInput2.normalized);
+            }
+            if (AxisInput.magnitude > moveThreshold)
+            {
+                if (Mathf.Abs(AxisInput.x) > Mathf.Abs(AxisInput.y))
+                {
+                    AxisInput.y = 0;
+                    //Debug.Log("move horizontal");
+                }
+                else
+                {
+                    AxisInput.x = 0;
+                    //Debug.Log("move vertical");
+                }
+                Debug.Log(AxisInput.normalized);
+                //moveAlt(AxisInput.normalized);
+            }
+
+
+        }
+
+        else if (m8s4)
+        {
+            Vector3 moveDir = Vector3.zero;
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                moveDir += Vector3.up;
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                moveDir += Vector3.down;
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                moveDir += Vector3.right;
+            }
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                moveDir += Vector3.left;
+            }
+            move(moveDir.normalized);
+            if (Input.GetKeyDown("w"))
+            {
+                shoot(Vector3.up);
+            }
+            if (Input.GetKeyDown("s"))
+            {
+                shoot(Vector3.down);
+            }
+            if (Input.GetKeyDown("d"))
+            {
+                shoot(Vector2.right);
+            }
+            if (Input.GetKeyDown("a"))
+            {
+                shoot(Vector2.left);
+            }
+        }
+        else if (m8s8)
+        {
+            Vector3 moveDir = Vector3.zero;
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                moveDir += Vector3.up;
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                moveDir += Vector3.down;
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                moveDir += Vector3.right;
+            }
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                moveDir += Vector3.left;
+            }
+            move(moveDir.normalized);
+
+            //this isn't smash so people dont have to be frame perfect to shoot diagonally
+            if (Input.GetKey("w"))
+            {
+                shootDir += Vector3.up;
+            }
+            if (Input.GetKey("s"))
+            {
+                shootDir += Vector3.down;
+            }
+            if (Input.GetKey("d"))
+            {
+                shootDir += Vector3.right;
+            }
+            if (Input.GetKey("a"))
+            {
+                shootDir += Vector3.left;
+            }
+            frames++;
+            if (frames > frameDelay)
+            {
+                shoot(shootDir.normalized);
+                shootDir = Vector3.zero;
+                frames = 0;
+            }
+
+        }
 		else if (m8s4) {
 			Vector3 moveDir = Vector3.zero;
 			if (Input.GetKey (KeyCode.UpArrow)) {
@@ -225,7 +371,6 @@ public class playerClass : MonoBehaviour {
 
     void shoot(Vector3 direction) {
         bool fireButton;
-
         if (!IS_LOCALLY_CONTROLLED) {
             // read from the last event
             // twoJoystick is essentially true here, so just return true.
@@ -239,6 +384,7 @@ public class playerClass : MonoBehaviour {
         if (fireButton &&  myProjectile == null && !dodging) {
             //StartCoroutine(cooldownIndicator());
             //StartCoroutine(fire(direction));
+            shootSource.PlayOneShot(shootSound, 1F);
             StartCoroutine(fireAnimation());
             paintUnderMe(3);
             GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized * offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
@@ -283,18 +429,37 @@ public class playerClass : MonoBehaviour {
     }
 
     void move(Vector3 direction) {
+		if (hitWall) {
+			transform.Translate (-playerSpeed * direction * Time.deltaTime * (float) 1.3);
+			hitWall = false;
+		}
 
-        if (isValidPosition(gameObject.transform.position + playerSpeed * direction * Time.deltaTime)) {
+        else if (isValidPosition(gameObject.transform.position + playerSpeed * direction * Time.deltaTime)) {
             transform.Translate(playerSpeed * direction * Time.deltaTime);
         }
 
     }
+/*    void moveAlt(Vector3 direction)
+    {
+        Vector3 newPos = gameObject.transform.position + playerSpeedAlt * direction * Time.deltaTime;
+        if (isValidPosition(newPos) && !timeDelay)
+        {
+            Debug.Log("entered");
+            timeDelay = true;
+            StartCoroutine(timer(delayTime));
+            transform.position = gridController.grid[Mathf.RoundToInt(newPos.x / gridSize), Mathf.RoundToInt(newPos.y / gridSize)].transform.position;
+        }
+
+    IEnumerator timer(float time)
+    {
+=======
 
     IEnumerator timer(float time) {
+>>>>>>> ee8628fc793d9757a0691e5b06d64c76c9945ffa
         yield return new WaitForSeconds(time);
         timeDelay = false;
         Debug.Log("timer expired");
-    }
+    }*/
 
     public void resetTeamNum()
     {
@@ -312,13 +477,12 @@ public class playerClass : MonoBehaviour {
                 // out of bounds, then get outta here
                 return false;
             }
-
-            if (paintColor == gridController.getGridColor(gridX, gridY)) {
-                return true;
-            } else {
-                return false;
-            }
-            //sprite has to be within color
+			if (paintColor == gridController.getGridColor (gridX, gridY)) {
+				return true;
+			} else {
+				return false;
+			}
+		//sprite has to be within color
         } else if (movementType.Equals("immerse")) {
             int gridX = Mathf.RoundToInt(position.x / gridSize);
             int gridY = Mathf.RoundToInt(position.y / gridSize);
@@ -371,7 +535,15 @@ public class playerClass : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll) {
         //Debug.Log(coll);
+		if (coll.gameObject.tag == "wall") {
+			hitWall = true;
+		}
+		//if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal && !dodging)
+        //{
+        //    normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
+        //    spriteRenderer.color = normal;
         if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != paintColor && !dodging) {
+            convertSource.PlayOneShot(convertSound, 1F);
             setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
             GameObject hitIndicator = Instantiate(explosion, transform.position, Quaternion.identity) as GameObject;
             hitIndicator.GetComponent<ParticleSystem>().startColor = paintColor;
