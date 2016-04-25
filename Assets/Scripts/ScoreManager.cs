@@ -33,7 +33,10 @@ public class ScoreManager : MonoBehaviour {
 
 	void Awake() {
 		Debug.Log ("Awake");
-		ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
+
+        //numPlayers = GameObject.FindGameObjectsWithTag("Player").GetLength(0);
+
+        ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
 		ScoreboardCanvas.GetComponent<CanvasGroup>().alpha = 0f;
 		if (Instance == null) {
 			Debug.Log ("null instance");
@@ -162,7 +165,7 @@ public class ScoreManager : MonoBehaviour {
 
     public void checkEndCondition()
     {
-		bool endCondition = false;
+        bool endCondition = false;
         foreach (int key in currentColors.Keys)
         {
             List<string> converts = currentColors[key];

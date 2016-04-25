@@ -112,19 +112,19 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
     void OnPhotonPlayerDisconnected(PhotonPlayer player) {
         Debug.Log("player left!");
 
-        int playerId = player.ID;
+        //int playerId = player.ID;
         // destroy the player that left
 
-        GameObject[] gos = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject go in gos) {
-            playerClass playerScript = go.GetComponent<playerClass>();
-            if (playerScript.getNetworkPlayerId() == playerId) {
-                Destroy(playerScript.gameObject);
-                return;
-            }
-        }
+        //GameObject[] gos = GameObject.FindGameObjectsWithTag("Player");
+        //foreach (GameObject go in gos) {
+        //    playerClass playerScript = go.GetComponent<playerClass>();
+        //    if (playerScript.getNetworkPlayerId() == playerId) {
+        //        Destroy(playerScript.gameObject);
+        //        return;
+        //    }
+        //}
 
-        Debug.Log("Couldn't destroy player with id: " + playerId);
+        //Debug.Log("Couldn't destroy player with id: " + playerId);
     }
 
     private void spawnPlayer(int playerId) {

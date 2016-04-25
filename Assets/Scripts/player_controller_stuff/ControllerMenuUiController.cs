@@ -10,19 +10,18 @@ public class ControllerMenuUiController : MonoBehaviour {
     }
 
     void Start() {
-        Debug.Log("main menu start");
+        Debug.Log("main menu start. photon status: " + PhotonNetwork.connectionStateDetailed);
     }
 
     public void onJoinButtonPressed() {
         // going to the team options page first!
-        //ConnectAndJoinRandom.setJoinRandomRooms(true);
         SceneManager.LoadScene("controller options screen");
     }
 
     public void onStartAsServerButtonPressed() {
         ConnectAndJoinRandom.setJoinRandomRooms(true);
         Debug.Log("started as server");
-        //SceneManager.LoadScene("main");
-        SceneManager.LoadScene("network_bug");
+        SceneManager.LoadScene("main");
+        //SceneManager.LoadScene("network_bug");
     }
 }

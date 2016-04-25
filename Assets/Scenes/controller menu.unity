@@ -336,7 +336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isSweeping: 0
-  dontSweep: 0
+  dontSweep: 1
   col:
     h: 0
     s: 0
