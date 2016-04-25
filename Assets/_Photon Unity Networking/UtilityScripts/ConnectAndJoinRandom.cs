@@ -18,6 +18,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour {
     private static bool attemptJoinRandomRoom = true;
 
     public virtual void Start() {
+        Debug.Log("start in connJoinRandom");
+        ConnectInUpdate = true;
         PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
     }
 
@@ -41,15 +43,15 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour {
     // below, we implement some callbacks of PUN
     // you can find PUN's callbacks in the class PunBehaviour or in enum PhotonNetworkingMessage
     public virtual void OnConnectedToMaster() {
+        Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
         if (attemptJoinRandomRoom) {
-            Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
             PhotonNetwork.JoinRandomRoom();
         }
     }
 
     public virtual void OnJoinedLobby() {
+        Debug.Log("OnJoinedLobby(). This client is connected and does get a room-list, which gets stored as PhotonNetwork.GetRoomList(). This script now calls: PhotonNetwork.JoinRandomRoom();");
         if (attemptJoinRandomRoom) {
-            Debug.Log("OnJoinedLobby(). This client is connected and does get a room-list, which gets stored as PhotonNetwork.GetRoomList(). This script now calls: PhotonNetwork.JoinRandomRoom();");
             PhotonNetwork.JoinRandomRoom();
         }
     }
