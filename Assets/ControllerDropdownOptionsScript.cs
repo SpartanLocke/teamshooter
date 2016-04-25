@@ -16,7 +16,11 @@ public class ControllerDropdownOptionsScript : MonoBehaviour {
         // set our custom options
         colorChoiceDropdown.AddOptions(Constants.playerColorChoiceStrings);
 	}
-	
+
+    public void onColorValueChanged(int value) {
+        PLAYER_COLOR_CHOICE_VALUE = colorChoiceDropdown.value;
+    }
+
     public void onDropdownValueChanged(int _x) {
         Debug.Log("chose color " + colorChoiceDropdown.value);
         PLAYER_COLOR_CHOICE_VALUE = colorChoiceDropdown.value;

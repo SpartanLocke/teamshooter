@@ -9,9 +9,11 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 
     private gridController gridController;
     private HashSet<int> spawnedPlayersTable;
+	private int count = 0;
 
     public GameObject playerPrefab;
     public GameObject hideableStartGamePrompt;
+	public GameObject spawnpointsPrefab;
 
     void Awake() {
         gridController = GameObject.FindGameObjectWithTag("gridGameObject").GetComponent<gridController>();
@@ -139,10 +141,13 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
         }
 
         spawnedPlayersTable.Add(playerId);
-        float randomX = Random.Range(1, gridController.width - 1);
-        float randomY = Random.Range(1, gridController.height - 1);
+		Vector3 spawnpoint = spawnpointsPrefab.transform.GetChild (count).transform.position;
+		count++;
 
-        GameObject playerGameObject = Instantiate(playerPrefab, new Vector3(randomX, randomY, 0), Quaternion.identity) as GameObject;
+//        float randomX = Random.Range(1, gridController.width - 1);
+//        float randomY = Random.Range(1, gridController.height - 1);
+
+		GameObject playerGameObject = Instantiate(playerPrefab, spawnpoint, Quaternion.identity) as GameObject;
 
         // initialize the player values
         playerClass playerScript = playerGameObject.GetComponent<playerClass>();

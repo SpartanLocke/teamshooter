@@ -540,14 +540,14 @@ public class playerClass : MonoBehaviour {
         if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != paintColor && !dodging) {
             convertSource.PlayOneShot(convertSound, 1F);
             setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
-            teamNum = coll.gameObject.GetComponent<shotMovement>().teamNum;
             GameObject hitIndicator = Instantiate(explosion, transform.position, Quaternion.identity) as GameObject;
             hitIndicator.GetComponent<ParticleSystem>().startColor = paintColor;
 
             if (scoreManager != null) {
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "deaths", 1);
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "score", -1);
-                scoreManager.changeColorCount(teamNum, PlayerNumber.ToString());
+                scoreManager.changeColorCount(teamNum, coll.gameObject.GetComponent<shotMovement>().teamNum, PlayerNumber.ToString());
+                teamNum = coll.gameObject.GetComponent<shotMovement>().teamNum;
                 int playerWhoShotMe = coll.gameObject.GetComponent<shotMovement>().playerNumber;
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "kills", 1);
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "score", 1);
