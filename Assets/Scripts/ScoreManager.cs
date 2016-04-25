@@ -142,9 +142,10 @@ public class ScoreManager : MonoBehaviour {
 		SetScore(username, scoreType, currScore + amount);
 	}
 
-    public void changeColorCount(int teamNum, string username)
+    public void changeColorCount(int oldTeamNum, int newTeamNum, string username)
 	{
-		currentColors [teamNum - 1].Add (username);
+        currentColors[oldTeamNum - 1].Remove(username);
+        currentColors [newTeamNum - 1].Add (username);
 		checkEndCondition ();
     }
 
