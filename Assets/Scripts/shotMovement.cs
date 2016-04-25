@@ -14,6 +14,7 @@ public class shotMovement : MonoBehaviour {
 
     public int playerNumber;
     public int teamNum;
+    public int colorNumber;
     private SpriteRenderer mySpriteRenderer;
 
 
@@ -27,7 +28,6 @@ public class shotMovement : MonoBehaviour {
         {
             gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
         }
-        teamNum = playerNumber;
         myLight = gameObject.GetComponentInChildren<Light>();
     }
 

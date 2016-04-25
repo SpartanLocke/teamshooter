@@ -12,6 +12,11 @@ public class playerClass : MonoBehaviour {
     public bool dodgeAbility;
     public bool dodging;
     public int PlayerNumber;
+    public AudioClip shootSound;
+    public AudioClip convertSound;
+    private AudioSource[] source;
+    private AudioSource shootSource;
+    private AudioSource convertSource;
 
 	//Debug tool for the type of movement
 	//If movementType = "touchblock", a player only needs to be touching their color to move
@@ -20,7 +25,7 @@ public class playerClass : MonoBehaviour {
 	public bool hitWall = false;
 
     private string[,] axes = new string[,] { {"HorizontalP1", "HorizontalP2", "HorizontalP3", "HorizontalP4" }, { "VerticalP1", "VerticalP2", "VerticalP3", "VerticalP4" }, {"FireP1","FireP2", "FireP3", "FireP4" },
-		{"HorizontalShootP1", "HorizontalShootP2", "HorizontalShootP3", "HorizontalShootP4" }, { "VerticalShootP1", "VerticalShootP2", "VerticalShootP3", "VerticalShootP4" }};
+        {"HorizontalShootP1", "HorizontalShootP2", "HorizontalShootP3", "HorizontalShootP4" }, { "VerticalShootP1", "VerticalShootP2", "VerticalShootP3", "VerticalShootP4" }};
 
     public bool oneJoystick;
     public bool twoJoystick;
@@ -32,7 +37,6 @@ public class playerClass : MonoBehaviour {
     private Vector3 shootDir;
     private int frames;
     public int frameDelay;
-    
     public float fireRate;
     public float tauntRate;
     public int numShots;
@@ -41,7 +45,10 @@ public class playerClass : MonoBehaviour {
     public GameObject projectile;
     public GameObject projectileParent;
     public GameObject explosion;
+    public int colorNumber;
     public Color normal;
+    public Color paintColor;
+    public Color lightColor;
     public Color fired;
     public Light light;
     private float normalIntensity;
@@ -57,14 +64,20 @@ public class playerClass : MonoBehaviour {
     private float nextTaunt = 0.0f;
 
     // network data
-    private Vector3 lastNetworkInputLeftEvent = new Vector3(0,0);
+    private Vector3 lastNetworkInputLeftEvent = new Vector3(0, 0);
     private Vector3 lastNetworkInputRightEvent = new Vector3(0, 0);
 
     private int networkPlayerId = -1;
 
+    private bool hasReceievedNetworkInitData = false;
+
     // setup our OnEvent as callback:
     void Awake() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
+
+        source = GetComponents<AudioSource>();
+        shootSource = source[0];
+        convertSource = source[1];
 
         if (grid == null) {
             grid = GameObject.FindGameObjectWithTag("gridGameObject");
@@ -77,14 +90,25 @@ public class playerClass : MonoBehaviour {
         normalIntensity = light.intensity;
     }
 
+    void OnDestroy() {
+        Debug.Log("player was destroyed");
+        PhotonNetwork.OnEventCall -= this.OnPhotonNetworkEvent;
+    }
+
     void Start() {
-        spriteRenderer.color = normal;
-        light.color = normal;
+        if (IS_LOCALLY_CONTROLLED) {
+            colorNumber = PlayerNumber - 1;
+        }
+        setColor(colorNumber);
         paintUnderMe(1);
-		scoreManager = GameObject.FindObjectOfType<ScoreManager>();
+        scoreManager = GameObject.FindObjectOfType<ScoreManager>();
     }
 
     void Update() {
+        if (grid == null) {
+            grid = GameObject.FindGameObjectWithTag("gridGameObject");
+        }
+
         if (IS_LOCALLY_CONTROLLED) {
             doLocalUpdate();
         } else {
@@ -104,54 +128,43 @@ public class playerClass : MonoBehaviour {
 
     void doLocalUpdate() {
         getInputs();
-        taunt();
+
+        if ((Input.GetButton(axes[2, (PlayerNumber - 1)]))) {
+            taunt();
+        }
     }
 
-    void taunt()
-    {
-        if ( Time.time > nextTaunt && (Input.GetButton(axes[2,(PlayerNumber - 1)]) && (myProjectile ==null))){
+    void taunt() {
+        if (Time.time > nextTaunt && (myProjectile == null)) {
             //put the taunting action here
             nextTaunt = Time.time + tauntRate;
-            if (dodgeAbility)
-            {
+            if (dodgeAbility) {
                 dodging = true;
             }
             StartCoroutine(tauntNumber(tauntNum));
         }
     }
-    IEnumerator tauntNumber(int i)
-    {
-        for (int f = 0; f< 2; f++) {
-            if (f == 0)
-            {
-                if (i == 0 || i == 1)
-                {
-                    for (int k = 0; k < 4; k++)
-                    {
-                        for (int j = 0; j < 5; j++)
-                        {
-                            if (k == 0 || k == 2)
-                            {
-                                if (i == 0)
-                                {
+
+    IEnumerator tauntNumber(int i) {
+        for (int f = 0; f < 2; f++) {
+            if (f == 0) {
+                if (i == 0 || i == 1) {
+                    for (int k = 0; k < 4; k++) {
+                        for (int j = 0; j < 5; j++) {
+                            if (k == 0 || k == 2) {
+                                if (i == 0) {
                                     light.color = Color.white;
                                     yield return null;
-                                }
-                                else if (i == 1)
-                                {
+                                } else if (i == 1) {
                                     spriteRenderer.color = Color.white;
                                     yield return null;
                                 }
                             }
-                            if (k == 1 || k == 3)
-                            {
-                                if (i == 0)
-                                {
-                                    light.color = normal;
+                            if (k == 1 || k == 3) {
+                                if (i == 0) {
+                                    light.color = lightColor;
                                     yield return null;
-                                }
-                                else if (i == 1)
-                                {
+                                } else if (i == 1) {
                                     spriteRenderer.color = normal;
                                     yield return null;
                                 }
@@ -159,37 +172,30 @@ public class playerClass : MonoBehaviour {
 
                         }
                     }
-                }
-                else if (i == 2)
-                {
-                    for (int j = 0; j < 20; j++)
-                    {
+                } else if (i == 2) {
+                    for (int j = 0; j < 20; j++) {
                         transform.Rotate(18f * Vector3.up);
                         yield return null;
                     }
-                }
-                else if (i == 3)
-                {
-                    for (int j = 0; j < 40; j++)
-                    {
+                } else if (i == 3) {
+                    for (int j = 0; j < 40; j++) {
                         transform.Rotate(9f * Vector3.forward);
                         yield return null;
                     }
                 }
-            }
-            else if (f == 1)
-            {
+            } else if (f == 1) {
                 dodging = false;
             }
         }
-        
+
     }
 
-    void getInputs()
-    {
-        if (twoJoystick) {
+    void getInputs() {
+        if (twoJoystick)
+        {
             Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
             Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
+
 
             if (AxisInput2.magnitude > shootThreshold)
             {
@@ -333,10 +339,38 @@ public class playerClass : MonoBehaviour {
             }
 
         }
+		else if (m8s4) {
+			Vector3 moveDir = Vector3.zero;
+			if (Input.GetKey (KeyCode.UpArrow)) {
+				moveDir += Vector3.up;
+			}
+			if (Input.GetKey (KeyCode.DownArrow)) {
+				moveDir += Vector3.down;
+			}
+			if (Input.GetKey (KeyCode.RightArrow)) {
+				moveDir += Vector3.right;
+			}
+			if (Input.GetKey (KeyCode.LeftArrow)) {
+				moveDir += Vector3.left;
+			}
+			move (moveDir.normalized);
+			if (Input.GetKeyDown ("w")) {
+				shoot (Vector3.up);
+			}
+			if (Input.GetKeyDown ("s")) {
+				shoot (Vector3.down);
+			}
+			if (Input.GetKeyDown ("d")) {
+				shoot (Vector2.right);
+			}
+			if (Input.GetKeyDown ("a")) {
+				shoot (Vector2.left);
+			}
+		}
     }
+
     void shoot(Vector3 direction) {
         bool fireButton;
-
         if (!IS_LOCALLY_CONTROLLED) {
             // read from the last event
             // twoJoystick is essentially true here, so just return true.
@@ -347,15 +381,37 @@ public class playerClass : MonoBehaviour {
             fireButton = (Input.GetButton(axes[2, (PlayerNumber - 1)]) || (m8s4 || m8s8 || twoJoystick || gridMovement));
         }
 
-        if (fireButton &&  myProjectile == null && !dodging)
-        {    StartCoroutine(cooldownIndicator());
+        if (fireButton &&  myProjectile == null && !dodging) {
+            //StartCoroutine(cooldownIndicator());
             //StartCoroutine(fire(direction));
+            shootSource.PlayOneShot(shootSound, 1F);
+            StartCoroutine(fireAnimation());
             paintUnderMe(3);
-            GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized*offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+            GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized * offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
             projectileParent parent = paint.GetComponent<projectileParent>();
             myProjectile = paint;
-            parent.myColor = normal;
+            parent.myColor = paintColor;
             parent.grid = grid;
+            parent.teamNum = teamNum;
+            parent.playerNumber = PlayerNumber;
+            parent.colorNumber = colorNumber;
+        }
+
+    }
+
+    IEnumerator fireAnimation()
+    {
+        for(int i = 0; i < 30; i++)
+        {
+            if (i < 10)
+            {
+                light.range += .4f;
+            }
+            else
+            {
+                light.range -= .2f;
+            }
+            yield return null;
         }
         
     }
@@ -371,34 +427,6 @@ public class playerClass : MonoBehaviour {
         //transform.GetChild(0).gameObject.SetActive(true);
         spriteRenderer.color = normal;
     }
-
-    /*IEnumerator fire(Vector3 direction) {
-        for (int i = 0; i < numShots; i++) {
-            /*for (int j = 0; j < 1; j++)
-            {
-                yield return null;
-            }
-            Vector3 newPosition = transform.position - direction.normalized * offset + Quaternion.Euler(0, 0, -90) * (direction.normalized* i * weight);
-            GameObject paint = Instantiate(projectile, newPosition , Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
-			var paintScript = paint.GetComponent<shotMovement>();
-			paintScript.playerNumber = PlayerNumber;
-            paintScript.teamNum = teamNum;
-            //paint.transform.parent = transform;
-            paint.GetComponent<SpriteRenderer>().color = normal;
-            paint.GetComponent<shotMovement>().grid = grid;
-            Vector3 newPosition2 = transform.position - direction.normalized * offset + Quaternion.Euler(0, 0, -90) * (direction.normalized * -i * weight);
-            GameObject paint2 = Instantiate(projectile, newPosition2, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
-			var paintScript2 = paint2.GetComponent<shotMovement>();
-			paintScript2.playerNumber = PlayerNumber;
-            paintScript.teamNum = teamNum;
-            //paint2.transform.parent = transform;
-            paint2.GetComponent<SpriteRenderer>().color = normal;
-            paint2.GetComponent<shotMovement>().grid = grid;
-            yield return null;
-
-        }
-
-    }*/
 
     void move(Vector3 direction) {
 		if (hitWall) {
@@ -424,6 +452,10 @@ public class playerClass : MonoBehaviour {
 
     IEnumerator timer(float time)
     {
+=======
+
+    IEnumerator timer(float time) {
+>>>>>>> ee8628fc793d9757a0691e5b06d64c76c9945ffa
         yield return new WaitForSeconds(time);
         timeDelay = false;
         Debug.Log("timer expired");
@@ -432,72 +464,85 @@ public class playerClass : MonoBehaviour {
     bool isValidPosition(Vector3 position) {
         float gridSize = gridController.gridBlock.transform.localScale.x;
 
-		//sprite only has to touch color
-		if (movementType.Equals ("touchblock")) {
-			int gridX = Mathf.RoundToInt (position.x / gridSize);
-			int gridY = Mathf.RoundToInt (position.y / gridSize);
-			if (!gridController.inGridBounds (gridX, gridY)) {
-				// out of bounds, then get outta here
-				return false;
-			}
-
-			if (normal == gridController.getGridColor (gridX, gridY)) {
+        //sprite only has to touch color
+        if (movementType.Equals("touchblock")) {
+            int gridX = Mathf.RoundToInt(position.x / gridSize);
+            int gridY = Mathf.RoundToInt(position.y / gridSize);
+            if (!gridController.inGridBounds(gridX, gridY)) {
+                // out of bounds, then get outta here
+                return false;
+            }
+			if (paintColor == gridController.getGridColor (gridX, gridY)) {
 				return true;
 			} else {
 				return false;
 			}
 		//sprite has to be within color
-		} else if (movementType.Equals ("immerse")) {
+        } else if (movementType.Equals("immerse")) {
             int gridX = Mathf.RoundToInt(position.x / gridSize);
             int gridY = Mathf.RoundToInt(position.y / gridSize);
-            float playerRadius = GetComponent<SpriteRenderer> ().bounds.size.x / 2;
-			int gridLeft = Mathf.RoundToInt ((position.x + playerRadius) / gridSize);
-			int gridRight = Mathf.RoundToInt ((position.x - playerRadius) / gridSize);
-			int gridUp = Mathf.RoundToInt ((position.y + playerRadius) / gridSize);
-			int gridDown = Mathf.RoundToInt ((position.y - playerRadius) / gridSize);
-			if (!gridController.inGridBounds (gridLeft, gridY) || !gridController.inGridBounds (gridRight, gridY) ||
-			    !gridController.inGridBounds (gridX, gridUp) || !gridController.inGridBounds (gridX, gridDown)) {
-				return false;
-			}
-
-			if (normal == gridController.getGridColor (gridLeft, gridY) && normal == gridController.getGridColor (gridRight, gridY) &&
-			    normal == gridController.getGridColor (gridX, gridUp) && normal == gridController.getGridColor (gridX, gridDown)) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
-    }
-
-    void paintUnderMe(int size)
-    {
-        int x = Mathf.RoundToInt(transform.position.x / gridSize);
-        int y = Mathf.RoundToInt(transform.position.y / gridSize);
-        for(int i = 0; i < 2*size; i++)
-        {
-            for( int j = 0; j < 2*size; j++)
-            {
-                //gridController.grid[x + i -size, y + j - size].GetComponent<SpriteRenderer>().color = normal;
-                gridController.setGridBlockToColor(x + i - size, y + j - size, normal);
+            float playerRadius = GetComponent<SpriteRenderer>().bounds.size.x / 2;
+            int gridLeft = Mathf.RoundToInt((position.x + playerRadius) / gridSize);
+            int gridRight = Mathf.RoundToInt((position.x - playerRadius) / gridSize);
+            int gridUp = Mathf.RoundToInt((position.y + playerRadius) / gridSize);
+            int gridDown = Mathf.RoundToInt((position.y - playerRadius) / gridSize);
+            if (!gridController.inGridBounds(gridLeft, gridY) || !gridController.inGridBounds(gridRight, gridY) ||
+                !gridController.inGridBounds(gridX, gridUp) || !gridController.inGridBounds(gridX, gridDown)) {
+                return false;
             }
+
+            if (paintColor == gridController.getGridColor(gridLeft, gridY) && paintColor == gridController.getGridColor(gridRight, gridY) &&
+                paintColor == gridController.getGridColor(gridX, gridUp) && paintColor == gridController.getGridColor(gridX, gridDown)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 
+    public void setColor(int i) {
+        colorNumber = i;
+        normal = Constants.playerColorChoices[i];
+        spriteRenderer.color = normal;
+        fired = Constants.firedColors[i];
+        lightColor = Constants.lightColors[i];
+        light.color = lightColor;
+        paintColor = Constants.paintColors[i];
+
+        // send the color change event to the player
+        if (!IS_LOCALLY_CONTROLLED) {
+            sendPlayerColorChange(i);
+        }
+    }
+
+    void paintUnderMe(int size) {
+        int x = Mathf.RoundToInt(transform.position.x / gridSize);
+        int y = Mathf.RoundToInt(transform.position.y / gridSize);
+        for (int i = 0; i < 2 * size; i++) {
+            for (int j = 0; j < 2 * size; j++) {
+                //gridController.grid[x + i -size, y + j - size].GetComponent<SpriteRenderer>().color = normal;
+                gridController.setGridBlockToColor(x + i - size, y + j - size, paintColor);
+            }
+        }
+    }
 
     void OnCollisionEnter2D(Collision2D coll) {
         //Debug.Log(coll);
 		if (coll.gameObject.tag == "wall") {
 			hitWall = true;
 		}
-		if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal && !dodging)
-        {
-            normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
-            spriteRenderer.color = normal;
+		//if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal && !dodging)
+        //{
+        //    normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
+        //    spriteRenderer.color = normal;
+        if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != paintColor && !dodging) {
+            convertSource.PlayOneShot(convertSound, 1F);
+            setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
             teamNum = coll.gameObject.GetComponent<shotMovement>().teamNum;
             GameObject hitIndicator = Instantiate(explosion, transform.position, Quaternion.identity) as GameObject;
-            hitIndicator.GetComponent<ParticleSystem>().startColor = normal;
+            hitIndicator.GetComponent<ParticleSystem>().startColor = paintColor;
 
             if (scoreManager != null) {
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "deaths", 1);
@@ -521,26 +566,66 @@ public class playerClass : MonoBehaviour {
     // handle events
     private void OnPhotonNetworkEvent(byte eventcode, object content, int senderid) {
         // everything is in json format
+
+        PhotonPlayer sender = PhotonPlayer.Find(senderid);  // who sent this?
+        if (sender.ID != networkPlayerId) {
+            // not input from our player!
+            return;
+        }
+
+        byte[] byteContent;
+        string contentStringJson;
+
         switch (eventcode) {
             // player input for 0
-            case 0:
-                PhotonPlayer sender = PhotonPlayer.Find(senderid);  // who sent this?
+            case Constants.PLAYER_INPUT_EVENT_CODE:
+                if (PlayerNetworkStatusHandler.isGameStarted) {
+                    byteContent = (byte[])content;
+                    contentStringJson = Encoding.UTF8.GetString(byteContent);
+                    PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
 
-                if (sender.ID != networkPlayerId) {
-                    // not input from our player!
-                    break;
+                    // now we have what we need
+                    lastNetworkInputLeftEvent = new Vector3(playerInput.left_x, playerInput.left_y);
+                    lastNetworkInputRightEvent = new Vector3(playerInput.right_x, playerInput.right_y);
+                }
+                break;
+
+            case Constants.PLAYER_TAUNT_EVENT_CODE:
+                taunt();
+                break;
+
+            case Constants.PLAYER_DATA_INIT_EVENT_CODE:
+                if (!hasReceievedNetworkInitData) {
+                    byteContent = (byte[])content;
+                    contentStringJson = Encoding.UTF8.GetString(byteContent);
+                    playerDataInitEvent playerInitEvent = playerDataInitEvent.CreateFromJSON(contentStringJson);
+
+                    // just set the color for now
+                    setColor(playerInitEvent.startingColor);
+                    Debug.Log("set init color to: " + playerInitEvent.startingColor);
+
+                    hasReceievedNetworkInitData = true;
                 }
 
-                byte[] byteContent = (byte[])content;
-                string contentStringJson = Encoding.UTF8.GetString(byteContent);
-                PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
-
-                // now we have what we need
-                lastNetworkInputLeftEvent = new Vector3(playerInput.left_x, playerInput.left_y);
-                lastNetworkInputRightEvent = new Vector3(playerInput.right_x, playerInput.right_y);
-
-                //Debug.Log(lastNetworkInputEvent);
                 break;
         }
+    }
+
+    // If the player's color changed, then send that as a network event.
+    private void sendPlayerColorChange(int newColor) {
+        controllerColorChangeEvent colorEvent = new controllerColorChangeEvent(newColor, getNetworkPlayerId());
+
+        // color change
+        byte[] content = colorEvent.getBytes();
+
+        sendNetworkEvent(Constants.PLAYER_COLOR_CHANGE_EVENT_CODE, content);
+    }
+
+    private void sendNetworkEvent(byte eventCode, byte[] content) {
+        // todo: is false the best here? (its the fastest)
+        bool reliable = false;
+
+        // todo: use RaiseEventOptions?
+        PhotonNetwork.RaiseEvent(eventCode, content, reliable, null);
     }
 }

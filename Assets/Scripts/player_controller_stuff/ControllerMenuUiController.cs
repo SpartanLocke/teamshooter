@@ -10,7 +10,14 @@ public class ControllerMenuUiController : MonoBehaviour {
     }
 
     public void onJoinButtonPressed() {
+        // going to the team options page first!
+        //ConnectAndJoinRandom.setJoinRandomRooms(true);
+        SceneManager.LoadScene("controller options screen");
+    }
+
+    public void onStartAsServerButtonPressed() {
         ConnectAndJoinRandom.setJoinRandomRooms(true);
-        SceneManager.LoadScene("dual stick controller");
+        Debug.Log("started as server");
+        SceneManager.LoadScene("main");
     }
 }

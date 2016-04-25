@@ -15,6 +15,7 @@ public class reset : MonoBehaviour {
 
     public void resetActive()
     {
+		Destroy (GameObject.Find ("ScoreManager"));
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
