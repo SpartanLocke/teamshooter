@@ -7,23 +7,23 @@ using UnityEngine.SceneManagement;
 public class ControllerDropdownOptionsScript : MonoBehaviour {
 
     public static int PLAYER_COLOR_CHOICE_VALUE = 0;
-    public Dropdown colorChoiceDropdown;
+    //public Dropdown colorChoiceDropdown;
 
 	void Start () {
         // reset the options
-        colorChoiceDropdown.ClearOptions();
+        //colorChoiceDropdown.ClearOptions();
 
         // set our custom options
-        colorChoiceDropdown.AddOptions(Constants.playerColorChoiceStrings);
+        //colorChoiceDropdown.AddOptions(Constants.playerColorChoiceStrings);
 	}
 
     public void onColorValueChanged(int value) {
-        PLAYER_COLOR_CHOICE_VALUE = colorChoiceDropdown.value;
+        PLAYER_COLOR_CHOICE_VALUE = value;
     }
 
     public void onDropdownValueChanged(int _x) {
-        Debug.Log("chose color " + colorChoiceDropdown.value);
-        PLAYER_COLOR_CHOICE_VALUE = colorChoiceDropdown.value;
+        Debug.Log("chose color " + _x);
+        PLAYER_COLOR_CHOICE_VALUE = _x;
     }
 
     public void onJoinButtonPressed() {
