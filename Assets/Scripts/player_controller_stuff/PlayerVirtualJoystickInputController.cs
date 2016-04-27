@@ -26,6 +26,7 @@ public class PlayerVirtualJoystickInputController : MonoBehaviour {
         playerColorInside.color = Color.white;
         playerColorOutside.color = Color.white;
 
+        playerColorInside.color = Constants.lightColors[STARTING_PLAYER_COLOR];
         setControllerColor(STARTING_PLAYER_COLOR);
     }
 
