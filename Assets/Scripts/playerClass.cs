@@ -75,7 +75,7 @@ public class playerClass : MonoBehaviour {
     void Awake() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
 
-        source = GetComponents<AudioSource>();
+        source = gameObject.GetComponents<AudioSource>();
         shootSource = source[0];
         convertSource = source[1];
 
@@ -96,11 +96,12 @@ public class playerClass : MonoBehaviour {
     }
 
     void Start() {
+        Debug.Log("Start was called");
         if (IS_LOCALLY_CONTROLLED) {
             colorNumber = PlayerNumber - 1;
         }
         setColor(colorNumber);
-        paintUnderMe(1);
+        paintUnderMe(10);
         scoreManager = GameObject.FindObjectOfType<ScoreManager>();
     }
 
