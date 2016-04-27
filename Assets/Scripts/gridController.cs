@@ -26,7 +26,7 @@ public class gridController : MonoBehaviour {
 
     public void setGridBlockToColor(int x, int y, Color color) {
         if (!inGridBounds(x, y)) {
-            Debug.Log(x + " " + y);
+            // Debug.Log(x + " " + y);
             return;
         }
 
