@@ -160,6 +160,6 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
         playerScript.IS_LOCALLY_CONTROLLED = false;
 
         // set the color to red to start since we don't know the player color yet
-        playerScript.setColor(0);
+        //playerScript.setColor(0);
     }
 }

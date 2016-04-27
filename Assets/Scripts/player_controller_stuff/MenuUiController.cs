@@ -1,23 +1,23 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-
-public class ControllerDropdownOptionsScript : MonoBehaviour {
-
+public class MenuUiController : MonoBehaviour {
     public static int PLAYER_COLOR_CHOICE_VALUE = 0;
-    //public Dropdown colorChoiceDropdown;
+    public static string lobbyName = "";
 
-	void Start () {
-        // reset the options
-        //colorChoiceDropdown.ClearOptions();
+    public void onEditTextChange(string currentLobby) {
+        lobbyName = currentLobby;
+    }
 
-        // set our custom options
-        //colorChoiceDropdown.AddOptions(Constants.playerColorChoiceStrings);
-	}
+    public void onStartAsServerButtonPressed() {
+        ConnectAndJoinRandom.setJoinRandomRooms(true);
+        Debug.Log("started as server");
+        SceneManager.LoadScene("main");
+    }
 
-    public void onColorValueChanged(int value) {
+    public void onControllerColorValueChanged(int value) {
+        Debug.Log("onColorValueChanged " + value);
         PLAYER_COLOR_CHOICE_VALUE = value;
     }
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Text;
 using UnityEngine.UI;
@@ -80,11 +80,11 @@ public class colorSweep2 : MonoBehaviour
         }
         if (input == 1)
         {
-            UI.GetComponent<ControllerMenuUiController>().onStartAsServerButtonPressed();
+            UI.GetComponent<MenuUiController>().onStartAsServerButtonPressed();
         }
         else if(input == 0)
         {
-            UI.GetComponent<ControllerMenuUiController>().onJoinButtonPressed();
+            UI.GetComponent<MenuUiController>().onJoinButtonPressed();
         }
     }
 

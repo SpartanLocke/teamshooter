@@ -13,7 +13,7 @@ public class PlayerVirtualJoystickInputController : MonoBehaviour {
 
     void Awake() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
-        STARTING_PLAYER_COLOR = ControllerDropdownOptionsScript.PLAYER_COLOR_CHOICE_VALUE;
+        STARTING_PLAYER_COLOR = MenuUiController.PLAYER_COLOR_CHOICE_VALUE;
 
         Debug.Log("start color: " + STARTING_PLAYER_COLOR);
     }
@@ -25,6 +25,8 @@ public class PlayerVirtualJoystickInputController : MonoBehaviour {
 
         playerColorInside.color = Color.white;
         playerColorOutside.color = Color.white;
+
+        setControllerColor(STARTING_PLAYER_COLOR);
     }
 
     // Update is called once per frame
@@ -74,8 +76,8 @@ public class PlayerVirtualJoystickInputController : MonoBehaviour {
         sendNetworkEvent(Constants.PLAYER_TAUNT_EVENT_CODE, new byte[1]);
     }
 
-    private void setControllerColor(Color someColor) {
-        playerColorOutside.color = someColor;
+    private void setControllerColor(int colorChoiceIndex) {
+        playerColorOutside.color = Constants.lightColors[colorChoiceIndex];
     }
 
     private void sendNetworkEvent(byte eventCode, byte[] content) {
@@ -96,9 +98,11 @@ public class PlayerVirtualJoystickInputController : MonoBehaviour {
                 controllerColorChangeEvent colorChangeEvent = controllerColorChangeEvent.CreateFromJSON(contentStringJson);
 
                 if (colorChangeEvent.sendingPlayerId == PhotonNetwork.player.ID) {
-                    Color newPlayerColor = Constants.lightColors[colorChangeEvent.newPlayerColor];
-                    setControllerColor(newPlayerColor);
-                    Debug.Log(newPlayerColor);
+                    //Color newPlayerColor = Constants.lightColors[colorChangeEvent.newPlayerColor];
+                    //setControllerColor(newPlayerColor);
+
+                    setControllerColor(colorChangeEvent.newPlayerColor);
+                    //Debug.Log(newPlayerColor);
                 }
                 break;
 

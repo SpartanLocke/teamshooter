@@ -439,27 +439,6 @@ public class playerClass : MonoBehaviour {
         }
 
     }
-/*    void moveAlt(Vector3 direction)
-    {
-        Vector3 newPos = gameObject.transform.position + playerSpeedAlt * direction * Time.deltaTime;
-        if (isValidPosition(newPos) && !timeDelay)
-        {
-            Debug.Log("entered");
-            timeDelay = true;
-            StartCoroutine(timer(delayTime));
-            transform.position = gridController.grid[Mathf.RoundToInt(newPos.x / gridSize), Mathf.RoundToInt(newPos.y / gridSize)].transform.position;
-        }
-
-    IEnumerator timer(float time)
-    {
-=======
-
-    IEnumerator timer(float time) {
->>>>>>> ee8628fc793d9757a0691e5b06d64c76c9945ffa
-        yield return new WaitForSeconds(time);
-        timeDelay = false;
-        Debug.Log("timer expired");
-    }*/
 
     public void resetTeamNum()
     {
