@@ -35,10 +35,12 @@ public class Constants : MonoBehaviour {
       HSBColor.ToColor(new HSBColor(4.9f/8.0f, 1f, 1f, 1f)),
       HSBColor.ToColor(new HSBColor(6.1f/8.0f, 1f, 1f, 1f)),
       HSBColor.ToColor(new HSBColor(7.35f/8.0f, 1f, 1f, 1f))
+
 };
     static float asdf = 0.25f;
     public static readonly Color[] paintColors = new Color[]
     {
+      
       HSBColor.ToColor(new HSBColor(0.0f/8.0f, 1f, 1f, 1f)),
       HSBColor.ToColor(new HSBColor(.65f/8.0f, 1f, 1f, 1f)),
       HSBColor.ToColor(new HSBColor(1.5f/8.0f, 1f, 1f, 1f)),
@@ -47,6 +49,15 @@ public class Constants : MonoBehaviour {
       HSBColor.ToColor(new HSBColor(4.9f/8.0f, 1f, 1f, 1f)),
       HSBColor.ToColor(new HSBColor(6.1f/8.0f, 1f, 1f, 1f)),
       HSBColor.ToColor(new HSBColor(7.35f/8.0f, 1f, 1f, 1f))
+
+      /*HSBColor.ToColor(new HSBColor(2.57f/8.0f, 1f, .2f, 1f)),
+      HSBColor.ToColor(new HSBColor(2.57f/8.0f, 1f, .4f, 1f)),
+      HSBColor.ToColor(new HSBColor(2.57f/8.0f, 1f, .6f, 1f)),
+      HSBColor.ToColor(new HSBColor(2.57f/8.0f, 1f, .8f, 1f)),
+      HSBColor.ToColor(new HSBColor(2.57f/8.0f, .8f, 1f, 1f)),
+      HSBColor.ToColor(new HSBColor(2.57f/8.0f, .6f, 1f, 1f)),
+      HSBColor.ToColor(new HSBColor(2.57f/8.0f, .4f, 1f, 1f)),
+      HSBColor.ToColor(new HSBColor(2.57f/8.0f, .2f, 1f, 1f))*/
     };
     public static readonly Color[] firedColors = new Color[]
    {

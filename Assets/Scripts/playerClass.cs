@@ -49,6 +49,7 @@ public class playerClass : MonoBehaviour {
     public Color normal;
     public Color paintColor;
     public Color lightColor;
+    public float colorShift;
     public Color fired;
     public Light light;
     private float normalIntensity;
@@ -502,6 +503,32 @@ public class playerClass : MonoBehaviour {
         }
     }
 
+    public Color setBrightness(Color col, float change)
+    {
+        //Debug.Log("brightness change");
+        return HSBColor.ToColor(new HSBColor(HSBColor.FromColor(col).h, HSBColor.FromColor(col).s, HSBColor.FromColor(col).b + change, HSBColor.FromColor(col).a));
+    }
+    public Color setSaturation(Color col, float change)
+    {
+        //Debug.Log("saturation change");
+        return HSBColor.ToColor(new HSBColor(HSBColor.FromColor(col).h, HSBColor.FromColor(col).s + change, HSBColor.FromColor(col).b, HSBColor.FromColor(col).a));
+    }
+
+    public void shadeChange()
+    {
+        //TODO:  Set the index of the shade change by the order I am in the team
+        float index = 1.0f;
+        if (index >= 4.0f)
+        {
+            normal = setSaturation(Constants.paintColors[colorNumber], -colorShift * (index - 3.0f));
+        }
+        else
+        {
+            normal = setBrightness(Constants.playerColorChoices[colorNumber], index * colorShift);
+        }
+
+        spriteRenderer.color = normal;
+    }
     void paintUnderMe(int size) {
         int x = Mathf.RoundToInt(transform.position.x / gridSize);
         int y = Mathf.RoundToInt(transform.position.y / gridSize);
@@ -525,6 +552,7 @@ public class playerClass : MonoBehaviour {
         if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != paintColor && !dodging) {
             convertSource.Play();
             setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
+            shadeChange();
             GameObject hitIndicator = Instantiate(explosion, transform.position, Quaternion.identity) as GameObject;
             hitIndicator.GetComponent<ParticleSystem>().startColor = paintColor;
 
@@ -537,8 +565,12 @@ public class playerClass : MonoBehaviour {
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "kills", 1);
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "score", 1);
             }
+            
+            
         }
     }
+
+    
 
     public void setNetworkPlayerId(int id) {
         networkPlayerId = id;

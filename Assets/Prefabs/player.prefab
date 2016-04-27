@@ -318,6 +318,7 @@ MonoBehaviour:
   normal: {r: 0, g: 0.5, b: 1, a: 0.766}
   paintColor: {r: 0, g: 0, b: 0, a: 0}
   lightColor: {r: 0, g: 0, b: 0, a: 0}
+  colorShift: 0.2
   fired: {r: 0, g: 0.28213656, b: 0.56206894, a: 0.353}
   light: {fileID: 0}
   grid: {fileID: 0}
