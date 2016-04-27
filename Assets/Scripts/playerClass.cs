@@ -50,6 +50,8 @@ public class playerClass : MonoBehaviour {
     public Color paintColor;
     public Color lightColor;
     public float colorShift;
+	public Color originalPaintColor;
+	public Color originalLightColor;
     public Color fired;
     public Light light;
     private float normalIntensity;
@@ -401,6 +403,37 @@ public class playerClass : MonoBehaviour {
 
     }
 
+	public void scoreboardShoot() {
+		// bool fireButton;
+		// if (!IS_LOCALLY_CONTROLLED) {
+			// read from the last event
+			// twoJoystick is essentially true here, so just return true.
+			// also, shoot is only called if the second stick is active
+		// 	fireButton = true;
+		// } else {
+			// read from the standard axis stuff
+		// 	fireButton = (Input.GetButton(axes[2, (PlayerNumber - 1)]) || (m8s4 || m8s8 || twoJoystick || gridMovement));
+		// }
+
+		// if (fireButton &&  myProjectile == null && !dodging) {
+			//StartCoroutine(cooldownIndicator());
+			//StartCoroutine(fire(direction));
+		Vector3 direction = Vector3.up;
+		shootSource.Play();
+		StartCoroutine(fireAnimation());
+		paintUnderMe(3);
+		GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized * offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+		projectileParent parent = paint.GetComponent<projectileParent>();
+		myProjectile = paint;
+		parent.myColor = paintColor;
+		parent.grid = grid;
+		parent.teamNum = teamNum;
+		parent.playerNumber = PlayerNumber;
+		parent.colorNumber = colorNumber;
+		// }
+
+	}
+
     IEnumerator fireAnimation()
     {
         for(int i = 0; i < 30; i++)
@@ -494,8 +527,10 @@ public class playerClass : MonoBehaviour {
         spriteRenderer.color = normal;
         fired = Constants.firedColors[i];
         lightColor = Constants.lightColors[i];
+		originalLightColor = lightColor;
         light.color = lightColor;
         paintColor = Constants.paintColors[i];
+		originalPaintColor = paintColor;
 
         // send the color change event to the player
         if (!IS_LOCALLY_CONTROLLED) {
