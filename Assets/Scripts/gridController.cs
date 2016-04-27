@@ -10,7 +10,6 @@ public class gridController : MonoBehaviour {
     public GameObject[,] grid;
 
     void Awake() {
-        //Mathf.RoundToInt(Screen.width / (gridBlock.transform.localScale.x*50)), Mathf.RoundToInt(Screen.height / (gridBlock.transform.localScale.y * 50))
         grid = new GameObject[Mathf.RoundToInt(width / (gridBlock.transform.localScale.x)), Mathf.RoundToInt(height / (gridBlock.transform.localScale.y))];
         createGrid();
     }
@@ -55,10 +54,9 @@ public class gridController : MonoBehaviour {
             }
         }
     }
-    public void resetGrid()
-    {
-        foreach(Transform child in transform)
-        {
+
+    public void resetGrid() {
+        foreach (Transform child in transform) {
             child.gameObject.GetComponent<SpriteRenderer>().color = Color.black;
         }
     }

@@ -4,6 +4,8 @@ using System.Text;
 
 public class playerClass : MonoBehaviour {
     public bool IS_LOCALLY_CONTROLLED;
+    public int PlayerNumber;
+
     public int tauntNum;
     public float playerSpeed; //speed player moves
     public float playerSpeedAlt;
@@ -11,7 +13,6 @@ public class playerClass : MonoBehaviour {
     public float delayTime;
     public bool dodgeAbility;
     public bool dodging;
-    public int PlayerNumber;
     public AudioClip shootSound;
     public AudioClip convertSound;
     private AudioSource[] source;
@@ -518,10 +519,6 @@ public class playerClass : MonoBehaviour {
 		if (coll.gameObject.tag == "wall") {
 			hitWall = true;
 		}
-		//if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal && !dodging)
-        //{
-        //    normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
-        //    spriteRenderer.color = normal;
         if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != paintColor && !dodging) {
             convertSource.PlayOneShot(convertSound, 1F);
             setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
