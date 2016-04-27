@@ -385,7 +385,7 @@ public class playerClass : MonoBehaviour {
         if (fireButton &&  myProjectile == null && !dodging) {
             //StartCoroutine(cooldownIndicator());
             //StartCoroutine(fire(direction));
-            shootSource.PlayOneShot(shootSound, 1F);
+            shootSource.Play();
             StartCoroutine(fireAnimation());
             paintUnderMe(3);
             GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized * offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
@@ -523,7 +523,7 @@ public class playerClass : MonoBehaviour {
         //    normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
         //    spriteRenderer.color = normal;
         if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != paintColor && !dodging) {
-            convertSource.PlayOneShot(convertSound, 1F);
+            convertSource.Play();
             setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
             GameObject hitIndicator = Instantiate(explosion, transform.position, Quaternion.identity) as GameObject;
             hitIndicator.GetComponent<ParticleSystem>().startColor = paintColor;
