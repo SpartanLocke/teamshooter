@@ -599,7 +599,6 @@ public class playerClass : MonoBehaviour {
             
             if (scoreManager != null) {
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "deaths", 1);
-                scoreManager.ChangeScore(PlayerNumber.ToString(), "score", -1);
                 scoreManager.changeColorCount(teamNum, coll.gameObject.GetComponent<shotMovement>().teamNum, PlayerNumber.ToString());
                 teamNum = coll.gameObject.GetComponent<shotMovement>().teamNum;
                 int playerWhoShotMe = coll.gameObject.GetComponent<shotMovement>().playerNumber;
