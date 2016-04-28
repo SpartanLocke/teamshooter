@@ -28,7 +28,7 @@ public class ScoreManager : MonoBehaviour {
 
 	public GameObject Grid;
 
-    Dictionary<int, List<string>> currentColors;
+    public Dictionary<int, List<string>> currentColors;
 
     int numPlayers;
 

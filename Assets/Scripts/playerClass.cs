@@ -552,7 +552,12 @@ public class playerClass : MonoBehaviour {
     public void shadeChange()
     {
         //TODO:  Set the index of the shade change by the order I am in the team
-        float index = 1.0f;
+
+        float index = ScoreManager.Instance.currentColors[teamNum].IndexOf(PlayerNumber.ToString());
+        Debug.Log("stuff");
+        Debug.Log(ScoreManager.Instance.currentColors[teamNum]);
+        Debug.Log("the Index is: ");
+        Debug.Log(index);
         if (index >= 4.0f)
         {
             normal = setSaturation(Constants.paintColors[colorNumber], -colorShift * (index - 3.0f));
@@ -587,10 +592,11 @@ public class playerClass : MonoBehaviour {
         if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != paintColor && !dodging) {
             convertSource.Play();
             setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
-            shadeChange();
+            
+            //coll.transform.parent.gameObject.GetComponentInParent<playerClass>().shadeChange();
             GameObject hitIndicator = Instantiate(explosion, transform.position, Quaternion.identity) as GameObject;
             hitIndicator.GetComponent<ParticleSystem>().startColor = paintColor;
-
+            
             if (scoreManager != null) {
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "deaths", 1);
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "score", -1);
@@ -600,8 +606,8 @@ public class playerClass : MonoBehaviour {
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "kills", 1);
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "score", 1);
             }
-            
-            
+            shadeChange();
+
         }
     }
 
