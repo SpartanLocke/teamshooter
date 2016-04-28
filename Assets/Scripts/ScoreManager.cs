@@ -225,18 +225,7 @@ public class ScoreManager : MonoBehaviour {
 		if (endCondition) {
 			if (roundNumber < numRounds) {
 				roundNumber += 1;
-				SaveScoresBetweenRounds ();
-				destroyProjectiles ();
-				resetPlayerPositionsForScoreboard ();
-
-				// ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
-				// ScoreboardCanvas.GetComponent<CanvasGroup> ().alpha = 1f;
-				// Debug.Log ("set scoreboard visible");
-				resetCurrentColors ();
-
-				//TODO do this only after finished displaying the scores
-				GameObject timer = GameObject.Find ("Timer");
-				// StartCoroutine (RestartRoundAfterDelay (delayBetweenRounds, timer)); 
+                StartCoroutine(scoreboard());
 			} else {
 				// ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
 				// ScoreboardCanvas.GetComponent<CanvasGroup> ().alpha = 1f;
@@ -250,7 +239,24 @@ public class ScoreManager : MonoBehaviour {
 			
     }
 
-	private void destroyProjectiles() {
+    IEnumerator scoreboard()
+    {
+        yield return new WaitForSeconds(1);
+        SaveScoresBetweenRounds();
+        destroyProjectiles();
+        resetPlayerPositionsForScoreboard();
+
+        // ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
+        // ScoreboardCanvas.GetComponent<CanvasGroup> ().alpha = 1f;
+        // Debug.Log ("set scoreboard visible");
+        resetCurrentColors();
+
+        //TODO do this only after finished displaying the scores
+        GameObject timer = GameObject.Find("Timer");
+        // StartCoroutine (RestartRoundAfterDelay (delayBetweenRounds, timer)); 
+    }
+
+    private void destroyProjectiles() {
 		var gameObjects = GameObject.FindGameObjectsWithTag ("paint");
 
 		for(var i = 0 ; i < gameObjects.Length ; i ++)
@@ -271,32 +277,29 @@ public class ScoreManager : MonoBehaviour {
 			playerNumber++;
 		}
 
-		playerNumber = 1;
-		while (playerNumber <= numPlayers) {
-			GameObject thisPlayer = GameObject.Find ("player" + playerNumber);
-			var playerScript = thisPlayer.GetComponent<playerClass> ();
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-			playerScript.paintColor = playerScript.originalPaintColor;
-			playerScript.lightColor = playerScript.originalLightColor;
-			playerScript.fired = playerScript.originalFiredColor;
-			playerScript.light.color = playerScript.lightColor;
+        foreach(GameObject thisPlayer in players)
+        {
+            var playerScript = thisPlayer.GetComponent<playerClass>();
 
-			Debug.Log ("reset player " + playerNumber);
-			Debug.Log (playerScript.originalPaintColor);
-			Debug.Log (playerScript.paintColor);
 
-			double shotDistance = (GetScore(playerNumber.ToString(), "score") / maxScore) * (gridScript.height - 5);
-			StartCoroutine( ShootAfterDelay ((float)5, shotDistance, thisPlayer));
+            playerScript.setColor(playerScript.colorChoiceNumber);
 
-			playerNumber++;
-		}
+
+            double shotDistance = (GetScore(playerScript.PlayerNumber.ToString(), "kills") / maxScore) * (gridScript.height - 5);
+            StartCoroutine(ShootAfterDelay(4.0f, shotDistance, thisPlayer,false));
+            shotDistance = (GetScore(playerScript.PlayerNumber.ToString(), "score") / maxScore) * (gridScript.height - 5);
+            StartCoroutine(ShootAfterDelay(8.0f, shotDistance, thisPlayer,true));
+
+        }
 
 		myGameState = gameState.SetUpScoreboard;
 		gridScript.resetGrid();
 
 	}
 
-	public IEnumerator ShootAfterDelay (float delay, double distance, GameObject player) {
+	public IEnumerator ShootAfterDelay (float delay, double distance, GameObject player, bool second) {
 		Debug.Log ("shoot after delay called");
 		float timeRemaining = delay;
 
@@ -309,7 +312,10 @@ public class ScoreManager : MonoBehaviour {
 		Debug.Log ("SHOT!!");
 		var playerScript = player.GetComponent<playerClass> ();
 		playerScript.scoreboardShoot(distance);
-		StartCoroutine (MoveBackToStartAfterDelay ((float)4, (float)4));
+        if (second)
+        {
+            StartCoroutine(MoveBackToStartAfterDelay(4.0f, 4.0f));
+        }
 	}
 
 	public IEnumerator MoveBackToStartAfterDelay (float delay1, float delay2) {

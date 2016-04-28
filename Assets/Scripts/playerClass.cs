@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Text;
+using System;
 
 public class playerClass : MonoBehaviour {
     public bool IS_LOCALLY_CONTROLLED;
@@ -46,6 +47,7 @@ public class playerClass : MonoBehaviour {
     public GameObject projectileParent;
     public GameObject explosion;
     public int colorNumber;
+    public int colorChoiceNumber;           //BE SURE TO SET THIS UPON INSTANTIATION OF NEW PLAYER
     public Color normal;
     public Color paintColor;
     public Color lightColor;
@@ -108,6 +110,7 @@ public class playerClass : MonoBehaviour {
         Debug.Log("Start was called");
         if (IS_LOCALLY_CONTROLLED) {
             colorNumber = PlayerNumber - 1;
+            colorChoiceNumber = colorNumber;
         }
         setColor(colorNumber);
 		originalPaintColor = Constants.paintColors [colorNumber];
@@ -439,7 +442,10 @@ public class playerClass : MonoBehaviour {
             shootSource.Play();
             StartCoroutine(fireAnimation());
             paintUnderMe(3);
-            GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized * offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+            Vector3 temp = transform.position + direction.normalized * offset;
+            float x = Mathf.Round(temp.x / gridSize)*gridSize;
+            float y = Mathf.Round(temp.y / gridSize)*gridSize;
+            GameObject paint = Instantiate(projectileParent, new Vector3(x, y) , Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
             projectileParent parent = paint.GetComponent<projectileParent>();
             myProjectile = paint;
             parent.myColor = paintColor;
@@ -599,12 +605,8 @@ public class playerClass : MonoBehaviour {
     public void shadeChange()
     {
         //TODO:  Set the index of the shade change by the order I am in the team
-
-        float index = ScoreManager.Instance.currentColors[teamNum].IndexOf(PlayerNumber.ToString());
-        Debug.Log("stuff");
-        Debug.Log(ScoreManager.Instance.currentColors[teamNum]);
-        Debug.Log("the Index is: ");
-        Debug.Log(index);
+        Predicate<string> findMe = (string p) => { return p == PlayerNumber.ToString(); };
+        float index = ScoreManager.Instance.currentColors[teamNum-1].FindIndex(findMe);
         if (index >= 4.0f)
         {
             normal = setSaturation(Constants.paintColors[colorNumber], -colorShift * (index - 3.0f));
