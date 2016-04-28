@@ -15,6 +15,8 @@ public class ScoreManager : MonoBehaviour {
 	public static ScoreManager Instance;
 	public GameObject playerPrefab;
 	private GameObject ScoreboardCanvas;
+	public enum gameState {Gameplay, SetUpScoreboard, ExecuteScoreboard, Reset};
+	public gameState myGameState;
 
 	Dictionary< string, Dictionary<string, int> > playerScores;
     public List<int> conversionScores;
@@ -32,10 +34,15 @@ public class ScoreManager : MonoBehaviour {
 
     int numPlayers;
 
+	public double gridCenter;
+	public double spaceBetweenPlayers;
+	public double leftStart;
+
 	void Awake() {
 		Debug.Log ("Awake");
 		ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
 		ScoreboardCanvas.GetComponent<CanvasGroup>().alpha = 0f;
+
 		if (Instance == null) {
 			Debug.Log ("null instance");
 			// DontDestroyOnLoad (gameObject);
@@ -46,6 +53,11 @@ public class ScoreManager : MonoBehaviour {
 			startGame ();
 		}
 			
+		var gridScript = Grid.GetComponent<gridController>();
+		gridCenter = Grid.transform.position.x + gridScript.width/2.0;
+		spaceBetweenPlayers = 2;
+		leftStart = gridCenter - spaceBetweenPlayers * (numPlayers / 2.0);
+
 	}
 
 	void resetCurrentColors() {
@@ -81,6 +93,7 @@ public class ScoreManager : MonoBehaviour {
 			Debug.Log ("adding current colors");
             currentColors.Add(playerNumber - 1, playerList);
         }
+		myGameState = gameState.Gameplay;
     }
 
 	void Start() {
@@ -170,27 +183,28 @@ public class ScoreManager : MonoBehaviour {
 		checkEndCondition ();
     }
 
-	IEnumerator LoadRoundAfterDelay (float delay, GameObject timer) {
+	IEnumerator RestartRoundAfterDelay (float delay, GameObject timer) {
 		float timeRemaining = delay;
 		while (timeRemaining > 0) {
-			timer.GetComponent<UnityEngine.UI.Text> ().text = ((int)timeRemaining).ToString();
+			// timer.GetComponent<UnityEngine.UI.Text> ().text = ((int)timeRemaining).ToString();
 			yield return new WaitForSeconds (1);
 			timeRemaining--;
 		}
         Debug.Log("starting new game");
+		myGameState = gameState.Gameplay;
 		// SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 
-	IEnumerator LoadSceneAfterDelay (float delay, GameObject timer) {
-		float timeRemaining = delay;
-		while (timeRemaining > 0) {
-			timer.GetComponent<UnityEngine.UI.Text> ().text = ((int)timeRemaining).ToString();
-			yield return new WaitForSeconds (1);
-			timeRemaining--;
-		}
-		Debug.Log("starting new game");
-		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-	}
+//	IEnumerator LoadSceneAfterDelay (float delay, GameObject timer) {
+//		float timeRemaining = delay;
+//		while (timeRemaining > 0) {
+//			timer.GetComponent<UnityEngine.UI.Text> ().text = ((int)timeRemaining).ToString();
+//			yield return new WaitForSeconds (1);
+//			timeRemaining--;
+//		}
+//		Debug.Log("starting new game");
+//		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+//	}
 
     public void checkEndCondition()
     {
@@ -213,14 +227,17 @@ public class ScoreManager : MonoBehaviour {
 			if (roundNumber < numRounds) {
 				roundNumber += 1;
 				SaveScoresBetweenRounds ();
+				destroyProjectiles ();
 				resetPlayerPositionsForScoreboard ();
 
 				// ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
 				// ScoreboardCanvas.GetComponent<CanvasGroup> ().alpha = 1f;
 				// Debug.Log ("set scoreboard visible");
 				resetCurrentColors ();
+
+				//TODO do this only after finished displaying the scores
 				GameObject timer = GameObject.Find ("Timer");
-				StartCoroutine (LoadSceneAfterDelay (delayBetweenRounds, timer)); 
+				// StartCoroutine (RestartRoundAfterDelay (delayBetweenRounds, timer)); 
 			} else {
 				// ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
 				// ScoreboardCanvas.GetComponent<CanvasGroup> ().alpha = 1f;
@@ -234,36 +251,53 @@ public class ScoreManager : MonoBehaviour {
 			
     }
 
+	private void destroyProjectiles() {
+		var gameObjects = GameObject.FindGameObjectsWithTag ("paint");
+
+		for(var i = 0 ; i < gameObjects.Length ; i ++)
+		{
+			Destroy(gameObjects[i]);
+		}
+	}
+
 	private void resetPlayerPositionsForScoreboard() {
 		var gridScript = Grid.GetComponent<gridController>();
-		double gridCenter = Grid.transform.position.x + gridScript.width/2.0;
-		double spaceBetweenPlayers = 2;
-		double leftStart = gridCenter - spaceBetweenPlayers * (numPlayers / 2.0);
 
 		int playerNumber = 1;
+		double maxScore = 0;
 		while (playerNumber <= numPlayers) {
-			GameObject thisPlayer = GameObject.Find ("player" + playerNumber);
-			var thisPlayerScript = thisPlayer.GetComponent<playerClass> ();
-
-			Vector3 position = new Vector3((float)(leftStart + spaceBetweenPlayers * (playerNumber - 1)), (float)1.5,(float)0);
-			GameObject fakePlayer = Instantiate(playerPrefab, position, Quaternion.identity) as GameObject;
-
-			var playerScript = fakePlayer.GetComponent<playerClass> ();
-			playerScript.PlayerNumber = playerNumber;
-			playerScript.paintColor = thisPlayerScript.originalPaintColor;
-			playerScript.originalLightColor = thisPlayerScript.originalLightColor;
-			Debug.Log ("reset player " + playerNumber);
-			StartCoroutine( ShootAfterDelay ((float)2, (float)1, fakePlayer));
-
-			Destroy (thisPlayer);
+			if (playerScores [playerNumber.ToString ()] ["score"] > maxScore) {
+				maxScore = playerScores [playerNumber.ToString ()] ["score"];
+			}
 			playerNumber++;
 		}
 
-		//Grid.reset(); TODO
+		playerNumber = 1;
+		while (playerNumber <= numPlayers) {
+			GameObject thisPlayer = GameObject.Find ("player" + playerNumber);
+			var playerScript = thisPlayer.GetComponent<playerClass> ();
+
+			playerScript.paintColor = playerScript.originalPaintColor;
+			playerScript.lightColor = playerScript.originalLightColor;
+			playerScript.fired = playerScript.originalFiredColor;
+			playerScript.light.color = playerScript.lightColor;
+
+			Debug.Log ("reset player " + playerNumber);
+			Debug.Log (playerScript.originalPaintColor);
+			Debug.Log (playerScript.paintColor);
+
+			double shotDistance = (GetScore(playerNumber.ToString(), "score") / maxScore) * (gridScript.height - 5);
+			StartCoroutine( ShootAfterDelay ((float)5, shotDistance, thisPlayer));
+
+			playerNumber++;
+		}
+
+		myGameState = gameState.SetUpScoreboard;
+		gridScript.resetGrid();
 
 	}
 
-	IEnumerator ShootAfterDelay (float delay, float distance, GameObject player) {
+	public IEnumerator ShootAfterDelay (float delay, double distance, GameObject player) {
 		Debug.Log ("shoot after delay called");
 		float timeRemaining = delay;
 
@@ -275,8 +309,32 @@ public class ScoreManager : MonoBehaviour {
 
 		Debug.Log ("SHOT!!");
 		var playerScript = player.GetComponent<playerClass> ();
-		playerScript.scoreboardShoot();
+		playerScript.scoreboardShoot(distance);
+		StartCoroutine (MoveBackToStartAfterDelay ((float)4, (float)4));
+	}
 
+	public IEnumerator MoveBackToStartAfterDelay (float delay1, float delay2) {
+		float timeRemaining = delay1 + delay2;
+
+		while (timeRemaining > delay1) {
+			// timer.GetComponent<UnityEngine.UI.Text> ().text = ((int)timeRemaining).ToString();
+			yield return new WaitForSeconds (1);
+			timeRemaining--;
+		}
+			
+		myGameState = gameState.Reset;
+		var gridScript = Grid.GetComponent<gridController>();
+		gridScript.resetGrid ();
+		Debug.Log ("game state reset");
+
+		while (timeRemaining > 0) {
+			// timer.GetComponent<UnityEngine.UI.Text> ().text = ((int)timeRemaining).ToString();
+			yield return new WaitForSeconds (1);
+			timeRemaining--;
+		}
+			
+		myGameState = gameState.Gameplay;
+		Debug.Log ("game state gameplay");
 	}
 
     public string[] GetPlayerNames() {

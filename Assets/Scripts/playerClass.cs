@@ -49,9 +49,10 @@ public class playerClass : MonoBehaviour {
     public Color normal;
     public Color paintColor;
     public Color lightColor;
+    public Color fired;
 	public Color originalPaintColor;
 	public Color originalLightColor;
-    public Color fired;
+	public Color originalFiredColor;
     public Light light;
     private float normalIntensity;
     ScoreManager scoreManager;
@@ -64,6 +65,7 @@ public class playerClass : MonoBehaviour {
 
     private Vector3 oldInput = new Vector3(0, 0);
     private float nextTaunt = 0.0f;
+	private double speed = 1.0;
 
     // network data
     private Vector3 lastNetworkInputLeftEvent = new Vector3(0, 0);
@@ -72,6 +74,9 @@ public class playerClass : MonoBehaviour {
     private int networkPlayerId = -1;
 
     private bool hasReceievedNetworkInitData = false;
+
+	private Vector3 originalPosition;
+	private Vector3 scoreboardPosition;
 
     // setup our OnEvent as callback:
     void Awake() {
@@ -90,6 +95,7 @@ public class playerClass : MonoBehaviour {
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         light = gameObject.GetComponentInChildren<Light>();
         normalIntensity = light.intensity;
+		originalPosition = new Vector3(this.transform.position.x, this.transform.position.y);
     }
 
     void OnDestroy() {
@@ -103,8 +109,12 @@ public class playerClass : MonoBehaviour {
             colorNumber = PlayerNumber - 1;
         }
         setColor(colorNumber);
+		originalPaintColor = Constants.paintColors [colorNumber];
+		originalLightColor = Constants.lightColors [colorNumber];
+		originalFiredColor = Constants.firedColors [colorNumber];
         paintUnderMe(10);
         scoreManager = GameObject.FindObjectOfType<ScoreManager>();
+		scoreboardPosition = new Vector3((float)(scoreManager.leftStart + scoreManager.spaceBetweenPlayers * (PlayerNumber - 1)), (float)1.5,(float)0);
     }
 
     void Update() {
@@ -112,12 +122,51 @@ public class playerClass : MonoBehaviour {
             grid = GameObject.FindGameObjectWithTag("gridGameObject");
         }
 
-        if (IS_LOCALLY_CONTROLLED) {
-            doLocalUpdate();
-        } else {
-            doNetworkUpdate();
-        }
+		switch (scoreManager.myGameState) 
+		{
+		case ScoreManager.gameState.Gameplay:
+			if (IS_LOCALLY_CONTROLLED) {
+				doLocalUpdate ();
+			} else {
+				doNetworkUpdate ();
+			}
+			break;
+		case ScoreManager.gameState.SetUpScoreboard:
+			setUpScoreboard ();
+			break;
+		case ScoreManager.gameState.ExecuteScoreboard:
+			executeScoreboard ();
+			break;
+		case ScoreManager.gameState.Reset:
+			playerReset ();
+			break;
+		}
     }
+
+	void playerReset () {
+		Debug.Log ("playerReset called");
+		// Debug.Log (Time.deltaTime);
+		double distToTarget = (this.transform.position - originalPosition).magnitude;
+		if (distToTarget == 0) {
+			paintUnderMe(10);
+		}
+
+		this.transform.position = Vector3.MoveTowards(this.transform.position, originalPosition, (float)10.0 * Time.deltaTime); 
+	}
+
+	void setUpScoreboard () {
+		// Debug.Log ("setupScoreboard called");
+		// Debug.Log (Time.deltaTime);
+		double distToTarget = (this.transform.position - scoreboardPosition).magnitude;
+
+		this.transform.position = Vector3.MoveTowards(this.transform.position, scoreboardPosition, (float)10.0 * Time.deltaTime); 
+	}
+
+	// TODO if we want the player to move up with the score, and do separate shots for 'previous round' score,
+	// score from kills this round, and score from being on the winning team early.
+	void executeScoreboard () {
+		
+	}
 
     /// <summary>
     ///  Using the dual joystick control scheme.
@@ -402,7 +451,7 @@ public class playerClass : MonoBehaviour {
 
     }
 
-	public void scoreboardShoot() {
+	public void scoreboardShoot(double distance) {
 		// bool fireButton;
 		// if (!IS_LOCALLY_CONTROLLED) {
 			// read from the last event
@@ -429,6 +478,7 @@ public class playerClass : MonoBehaviour {
 		parent.teamNum = teamNum;
 		parent.playerNumber = PlayerNumber;
 		parent.colorNumber = colorNumber;
+		parent.shotDistance = distance;
 		// }
 
 	}
@@ -526,10 +576,8 @@ public class playerClass : MonoBehaviour {
         spriteRenderer.color = normal;
         fired = Constants.firedColors[i];
         lightColor = Constants.lightColors[i];
-		originalLightColor = lightColor;
         light.color = lightColor;
         paintColor = Constants.paintColors[i];
-		originalPaintColor = paintColor;
 
         // send the color change event to the player
         if (!IS_LOCALLY_CONTROLLED) {

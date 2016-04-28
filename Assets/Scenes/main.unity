@@ -315,7 +315,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: playerSpeed
-      value: 3
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 11496436, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
       propertyPath: fireRate
@@ -1336,10 +1336,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 129322, guid: 056a8b79cb3d74f479847abdfae3c3db, type: 2}
+  myGameState: 0
   conversionScores: 0a000000060000000300000003000000020000000200000001000000010000000100000000000000
   numRounds: 3
   delayBetweenRounds: 8
   Grid: {fileID: 1569415822}
+  gridCenter: 0
+  spaceBetweenPlayers: 0
+  leftStart: 0
 --- !u!4 &997709056
 Transform:
   m_ObjectHideFlags: 0
@@ -2144,19 +2148,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 154.5
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -17.5
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 309
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchorMin.x
@@ -2164,7 +2168,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchorMax.x
@@ -2172,7 +2176,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22449688, guid: 0b94de4155a985f48863a7aa2ed7b1a5, type: 2}
       propertyPath: m_Pivot.x

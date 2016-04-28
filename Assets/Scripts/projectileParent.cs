@@ -10,6 +10,7 @@ public class projectileParent : MonoBehaviour {
     public int playerNumber;
     public int teamNum;
     public int colorNumber;
+	public double shotDistance;
     // Use this for initialization
     void Start () {
         for (int i = 0; i < positionArray.Length; i++)
@@ -22,7 +23,8 @@ public class projectileParent : MonoBehaviour {
             shot.teamNum = teamNum;
             shot.playerNumber = playerNumber;
             shot.colorNumber = colorNumber;
-
+			shot.distance = (float) shotDistance;
+			// this.tag = "projectile";
         }
 	}
 	

@@ -75,13 +75,21 @@ MonoBehaviour:
   myColor: {r: 1, g: 1, b: 1, a: 0}
   grid: {fileID: 0}
   explosion: {fileID: 186792, guid: 688cc15adb1336e45bac5aaf98f7d71b, type: 2}
+  playerNumber: 0
+  teamNum: 0
+  colorNumber: 0
+  shotDistance: 5
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: shotDistance
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 198766}
