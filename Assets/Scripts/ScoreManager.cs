@@ -30,7 +30,7 @@ public class ScoreManager : MonoBehaviour {
 
 	public GameObject Grid;
 
-    Dictionary<int, List<string>> currentColors;
+    public Dictionary<int, List<string>> currentColors;
 
     int numPlayers;
 
@@ -39,7 +39,6 @@ public class ScoreManager : MonoBehaviour {
 	public double leftStart;
 
 	void Awake() {
-		Debug.Log ("Awake");
 		ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
 		ScoreboardCanvas.GetComponent<CanvasGroup>().alpha = 0f;
 
