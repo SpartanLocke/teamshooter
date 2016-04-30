@@ -13,7 +13,15 @@ public class MenuUiController : MonoBehaviour {
     public void onStartAsServerButtonPressed() {
         ConnectAndJoinRandom.setJoinRandomRooms(true);
         Debug.Log("started as server");
-        SceneManager.LoadScene("main");
+        //SceneManager.LoadScene("main");
+        StartCoroutine(LoadLevel("main"));
+    }
+
+
+    IEnumerator LoadLevel(string levelName)
+    {
+        yield return StartCoroutine(CameraFade.GetCameraFade().WaitForCameraFade(true));
+        SceneManager.LoadScene(levelName);
     }
 
     public void onControllerColorValueChanged(int value) {

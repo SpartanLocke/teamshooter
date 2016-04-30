@@ -148,13 +148,14 @@ public class playerClass : MonoBehaviour {
     }
 
 	void playerReset () {
-		// Debug.Log (Time.deltaTime);
-		double distToTarget = (this.transform.position - originalPosition).magnitude;
+        // Debug.Log (Time.deltaTime);
+        Vector3 targetPosition = scoreManager.currentLevel.transform.GetChild(1).GetChild(PlayerNumber-1).transform.position;
+		double distToTarget = (transform.position - targetPosition).magnitude;
 		if (distToTarget == 0) {
 			paintUnderMe(10);
 		}
 
-		this.transform.position = Vector3.MoveTowards(this.transform.position, originalPosition, (float)10.0 * Time.deltaTime); 
+		transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, (float)10.0 * Time.deltaTime); 
 	}
 
 	void setUpScoreboard () {
@@ -645,7 +646,7 @@ public class playerClass : MonoBehaviour {
             //coll.transform.parent.gameObject.GetComponentInParent<playerClass>().shadeChange();
             GameObject hitIndicator = Instantiate(explosion, transform.position, Quaternion.identity) as GameObject;
             hitIndicator.GetComponent<ParticleSystem>().startColor = paintColor;
-            
+            paintUnderMe(4);
             if (scoreManager != null) {
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "deaths", 1);
                 scoreManager.changeColorCount(teamNum, coll.gameObject.GetComponent<shotMovement>().teamNum, PlayerNumber.ToString());
@@ -654,7 +655,12 @@ public class playerClass : MonoBehaviour {
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "kills", 1);
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "score", 1);
             }
-            shadeChange();
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
+            {
+                player.GetComponent<playerClass>().shadeChange();
+            }
+            
 
         }
     }

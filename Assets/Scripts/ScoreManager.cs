@@ -15,14 +15,14 @@ public class ScoreManager : MonoBehaviour {
 	public static ScoreManager Instance;
 	public GameObject playerPrefab;
 	private GameObject ScoreboardCanvas;
-	public enum gameState {Gameplay, SetUpScoreboard, ExecuteScoreboard, Reset};
+	public enum gameState {Gameplay, SetUpScoreboard, ExecuteScoreboard, Reset, Wait};
 	public gameState myGameState;
 
 	Dictionary< string, Dictionary<string, int> > playerScores;
     public List<int> conversionScores;
 
 	int changeCounter = 0;
-	int roundNumber;
+	public int roundNumber;
 
 	public int numRounds;
 
@@ -38,7 +38,25 @@ public class ScoreManager : MonoBehaviour {
 	public double spaceBetweenPlayers;
 	public double leftStart;
 
+    private bool final;
+
+    /*-------------------   Scoreboard UI Objects                   ------------------------------*/
+
+    public GameObject countdown;
+    public GameObject ScoreText;
+
+
+    /*---------------------------------------------------------------------*/
+    public GameObject[] levels;
+    public GameObject currentLevel;
+
+
+
 	void Awake() {
+        final = false;
+
+
+
 		ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
 		ScoreboardCanvas.GetComponent<CanvasGroup>().alpha = 0f;
 
@@ -92,7 +110,13 @@ public class ScoreManager : MonoBehaviour {
 			Debug.Log ("adding current colors");
             currentColors.Add(playerNumber - 1, playerList);
         }
-		myGameState = gameState.Gameplay;
+        myGameState = gameState.Wait;
+    }
+
+    public void startGameButton()
+    {
+        Debug.Log("pressed");
+        StartCoroutine(MoveBackToStartAfterDelay(0.0f, 1.5f));
     }
 
 	void Start() {
@@ -189,7 +213,8 @@ public class ScoreManager : MonoBehaviour {
 			yield return new WaitForSeconds (1);
 			timeRemaining--;
 		}
-        Debug.Log("starting new game");
+        //Debug.Log("starting new game");
+        
 		myGameState = gameState.Gameplay;
 		// SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
@@ -225,8 +250,10 @@ public class ScoreManager : MonoBehaviour {
 		if (endCondition) {
 			if (roundNumber < numRounds) {
 				roundNumber += 1;
+                
                 StartCoroutine(scoreboard());
 			} else {
+                final = true;
 				// ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
 				// ScoreboardCanvas.GetComponent<CanvasGroup> ().alpha = 1f;
 				// GameObject.Find ("Reset Button").SetActive (true);
@@ -234,15 +261,20 @@ public class ScoreManager : MonoBehaviour {
 				// GameObject resetButton = GameObject.Find("ResetButton");
 				// resetButton.SetActive (true);
 				Debug.Log ("final round");
-			}
+                StartCoroutine(scoreboard());
+            }
 		}
 			
     }
-
+    public void ScoreboardTestButton()
+    {
+        StartCoroutine(scoreboard());
+    }
     IEnumerator scoreboard()
     {
         yield return new WaitForSeconds(1);
         SaveScoresBetweenRounds();
+        Destroy(currentLevel);
         destroyProjectiles();
         resetPlayerPositionsForScoreboard();
 
@@ -268,79 +300,141 @@ public class ScoreManager : MonoBehaviour {
 	private void resetPlayerPositionsForScoreboard() {
 		var gridScript = Grid.GetComponent<gridController>();
 
-		int playerNumber = 1;
-		double maxScore = 0;
-		while (playerNumber <= numPlayers) {
-			if (playerScores [playerNumber.ToString ()] ["score"] > maxScore) {
-				maxScore = playerScores [playerNumber.ToString ()] ["score"];
-			}
-			playerNumber++;
-		}
-
+		
+        double maxScore = 0;
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
+        foreach(GameObject thisPlayer in players)
+        {
+            var playerNumber = thisPlayer.GetComponent<playerClass>().PlayerNumber;
+            if (playerScores[playerNumber.ToString()]["score"] > maxScore)
+            {
+                maxScore = playerScores[playerNumber.ToString()]["score"];
+            }
+        }
         foreach(GameObject thisPlayer in players)
         {
             var playerScript = thisPlayer.GetComponent<playerClass>();
-
+            var playerNumber = playerScript.PlayerNumber;
+            
 
             playerScript.setColor(playerScript.colorChoiceNumber);
 
-
+            
             double shotDistance = (GetScore(playerScript.PlayerNumber.ToString(), "kills") / maxScore) * (gridScript.height - 5);
-            StartCoroutine(ShootAfterDelay(4.0f, shotDistance, thisPlayer,false));
+            StartCoroutine(ShootAfterDelay(4.0f, shotDistance, thisPlayer,false,true));
+            if (playerScores[playerNumber.ToString()]["score"] == maxScore)
+            {
+                shotDistance = (GetScore(playerScript.PlayerNumber.ToString(), "score") / maxScore) * (gridScript.height - 5);
+                StartCoroutine(ShootAfterDelay(8.0f, shotDistance, thisPlayer, true, true));
+            }
             shotDistance = (GetScore(playerScript.PlayerNumber.ToString(), "score") / maxScore) * (gridScript.height - 5);
-            StartCoroutine(ShootAfterDelay(8.0f, shotDistance, thisPlayer,true));
-
+            StartCoroutine(ShootAfterDelay(8.0f, shotDistance, thisPlayer,true,false));
+            
+            
         }
-
-		myGameState = gameState.SetUpScoreboard;
+        StartCoroutine(scaleAfterDelay(ScoreText,"Kills", .1f, 1f, .08f, 3.0f, true, 10.0f,.08f,2.5f));
+        if (final)
+        {
+            StartCoroutine(scaleAfterDelay(ScoreText, "Final Score", .1f, 1f, .08f, 6.3f, true, 10.0f, .08f, 5.0f));
+        }
+        else
+        {
+            StartCoroutine(scaleAfterDelay(ScoreText, "Time On Winning Team", .1f, 1f, .08f, 6.3f, true, 10.0f, .08f, 3.0f));
+        }
+        myGameState = gameState.SetUpScoreboard;
 		gridScript.resetGrid();
 
 	}
 
-	public IEnumerator ShootAfterDelay (float delay, double distance, GameObject player, bool second) {
+	public IEnumerator ShootAfterDelay (float delay, double distance, GameObject player, bool second,bool max) {
 		Debug.Log ("shoot after delay called");
 		float timeRemaining = delay;
 
-		while (timeRemaining > 0) {
-			// timer.GetComponent<UnityEngine.UI.Text> ().text = ((int)timeRemaining).ToString();
-			yield return new WaitForSeconds (1);
-			timeRemaining--;
-		}
+        yield return new WaitForSeconds(delay);
 
 		Debug.Log ("SHOT!!");
 		var playerScript = player.GetComponent<playerClass> ();
 		playerScript.scoreboardShoot(distance);
-        if (second)
+        if (second&&max&& !final)
         {
-            StartCoroutine(MoveBackToStartAfterDelay(4.0f, 4.0f));
+            StartCoroutine(MoveBackToStartAfterDelay(4.0f, 1.5f));
+        }
+        else if (second && final)
+        {
+            yield return new WaitForSeconds(4.0f);
+            StartCoroutine(LoadLevel("controller menu"));
         }
 	}
+    IEnumerator LoadLevel(string levelName)
+    {
+        yield return StartCoroutine(CameraFade.GetCameraFade().WaitForCameraFade(true));
+        SceneManager.LoadScene(levelName);
+    }
 
-	public IEnumerator MoveBackToStartAfterDelay (float delay1, float delay2) {
+    public IEnumerator MoveBackToStartAfterDelay (float delay1, float delay2) {
 		float timeRemaining = delay1 + delay2;
 
-		while (timeRemaining > delay1) {
-			// timer.GetComponent<UnityEngine.UI.Text> ().text = ((int)timeRemaining).ToString();
-			yield return new WaitForSeconds (1);
-			timeRemaining--;
-		}
-			
+        yield return new WaitForSeconds(delay1);
+
+        //Load a new level;
+        if (roundNumber != 1)
+        {
+            currentLevel = Instantiate(levels[Random.Range(0, levels.Length)]) as GameObject;
+        }
+        
+
 		myGameState = gameState.Reset;
 		var gridScript = Grid.GetComponent<gridController>();
 		gridScript.resetGrid ();
 		Debug.Log ("game state reset");
 
-		while (timeRemaining > 0) {
-			// timer.GetComponent<UnityEngine.UI.Text> ().text = ((int)timeRemaining).ToString();
-			yield return new WaitForSeconds (1);
-			timeRemaining--;
-		}
-			
-		myGameState = gameState.Gameplay;
+        yield return new WaitForSeconds(delay2);
+        StartCoroutine(scaleAfterDelay(countdown, "3", .1f, 1f, .15f,0, true, 10.0f,.15f, 0.1f));
+        yield return new WaitForSeconds(1.0f);
+        StartCoroutine(scaleAfterDelay(countdown, "2", .1f, 1f, .15f, 0, true, 10.0f, .15f, 0.1f));
+        yield return new WaitForSeconds(1.0f);
+        StartCoroutine(scaleAfterDelay(countdown, "1", .1f, 1f, .15f, 0, true, 10.0f, .15f, 0.1f));
+        yield return new WaitForSeconds(1.0f);
+        StartCoroutine(scaleAfterDelay(countdown, "GO!", .1f, 1f, .15f, 0, true, 10.0f, .15f, 0.1f));
+        myGameState = gameState.Gameplay;
 		Debug.Log ("game state gameplay");
 	}
+
+    public IEnumerator scaleAfterDelay(GameObject thing,string Text,float init, float final,float rate,float delay, bool shadow, float shadowLength,float rate2, float delay2)
+    {
+        yield return new WaitForSeconds(delay);
+        int i = 0;
+        setText(thing, Text);
+        thing.transform.localScale = new Vector3(init, init);
+        while (thing.transform.localScale.x < final)
+        {
+            thing.transform.localScale = new Vector3(init+i*rate, init+i*rate);
+            i++;
+            yield return null;
+        }
+        if (shadow)
+        {
+            GameObject newShadow = Instantiate(thing) as GameObject;
+            newShadow.transform.parent = thing.transform.parent;
+            newShadow.transform.position = thing.transform.position;
+            for (int j = 0; j < shadowLength; j++)
+            {
+
+                newShadow.transform.localScale = new Vector3(final + rate2 * j, final + rate2 * j);
+                Color temp = newShadow.GetComponent<Text>().color;
+                temp.a = 1.0f - (j + 1) * 1.0f / shadowLength;
+                newShadow.GetComponent<Text>().color = temp;
+                yield return null;
+            }
+            Destroy(newShadow);
+        }
+        yield return new WaitForSeconds(delay2);
+        setText(thing, "");
+    }
+    public void setText(GameObject ob, string Text)
+    {
+        ob.GetComponent<Text>().text = Text;
+    }
 
     public string[] GetPlayerNames() {
 		Init ();

@@ -38,9 +38,21 @@ public class MenuButtonFunctions : MonoBehaviour {
 
     public void disableAll()
     {
-        UI.SetActive(false);
+        //UI.SetActive(false);
         colorSelect.SetActive(false);
         lobbySelectButtons.SetActive(false);
         menuButtons.SetActive(false);
     }
+
+    public void load(string asdf)
+    {
+        StartCoroutine(LoadLevel(asdf));
+    }
+
+    IEnumerator LoadLevel(string levelName)
+    {
+        yield return StartCoroutine(CameraFade.GetCameraFade().WaitForCameraFade(true));
+        Application.LoadLevel(levelName);
+    }
+
 }
