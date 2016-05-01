@@ -5,6 +5,7 @@ using System;
 
 public class playerClass : MonoBehaviour {
     public bool IS_LOCALLY_CONTROLLED;
+    public int PlayerNumber;
     public int tauntNum;
     public float playerSpeed; //speed player moves
     public float playerSpeedAlt;
@@ -12,7 +13,6 @@ public class playerClass : MonoBehaviour {
     public float delayTime;
     public bool dodgeAbility;
     public bool dodging;
-    public int PlayerNumber;
     public AudioClip shootSound;
     public AudioClip convertSound;
     private AudioSource[] source;
@@ -675,6 +675,10 @@ public class playerClass : MonoBehaviour {
         return networkPlayerId;
     }
 
+    private bool isAcceptingNetworkActions() {
+        return true;
+    }
+
     // handle events
     private void OnPhotonNetworkEvent(byte eventcode, object content, int senderid) {
         // everything is in json format
@@ -691,7 +695,7 @@ public class playerClass : MonoBehaviour {
         switch (eventcode) {
             // player input for 0
             case Constants.PLAYER_INPUT_EVENT_CODE:
-                if (PlayerNetworkStatusHandler.isGameStarted) {
+                if (isAcceptingNetworkActions()) {
                     byteContent = (byte[])content;
                     contentStringJson = Encoding.UTF8.GetString(byteContent);
                     PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
@@ -703,7 +707,10 @@ public class playerClass : MonoBehaviour {
                 break;
 
             case Constants.PLAYER_TAUNT_EVENT_CODE:
-                taunt();
+                //Debug.Log("got network taunt");
+                if (isAcceptingNetworkActions()) {
+                    taunt();
+                }
                 break;
 
             case Constants.PLAYER_DATA_INIT_EVENT_CODE:

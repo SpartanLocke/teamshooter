@@ -27,9 +27,6 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
         }
     }
 
-    void Start() {
-    }
-
     public void Update() {
         if (Input.GetKeyDown(KeyCode.Escape)) {
             Debug.Log("escape button pressed. going back to main menu");
@@ -44,19 +41,19 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
             }
         }
 
-        if (!isGameStarted) {
-            // we're waiting on the server person to pop off
-            if (Input.GetKeyDown(KeyCode.F)) {
-                PlayerNetworkStatusHandler.isGameStarted = true;
-                ScoreManager.Instance.startGame();
-                // hide the prompt, if its there
-                if (hideableStartGamePrompt != null) {
-                    hideableStartGamePrompt.SetActive(false);
-                } else {
-                    Debug.Log("couldn't hide the null hideable prompt");
-                }
-            }
-        }
+        //if (!isGameStarted) {
+        //    // we're waiting on the server person to pop off
+        //    if (Input.GetKeyDown(KeyCode.F)) {
+        //        PlayerNetworkStatusHandler.isGameStarted = true;
+        //        ScoreManager.Instance.startGame();
+        //        // hide the prompt, if its there
+        //        if (hideableStartGamePrompt != null) {
+        //            hideableStartGamePrompt.SetActive(false);
+        //        } else {
+        //            Debug.Log("couldn't hide the null hideable prompt");
+        //        }
+        //    }
+        //}
     }
 
     private void sendPlayerInitDataRequest() {
@@ -117,22 +114,9 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player) {
         Debug.Log("player left!");
-
-//        int playerId = player.ID;
-        // destroy the player that left
-
-//        GameObject[] gos = GameObject.FindGameObjectsWithTag("Player");
-//        foreach (GameObject go in gos) {
-//            playerClass playerScript = go.GetComponent<playerClass>();
-//            if (playerScript.getNetworkPlayerId() == playerId) {
-//                Destroy(playerScript.gameObject);
-//                return;
-//            }
-//        }
-
-//         Debug.Log("Couldn't destroy player with id: " + playerId);
     }
 
+    int nextPlayerNumber = 0;
     private void spawnPlayer(int playerId) {
         if (spawnedPlayersTable.Contains(playerId)) {
             // skip it
@@ -141,6 +125,7 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
         }
 
         spawnedPlayersTable.Add(playerId);
+        nextPlayerNumber++;
 		Vector3 spawnpoint = spawnpointsPrefab.transform.GetChild(count).transform.position;
 		if (count < 8) {
 			count++;
@@ -148,18 +133,12 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 			Debug.Log("too many players counter reset to 0");
 			count = 0;
 		}
-
-//        float randomX = Random.Range(1, gridController.width - 1);
-//        float randomY = Random.Range(1, gridController.height - 1);
-
 		GameObject playerGameObject = Instantiate(playerPrefab, spawnpoint, Quaternion.identity) as GameObject;
 
         // initialize the player values
         playerClass playerScript = playerGameObject.GetComponent<playerClass>();
         playerScript.setNetworkPlayerId(playerId);
         playerScript.IS_LOCALLY_CONTROLLED = false;
-
-        // set the color to red to start since we don't know the player color yet
-        //playerScript.setColor(0);
+        playerScript.PlayerNumber = nextPlayerNumber;
     }
 }

@@ -30,7 +30,6 @@ public class PlayerVirtualJoystickInputController : MonoBehaviour {
         setControllerColor(STARTING_PLAYER_COLOR);
     }
 
-    // Update is called once per frame
     void Update () {
         if (PhotonNetwork.connectionStateDetailed == PeerState.Joined) {
             float left_x = CnInputManager.GetAxis("HorizontalP1");

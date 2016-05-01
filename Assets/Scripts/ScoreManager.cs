@@ -107,7 +107,7 @@ public class ScoreManager : MonoBehaviour {
             SetScore(username, "deaths", 0);
             List<string> playerList = new List<string>();
             playerList.Add(username);
-			Debug.Log ("adding current colors");
+			//Debug.Log ("adding current colors");
             currentColors.Add(playerNumber - 1, playerList);
         }
         myGameState = gameState.Wait;
@@ -191,16 +191,16 @@ public class ScoreManager : MonoBehaviour {
     public void changeColorCount(int oldTeamNum, int newTeamNum, string username)
 	{
 		
-		Debug.Log (username);
-		Debug.Log (oldTeamNum);
-		Debug.Log (currentColors.Count);
-		foreach(var item in currentColors)
-		{
-			Debug.Log("key: " + item.Key);
-			Debug.Log("value: " + item.Value);
-		}
-		Debug.Log (currentColors [oldTeamNum - 1].Count);
-        Debug.Log(oldTeamNum + " " + newTeamNum + " "+currentColors.Keys.Count);
+		//Debug.Log (username);
+		//Debug.Log (oldTeamNum);
+		//Debug.Log (currentColors.Count);
+		//foreach(var item in currentColors)
+		//{
+		//	Debug.Log("changeColorCount key: " + item.Key);
+		//	Debug.Log("changeColorCount value: " + item.Value);
+		//}
+		//Debug.Log (currentColors [oldTeamNum - 1].Count);
+  //      Debug.Log(oldTeamNum + " " + newTeamNum + " "+currentColors.Keys.Count);
         currentColors[oldTeamNum - 1].Remove(username);
         currentColors [newTeamNum - 1].Add (username);
 		checkEndCondition ();
@@ -347,12 +347,12 @@ public class ScoreManager : MonoBehaviour {
 	}
 
 	public IEnumerator ShootAfterDelay (float delay, double distance, GameObject player, bool second,bool max) {
-		Debug.Log ("shoot after delay called");
+		//Debug.Log ("shoot after delay called");
 		float timeRemaining = delay;
 
         yield return new WaitForSeconds(delay);
 
-		Debug.Log ("SHOT!!");
+		//Debug.Log ("SHOT!!");
 		var playerScript = player.GetComponent<playerClass> ();
 		playerScript.scoreboardShoot(distance);
         if (second&&max&& !final)
@@ -415,7 +415,9 @@ public class ScoreManager : MonoBehaviour {
         if (shadow)
         {
             GameObject newShadow = Instantiate(thing) as GameObject;
-            newShadow.transform.parent = thing.transform.parent;
+            // newShadow.transform.parent = thing.transform.parent;
+            // http://docs.unity3d.com/ScriptReference/Transform.SetParent.html
+            newShadow.transform.SetParent(thing.transform.parent, false);
             newShadow.transform.position = thing.transform.position;
             for (int j = 0; j < shadowLength; j++)
             {
