@@ -55,8 +55,6 @@ public class ScoreManager : MonoBehaviour {
 	void Awake() {
         final = false;
 
-
-
 		ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
 		ScoreboardCanvas.GetComponent<CanvasGroup>().alpha = 0f;
 
@@ -67,7 +65,6 @@ public class ScoreManager : MonoBehaviour {
 			Instance = this;
 			currentColors = new Dictionary<int, List<string>> ();
 			roundNumber = 1;
-			startGame ();
 		}
 			
 		var gridScript = Grid.GetComponent<gridController>();
@@ -94,12 +91,12 @@ public class ScoreManager : MonoBehaviour {
 		}
 	}
 
-    public void startGame()
-    {
+    public void startGame() {
         numPlayers = GameObject.FindGameObjectsWithTag("Player").Length;
+        Debug.Log("startGame() called with " + numPlayers + " players");
+
         int playerNumber = 0;
-        while (playerNumber < numPlayers)
-        {
+        while (playerNumber < numPlayers) {
             playerNumber++;
             string username = playerNumber.ToString();
             SetScore(username, "score", 0);
@@ -113,13 +110,13 @@ public class ScoreManager : MonoBehaviour {
         myGameState = gameState.Wait;
     }
 
-    public void startGameButton()
-    {
-        Debug.Log("pressed");
+    public void startGameButton() {
+        Debug.Log("startGameButton pressed");
+        startGame();
         StartCoroutine(MoveBackToStartAfterDelay(0.0f, 1.5f));
     }
 
-	void Start() {
+    void Start() {
 		//Debug.Log ("Start");
 		ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
 		ScoreboardCanvas.GetComponent<CanvasGroup>().alpha = 0f;
