@@ -363,12 +363,20 @@ public class ScoreManager : MonoBehaviour {
         {
             StartCoroutine(MoveBackToStartAfterDelay(4.0f, 1.5f));
         }
-        else if (second && final)
-        {
+        else if (second && final) {
+            disconnectFromNetworking();
             yield return new WaitForSeconds(4.0f);
             StartCoroutine(LoadLevel("controller menu"));
         }
 	}
+
+    private void disconnectFromNetworking() {
+        Debug.Log("disconnectFromNetworking called");
+        ConnectAndJoinRandom.setJoinRandomRooms(false);
+        PhotonNetwork.LeaveRoom();
+        //PhotonNetwork.Disconnect();
+    }
+
     IEnumerator LoadLevel(string levelName)
     {
         yield return StartCoroutine(CameraFade.GetCameraFade().WaitForCameraFade(true));

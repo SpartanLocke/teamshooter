@@ -723,6 +723,8 @@ public class playerClass : MonoBehaviour {
                     setColor(playerInitEvent.startingColor);
                     Debug.Log("set init color to: " + playerInitEvent.startingColor);
 
+                    colorChoiceNumber = playerInitEvent.startingColor;
+
                     hasReceievedNetworkInitData = true;
                 }
 

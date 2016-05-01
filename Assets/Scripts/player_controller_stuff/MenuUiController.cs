@@ -6,6 +6,10 @@ public class MenuUiController : MonoBehaviour {
     public static int PLAYER_COLOR_CHOICE_VALUE = 0;
     public static string lobbyName = "";
 
+    void Start() {
+        PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
+    }
+
     public void onEditTextChange(string currentLobby) {
         lobbyName = currentLobby;
     }
@@ -14,12 +18,11 @@ public class MenuUiController : MonoBehaviour {
         ConnectAndJoinRandom.setJoinRandomRooms(true);
         Debug.Log("started as server");
         //SceneManager.LoadScene("main");
+        PhotonNetwork.OnEventCall -= this.OnPhotonNetworkEvent;
         StartCoroutine(LoadLevel("main"));
     }
 
-
-    IEnumerator LoadLevel(string levelName)
-    {
+    IEnumerator LoadLevel(string levelName) {
         yield return StartCoroutine(CameraFade.GetCameraFade().WaitForCameraFade(true));
         SceneManager.LoadScene(levelName);
     }
@@ -41,5 +44,10 @@ public class MenuUiController : MonoBehaviour {
 
     public void onBackButtonPressed() {
         SceneManager.LoadScene("controller menu");
+    }
+
+    // handle events
+    private void OnPhotonNetworkEvent(byte eventcode, object content, int senderid) {
+        Debug.Log("got networking event inside the menu!");
     }
 }
