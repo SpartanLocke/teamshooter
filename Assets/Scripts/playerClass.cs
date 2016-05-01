@@ -676,7 +676,7 @@ public class playerClass : MonoBehaviour {
     }
 
     private bool isAcceptingNetworkActions() {
-        return true;
+        return ScoreManager.getInstance().getCurrentGameState() == ScoreManager.gameState.Gameplay;
     }
 
     // handle events

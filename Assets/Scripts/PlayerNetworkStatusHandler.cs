@@ -5,8 +5,6 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 
 public class PlayerNetworkStatusHandler : MonoBehaviour {
-    public static bool isGameStarted = false;
-
     private gridController gridController;
     private HashSet<int> spawnedPlayersTable;
 	private int count = 0;
@@ -18,7 +16,6 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
     void Awake() {
         gridController = GameObject.FindGameObjectWithTag("gridGameObject").GetComponent<gridController>();
 
-        isGameStarted = false;
         spawnedPlayersTable = new HashSet<int>();
 
         if (PhotonNetwork.connectionStateDetailed == PeerState.Joined) {

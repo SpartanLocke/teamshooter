@@ -50,7 +50,10 @@ public class ScoreManager : MonoBehaviour {
     public GameObject[] levels;
     public GameObject currentLevel;
 
-
+    public static ScoreManager getInstance() {
+        // may the lord bless your soul if this isn't initialized yet
+        return Instance;
+    }
 
 	void Awake() {
         final = false;
@@ -73,6 +76,10 @@ public class ScoreManager : MonoBehaviour {
 		leftStart = gridCenter - spaceBetweenPlayers * (numPlayers / 2.0);
 
 	}
+
+    public gameState getCurrentGameState() {
+        return myGameState;
+    }
 
 	void resetCurrentColors() {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -449,4 +456,8 @@ public class ScoreManager : MonoBehaviour {
 	public int GetChangeCounter() {
 		return changeCounter;
 	}
+
+    public gameState getGameState() {
+        return myGameState;
+    }
 }
