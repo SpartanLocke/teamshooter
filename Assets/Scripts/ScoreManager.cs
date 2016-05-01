@@ -374,7 +374,7 @@ public class ScoreManager : MonoBehaviour {
         Debug.Log("disconnectFromNetworking called");
         ConnectAndJoinRandom.setJoinRandomRooms(false);
         PhotonNetwork.LeaveRoom();
-        //PhotonNetwork.Disconnect();
+        PhotonNetwork.Disconnect();
     }
 
     IEnumerator LoadLevel(string levelName)
