@@ -87,12 +87,13 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 
     int nextPlayerNumber = 0;
     private void spawnPlayer(int playerId, int colorChoiceIndex) {
-        Debug.Log("new spawn");
         if (spawnedPlayersTable.Contains(playerId)) {
             // skip it
-            Debug.Log("skipping the repeat spawning of player: " + playerId);
+            Debug.Log("skipping the repeat spawning of network playerid: " + playerId + " with colorChoiceIndex: " + colorChoiceIndex);
             return;
         }
+
+        Debug.Log("new spawn of colorChoiceIndex: " + colorChoiceIndex);
 
         spawnedPlayersTable.Add(playerId);
         nextPlayerNumber++;

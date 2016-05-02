@@ -665,8 +665,6 @@ public class playerClass : MonoBehaviour {
         }
     }
 
-    
-
     public void setNetworkPlayerId(int id) {
         networkPlayerId = id;
     }
@@ -739,13 +737,10 @@ public class playerClass : MonoBehaviour {
         // color change
         byte[] content = colorEvent.getBytes();
 
-        sendNetworkEvent(Constants.PLAYER_COLOR_CHANGE_EVENT_CODE, content);
+        sendNetworkEvent(Constants.PLAYER_COLOR_CHANGE_EVENT_CODE, content, true);
     }
 
-    private void sendNetworkEvent(byte eventCode, byte[] content) {
-        // todo: is false the best here? (its the fastest)
-        bool reliable = false;
-
+    private void sendNetworkEvent(byte eventCode, byte[] content, bool reliable) {
         // todo: use RaiseEventOptions?
         PhotonNetwork.RaiseEvent(eventCode, content, reliable, null);
     }
