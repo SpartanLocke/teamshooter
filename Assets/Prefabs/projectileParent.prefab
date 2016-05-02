@@ -59,29 +59,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paint: {fileID: 106674, guid: 48dd2ffb0758bc641ade4f3a6a88c616, type: 2}
   positionArray:
-  - {x: -0.48, y: -1, z: 0}
-  - {x: 0.48, y: -1, z: 0}
-  - {x: -0.4, y: -0.84, z: 0}
-  - {x: 0.4, y: -0.84, z: 0}
-  - {x: -0.32, y: -0.67, z: 0}
-  - {x: 0.32, y: -0.67, z: 0}
-  - {x: -0.24, y: -0.5, z: 0}
-  - {x: 0.24, y: -0.5, z: 0}
-  - {x: -0.16, y: -0.33, z: 0}
-  - {x: 0.16, y: -0.33, z: 0}
-  - {x: 0.08, y: -0.17, z: 0}
-  - {x: -0.08, y: -0.17, z: 0}
+  - {x: -0.54, y: -1, z: 0}
+  - {x: 0.54, y: -1, z: 0}
+  - {x: -0.45, y: -0.84, z: 0}
+  - {x: 0.45, y: -0.84, z: 0}
+  - {x: -0.36, y: -0.67, z: 0}
+  - {x: 0.36, y: -0.67, z: 0}
+  - {x: -0.27, y: -0.5, z: 0}
+  - {x: 0.27, y: -0.5, z: 0}
+  - {x: -0.18, y: -0.33, z: 0}
+  - {x: 0.18, y: -0.33, z: 0}
+  - {x: 0.09, y: -0.17, z: 0}
+  - {x: -0.09, y: -0.17, z: 0}
   - {x: 0, y: 0, z: 0}
   myColor: {r: 1, g: 1, b: 1, a: 0}
   grid: {fileID: 0}
   explosion: {fileID: 186792, guid: 688cc15adb1336e45bac5aaf98f7d71b, type: 2}
+  playerNumber: 0
+  teamNum: 0
+  colorNumber: 0
+  shotDistance: 5
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: shotDistance
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 198766}

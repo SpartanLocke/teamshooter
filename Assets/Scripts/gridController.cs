@@ -26,7 +26,7 @@ public class gridController : MonoBehaviour {
 
     public void setGridBlockToColor(int x, int y, Color color) {
         if (!inGridBounds(x, y)) {
-            Debug.Log(x + " " + y);
+            // Debug.Log(x + " " + y);
             return;
         }
 
@@ -53,6 +53,13 @@ public class gridController : MonoBehaviour {
                 grid[i, j] = newBlock;
                 newBlock.transform.parent = transform;
             }
+        }
+    }
+    public void resetGrid()
+    {
+        foreach(Transform child in transform)
+        {
+            child.gameObject.GetComponent<SpriteRenderer>().color = Color.black;
         }
     }
 }

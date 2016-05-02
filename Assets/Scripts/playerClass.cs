@@ -1,9 +1,11 @@
 using UnityEngine;
 using System.Collections;
 using System.Text;
+using System;
 
 public class playerClass : MonoBehaviour {
     public bool IS_LOCALLY_CONTROLLED;
+    public int PlayerNumber;
     public int tauntNum;
     public float playerSpeed; //speed player moves
     public float playerSpeedAlt;
@@ -11,12 +13,17 @@ public class playerClass : MonoBehaviour {
     public float delayTime;
     public bool dodgeAbility;
     public bool dodging;
-    public int PlayerNumber;
+    public AudioClip shootSound;
+    public AudioClip convertSound;
+    private AudioSource[] source;
+    private AudioSource shootSource;
+    private AudioSource convertSource;
 
-    //Debug tool for the type of movement
-    //If movementType = "touchblock", a player only needs to be touching their color to move
-    //If movementType = "immerse", a player has to be surrounded by their color to move
-    public string movementType = "immerse";
+	//Debug tool for the type of movement
+	//If movementType = "touchblock", a player only needs to be touching their color to move
+	//If movementType = "immerse", a player has to be surrounded by their color to move
+	public string movementType = "immerse";
+	public bool hitWall = false;
 
     private string[,] axes = new string[,] { {"HorizontalP1", "HorizontalP2", "HorizontalP3", "HorizontalP4" }, { "VerticalP1", "VerticalP2", "VerticalP3", "VerticalP4" }, {"FireP1","FireP2", "FireP3", "FireP4" },
         {"HorizontalShootP1", "HorizontalShootP2", "HorizontalShootP3", "HorizontalShootP4" }, { "VerticalShootP1", "VerticalShootP2", "VerticalShootP3", "VerticalShootP4" }};
@@ -40,10 +47,15 @@ public class playerClass : MonoBehaviour {
     public GameObject projectileParent;
     public GameObject explosion;
     public int colorNumber;
+    public int colorChoiceNumber;           //BE SURE TO SET THIS UPON INSTANTIATION OF NEW PLAYER
     public Color normal;
     public Color paintColor;
     public Color lightColor;
     public Color fired;
+    public float colorShift;
+	public Color originalPaintColor;
+	public Color originalLightColor;
+	public Color originalFiredColor;
     public Light light;
     private float normalIntensity;
     ScoreManager scoreManager;
@@ -56,6 +68,7 @@ public class playerClass : MonoBehaviour {
 
     private Vector3 oldInput = new Vector3(0, 0);
     private float nextTaunt = 0.0f;
+	private double speed = 1.0;
 
     // network data
     private Vector3 lastNetworkInputLeftEvent = new Vector3(0, 0);
@@ -65,9 +78,16 @@ public class playerClass : MonoBehaviour {
 
     private bool hasReceievedNetworkInitData = false;
 
+	private Vector3 originalPosition;
+	private Vector3 scoreboardPosition;
+
     // setup our OnEvent as callback:
     void Awake() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
+
+        source = gameObject.GetComponents<AudioSource>();
+        shootSource = source[0];
+        convertSource = source[1];
 
         if (grid == null) {
             grid = GameObject.FindGameObjectWithTag("gridGameObject");
@@ -78,6 +98,7 @@ public class playerClass : MonoBehaviour {
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         light = gameObject.GetComponentInChildren<Light>();
         normalIntensity = light.intensity;
+		originalPosition = new Vector3(this.transform.position.x, this.transform.position.y);
     }
 
     void OnDestroy() {
@@ -86,12 +107,18 @@ public class playerClass : MonoBehaviour {
     }
 
     void Start() {
+        Debug.Log("Start was called");
         if (IS_LOCALLY_CONTROLLED) {
             colorNumber = PlayerNumber - 1;
+            colorChoiceNumber = colorNumber;
         }
         setColor(colorNumber);
-        paintUnderMe(1);
+		originalPaintColor = Constants.paintColors [colorNumber];
+		originalLightColor = Constants.lightColors [colorNumber];
+		originalFiredColor = Constants.firedColors [colorNumber];
+        paintUnderMe(10);
         scoreManager = GameObject.FindObjectOfType<ScoreManager>();
+		scoreboardPosition = new Vector3((float)(scoreManager.leftStart + scoreManager.spaceBetweenPlayers * (PlayerNumber - 1)), (float)1.5,(float)0);
     }
 
     void Update() {
@@ -99,12 +126,51 @@ public class playerClass : MonoBehaviour {
             grid = GameObject.FindGameObjectWithTag("gridGameObject");
         }
 
-        if (IS_LOCALLY_CONTROLLED) {
-            doLocalUpdate();
-        } else {
-            doNetworkUpdate();
-        }
+		switch (scoreManager.myGameState) 
+		{
+		case ScoreManager.gameState.Gameplay:
+			if (IS_LOCALLY_CONTROLLED) {
+				doLocalUpdate ();
+			} else {
+				doNetworkUpdate ();
+			}
+			break;
+		case ScoreManager.gameState.SetUpScoreboard:
+			setUpScoreboard ();
+			break;
+		case ScoreManager.gameState.ExecuteScoreboard:
+			executeScoreboard ();
+			break;
+		case ScoreManager.gameState.Reset:
+			playerReset ();
+			break;
+		}
     }
+
+	void playerReset () {
+        // Debug.Log (Time.deltaTime);
+        Vector3 targetPosition = scoreManager.currentLevel.transform.GetChild(1).GetChild(PlayerNumber-1).transform.position;
+		double distToTarget = (transform.position - targetPosition).magnitude;
+		if (distToTarget == 0) {
+			paintUnderMe(10);
+		}
+
+		transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, (float)10.0 * Time.deltaTime); 
+	}
+
+	void setUpScoreboard () {
+		// Debug.Log ("setupScoreboard called");
+		// Debug.Log (Time.deltaTime);
+		double distToTarget = (this.transform.position - scoreboardPosition).magnitude;
+
+		this.transform.position = Vector3.MoveTowards(this.transform.position, scoreboardPosition, (float)10.0 * Time.deltaTime); 
+	}
+
+	// TODO if we want the player to move up with the score, and do separate shots for 'previous round' score,
+	// score from kills this round, and score from being on the winning team early.
+	void executeScoreboard () {
+		
+	}
 
     /// <summary>
     ///  Using the dual joystick control scheme.
@@ -193,6 +259,142 @@ public class playerClass : MonoBehaviour {
             }
             move(AxisInput);
         }
+        else if (oneJoystick)
+        {
+            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
+
+            if (AxisInput == new Vector3(0, 0))
+            {
+                shoot(oldInput);
+            }
+            else {
+                shoot(AxisInput);
+                oldInput = AxisInput;
+            }
+            move(AxisInput);
+        }
+        else if (gridMovement)
+        {
+            Vector3 AxisInput = (new Vector3(Input.GetAxis(axes[0, (PlayerNumber - 1)]), Input.GetAxis(axes[1, (PlayerNumber - 1)]))).normalized;
+            Vector3 AxisInput2 = (new Vector3(Input.GetAxis(axes[3, (PlayerNumber - 1)]), Input.GetAxis(axes[4, (PlayerNumber - 1)]))).normalized;
+
+            if (AxisInput2.magnitude > shootThreshold)
+            {
+                if (Mathf.Abs(AxisInput2.x) > Mathf.Abs(AxisInput2.y))
+                {
+                    AxisInput2.y = 0;
+                    // Debug.Log("shoot horizontal");
+                }
+                else
+                {
+                    AxisInput2.x = 0;
+                    //Debug.Log("shoot vertical");
+                }
+                shoot(AxisInput2.normalized);
+            }
+            if (AxisInput.magnitude > moveThreshold)
+            {
+                if (Mathf.Abs(AxisInput.x) > Mathf.Abs(AxisInput.y))
+                {
+                    AxisInput.y = 0;
+                    //Debug.Log("move horizontal");
+                }
+                else
+                {
+                    AxisInput.x = 0;
+                    //Debug.Log("move vertical");
+                }
+                Debug.Log(AxisInput.normalized);
+                //moveAlt(AxisInput.normalized);
+            }
+
+
+        }
+
+        else if (m8s4)
+        {
+            Vector3 moveDir = Vector3.zero;
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                moveDir += Vector3.up;
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                moveDir += Vector3.down;
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                moveDir += Vector3.right;
+            }
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                moveDir += Vector3.left;
+            }
+            move(moveDir.normalized);
+            if (Input.GetKeyDown("w"))
+            {
+                shoot(Vector3.up);
+            }
+            if (Input.GetKeyDown("s"))
+            {
+                shoot(Vector3.down);
+            }
+            if (Input.GetKeyDown("d"))
+            {
+                shoot(Vector2.right);
+            }
+            if (Input.GetKeyDown("a"))
+            {
+                shoot(Vector2.left);
+            }
+        }
+        else if (m8s8)
+        {
+            Vector3 moveDir = Vector3.zero;
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                moveDir += Vector3.up;
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                moveDir += Vector3.down;
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                moveDir += Vector3.right;
+            }
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                moveDir += Vector3.left;
+            }
+            move(moveDir.normalized);
+
+            //this isn't smash so people dont have to be frame perfect to shoot diagonally
+            if (Input.GetKey("w"))
+            {
+                shootDir += Vector3.up;
+            }
+            if (Input.GetKey("s"))
+            {
+                shootDir += Vector3.down;
+            }
+            if (Input.GetKey("d"))
+            {
+                shootDir += Vector3.right;
+            }
+            if (Input.GetKey("a"))
+            {
+                shootDir += Vector3.left;
+            }
+            frames++;
+            if (frames > frameDelay)
+            {
+                shoot(shootDir.normalized);
+                shootDir = Vector3.zero;
+                frames = 0;
+            }
+
+        }
 		else if (m8s4) {
 			Vector3 moveDir = Vector3.zero;
 			if (Input.GetKey (KeyCode.UpArrow)) {
@@ -225,7 +427,6 @@ public class playerClass : MonoBehaviour {
 
     void shoot(Vector3 direction) {
         bool fireButton;
-
         if (!IS_LOCALLY_CONTROLLED) {
             // read from the last event
             // twoJoystick is essentially true here, so just return true.
@@ -239,9 +440,13 @@ public class playerClass : MonoBehaviour {
         if (fireButton &&  myProjectile == null && !dodging) {
             //StartCoroutine(cooldownIndicator());
             //StartCoroutine(fire(direction));
+            shootSource.Play();
             StartCoroutine(fireAnimation());
             paintUnderMe(3);
-            GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized * offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+            Vector3 temp = transform.position + direction.normalized * offset;
+            float x = Mathf.Round(temp.x / gridSize)*gridSize;
+            float y = Mathf.Round(temp.y / gridSize)*gridSize;
+            GameObject paint = Instantiate(projectileParent, new Vector3(x, y) , Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
             projectileParent parent = paint.GetComponent<projectileParent>();
             myProjectile = paint;
             parent.myColor = paintColor;
@@ -252,6 +457,38 @@ public class playerClass : MonoBehaviour {
         }
 
     }
+
+	public void scoreboardShoot(double distance) {
+		// bool fireButton;
+		// if (!IS_LOCALLY_CONTROLLED) {
+			// read from the last event
+			// twoJoystick is essentially true here, so just return true.
+			// also, shoot is only called if the second stick is active
+		// 	fireButton = true;
+		// } else {
+			// read from the standard axis stuff
+		// 	fireButton = (Input.GetButton(axes[2, (PlayerNumber - 1)]) || (m8s4 || m8s8 || twoJoystick || gridMovement));
+		// }
+
+		// if (fireButton &&  myProjectile == null && !dodging) {
+			//StartCoroutine(cooldownIndicator());
+			//StartCoroutine(fire(direction));
+		Vector3 direction = Vector3.up;
+		shootSource.Play();
+		StartCoroutine(fireAnimation());
+		paintUnderMe(3);
+		GameObject paint = Instantiate(projectileParent, transform.position + direction.normalized * offset, Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+		projectileParent parent = paint.GetComponent<projectileParent>();
+		myProjectile = paint;
+		parent.myColor = paintColor;
+		parent.grid = grid;
+		parent.teamNum = teamNum;
+		parent.playerNumber = PlayerNumber;
+		parent.colorNumber = colorNumber;
+		parent.shotDistance = distance;
+		// }
+
+	}
 
     IEnumerator fireAnimation()
     {
@@ -283,17 +520,20 @@ public class playerClass : MonoBehaviour {
     }
 
     void move(Vector3 direction) {
+		if (hitWall) {
+			transform.Translate (-playerSpeed * direction * Time.deltaTime * (float) 1.3);
+			hitWall = false;
+		}
 
-        if (isValidPosition(gameObject.transform.position + playerSpeed * direction * Time.deltaTime)) {
+        else if (isValidPosition(gameObject.transform.position + playerSpeed * direction * Time.deltaTime)) {
             transform.Translate(playerSpeed * direction * Time.deltaTime);
         }
 
     }
 
-    IEnumerator timer(float time) {
-        yield return new WaitForSeconds(time);
-        timeDelay = false;
-        Debug.Log("timer expired");
+    public void resetTeamNum()
+    {
+        teamNum = PlayerNumber;
     }
 
     bool isValidPosition(Vector3 position) {
@@ -307,13 +547,12 @@ public class playerClass : MonoBehaviour {
                 // out of bounds, then get outta here
                 return false;
             }
-
-            if (paintColor == gridController.getGridColor(gridX, gridY)) {
-                return true;
-            } else {
-                return false;
-            }
-            //sprite has to be within color
+			if (paintColor == gridController.getGridColor (gridX, gridY)) {
+				return true;
+			} else {
+				return false;
+			}
+		//sprite has to be within color
         } else if (movementType.Equals("immerse")) {
             int gridX = Mathf.RoundToInt(position.x / gridSize);
             int gridY = Mathf.RoundToInt(position.y / gridSize);
@@ -353,6 +592,33 @@ public class playerClass : MonoBehaviour {
         }
     }
 
+    public Color setBrightness(Color col, float change)
+    {
+        //Debug.Log("brightness change");
+        return HSBColor.ToColor(new HSBColor(HSBColor.FromColor(col).h, HSBColor.FromColor(col).s, HSBColor.FromColor(col).b + change, HSBColor.FromColor(col).a));
+    }
+    public Color setSaturation(Color col, float change)
+    {
+        //Debug.Log("saturation change");
+        return HSBColor.ToColor(new HSBColor(HSBColor.FromColor(col).h, HSBColor.FromColor(col).s + change, HSBColor.FromColor(col).b, HSBColor.FromColor(col).a));
+    }
+
+    public void shadeChange()
+    {
+        //TODO:  Set the index of the shade change by the order I am in the team
+        Predicate<string> findMe = (string p) => { return p == PlayerNumber.ToString(); };
+        float index = ScoreManager.Instance.currentColors[teamNum-1].FindIndex(findMe);
+        if (index >= 4.0f)
+        {
+            normal = setSaturation(Constants.paintColors[colorNumber], -colorShift * (index - 3.0f));
+        }
+        else
+        {
+            normal = setBrightness(Constants.playerColorChoices[colorNumber], index * colorShift);
+        }
+
+        spriteRenderer.color = normal;
+    }
     void paintUnderMe(int size) {
         int x = Mathf.RoundToInt(transform.position.x / gridSize);
         int y = Mathf.RoundToInt(transform.position.y / gridSize);
@@ -366,22 +632,40 @@ public class playerClass : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll) {
         //Debug.Log(coll);
+		if (coll.gameObject.tag == "wall") {
+			hitWall = true;
+		}
+		//if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != normal && !dodging)
+        //{
+        //    normal = coll.gameObject.GetComponent<SpriteRenderer>().color;
+        //    spriteRenderer.color = normal;
         if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != paintColor && !dodging) {
+            convertSource.Play();
             setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
+            
+            //coll.transform.parent.gameObject.GetComponentInParent<playerClass>().shadeChange();
             GameObject hitIndicator = Instantiate(explosion, transform.position, Quaternion.identity) as GameObject;
             hitIndicator.GetComponent<ParticleSystem>().startColor = paintColor;
-
+            paintUnderMe(4);
             if (scoreManager != null) {
                 scoreManager.ChangeScore(PlayerNumber.ToString(), "deaths", 1);
-                scoreManager.ChangeScore(PlayerNumber.ToString(), "score", -1);
                 scoreManager.changeColorCount(teamNum, coll.gameObject.GetComponent<shotMovement>().teamNum, PlayerNumber.ToString());
                 teamNum = coll.gameObject.GetComponent<shotMovement>().teamNum;
                 int playerWhoShotMe = coll.gameObject.GetComponent<shotMovement>().playerNumber;
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "kills", 1);
                 scoreManager.ChangeScore(playerWhoShotMe.ToString(), "score", 1);
             }
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
+            {
+                player.GetComponent<playerClass>().shadeChange();
+            }
+            
+
         }
     }
+
+    
 
     public void setNetworkPlayerId(int id) {
         networkPlayerId = id;
@@ -389,6 +673,10 @@ public class playerClass : MonoBehaviour {
 
     public int getNetworkPlayerId() {
         return networkPlayerId;
+    }
+
+    private bool isAcceptingNetworkActions() {
+        return ScoreManager.getInstance().getCurrentGameState() == ScoreManager.gameState.Gameplay;
     }
 
     // handle events
@@ -407,7 +695,7 @@ public class playerClass : MonoBehaviour {
         switch (eventcode) {
             // player input for 0
             case Constants.PLAYER_INPUT_EVENT_CODE:
-                if (PlayerNetworkStatusHandler.isGameStarted) {
+                if (isAcceptingNetworkActions()) {
                     byteContent = (byte[])content;
                     contentStringJson = Encoding.UTF8.GetString(byteContent);
                     PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
@@ -419,7 +707,10 @@ public class playerClass : MonoBehaviour {
                 break;
 
             case Constants.PLAYER_TAUNT_EVENT_CODE:
-                taunt();
+                //Debug.Log("got network taunt");
+                if (isAcceptingNetworkActions()) {
+                    taunt();
+                }
                 break;
 
             case Constants.PLAYER_DATA_INIT_EVENT_CODE:
@@ -431,6 +722,8 @@ public class playerClass : MonoBehaviour {
                     // just set the color for now
                     setColor(playerInitEvent.startingColor);
                     Debug.Log("set init color to: " + playerInitEvent.startingColor);
+
+                    colorChoiceNumber = playerInitEvent.startingColor;
 
                     hasReceievedNetworkInitData = true;
                 }

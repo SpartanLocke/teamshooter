@@ -8,14 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/controller menu.unity
   - enabled: 1
-    path: Assets/Scenes/main.unity
-  - enabled: 1
     path: Assets/Scenes/dual stick controller.unity
   - enabled: 1
-    path: Assets/Scenes/controller options screen.unity
-  - enabled: 1
-    path: Assets/Scenes/networking tests/network_bug.unity
-  - enabled: 0
-    path: Assets/Scenes/networking tests/network_test_julian.unity
-  - enabled: 0
-    path: Assets/Scenes/networking tests/controller_test_julian.unity
+    path: Assets/Scenes/main.unity

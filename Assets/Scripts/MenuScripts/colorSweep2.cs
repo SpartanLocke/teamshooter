@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Text;
 using UnityEngine.UI;
@@ -44,23 +44,28 @@ public class colorSweep2 : MonoBehaviour
     public void gridSweep(int num)
     {
         input = num;
-
-        if (dontSweep) {
-            if (input == 1) {
-                UI.GetComponent<ControllerMenuUiController>().onStartAsServerButtonPressed();
-            } else if (input == 0) {
-                UI.GetComponent<ControllerMenuUiController>().onJoinButtonPressed();
-            }
-        } else {
-            h = 0;
-            grid = gameObject.GetComponent<gridController>().grid;
-            Debug.Log("gridSweep");
-            StartCoroutine(sweepGrid());
+        h = 0;
+        grid = gameObject.GetComponent<gridController>().grid;
+        Debug.Log("gridSweep");
+        StartCoroutine(sweepGrid());
+        StartCoroutine(loadNext());
+    }
+    IEnumerator loadNext()
+    {
+        if (input == 1)
+        {
+            yield return new WaitForSeconds(1.5f);
+            UI.GetComponent<MenuUiController>().onStartAsServerButtonPressed();
+        }
+        else if (input == 0)
+        {
+            yield return null;
+            UI.GetComponent<MenuUiController>().onJoinButtonPressed();
         }
     }
-
     IEnumerator sweepGrid()
     {
+        
         for (int i = 0; i < grid.GetLength(0); i++)
         {
             
@@ -72,30 +77,9 @@ public class colorSweep2 : MonoBehaviour
             }
             yield return null;
         }
-        StartCoroutine(sweepGrid2());
-    }
-
-    IEnumerator sweepGrid2()
-    {
-        for (int i = 0; i < grid.GetLength(0)-1; i+=2)
-        {
-            for (int j = 0; j < grid.GetLength(1); j++)
-            {
-                
-                grid[i, j].GetComponent<SpriteRenderer>().color = HSBColor.ToColor(new HSBColor(0, 0f, 0f, 1f));
-                grid[i+1, j].GetComponent<SpriteRenderer>().color = HSBColor.ToColor(new HSBColor(0, 0f, 0f, 1f));
-
-            }
-            yield return null;
-        }
-        if (input == 1)
-        {
-            UI.GetComponent<ControllerMenuUiController>().onStartAsServerButtonPressed();
-        }
-        else if(input == 0)
-        {
-            UI.GetComponent<ControllerMenuUiController>().onJoinButtonPressed();
-        }
+        
+        
+        
     }
 
 }

@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="NetworkingPeer.cs" company="Exit Games GmbH">
 //   Part of: Photon Unity Networking (PUN)
 // </copyright>
@@ -1730,7 +1730,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
             case StatusCode.QueueIncomingReliableWarning:
             case StatusCode.QueueIncomingUnreliableWarning:
-                Debug.Log(statusCode + ". This client buffers many incoming messages. This is OK temporarily. With lots of these warnings, check if you send too much or execute messages too slow. " + (PhotonNetwork.isMessageQueueRunning? "":"Your isMessageQueueRunning is false. This can cause the issue temporarily.") );
+                //Debug.Log(statusCode + ". This client buffers many incoming messages. This is OK temporarily. With lots of these warnings, check if you send too much or execute messages too slow. " + (PhotonNetwork.isMessageQueueRunning? "":"Your isMessageQueueRunning is false. This can cause the issue temporarily.") );
                 break;
 
             // // TCP "routing" is an option of Photon that's not currently needed (or supported) by PUN
