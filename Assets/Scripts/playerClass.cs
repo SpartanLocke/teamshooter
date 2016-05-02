@@ -619,7 +619,7 @@ public class playerClass : MonoBehaviour {
 
         spriteRenderer.color = normal;
     }
-    void paintUnderMe(int size) {
+    public void paintUnderMe(int size) {
         int x = Mathf.RoundToInt(transform.position.x / gridSize);
         int y = Mathf.RoundToInt(transform.position.y / gridSize);
         for (int i = 0; i < 2 * size; i++) {

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using System.Text;
 
 public class PlayerNetworkStatusHandler : MonoBehaviour {
     private gridController gridController;
@@ -14,14 +15,16 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 	public GameObject spawnpointsPrefab;
 
     void Awake() {
+        PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
+
         gridController = GameObject.FindGameObjectWithTag("gridGameObject").GetComponent<gridController>();
 
         spawnedPlayersTable = new HashSet<int>();
 
-        if (PhotonNetwork.connectionStateDetailed == PeerState.Joined) {
-            // we just restarted. respawn everybody
-            onNewRound();
-        }
+        //if (PhotonNetwork.connectionStateDetailed == PeerState.Joined) {
+        //    // we just restarted. respawn everybody
+        //    onNewRound();
+        //}
     }
 
     public void Update() {
@@ -57,28 +60,15 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
         SceneManager.LoadScene("controller menu");
     }
 
-    public void onNewRound() {
-        Debug.Log("round just restarted. checking for previous players!");
-
-        foreach (PhotonPlayer ply in PhotonNetwork.otherPlayers) {
-            int playerId = ply.ID;
-            Debug.Log("spawning " + playerId);
-
-            spawnPlayer(playerId);
-        }
-
-        sendPlayerInitDataRequest();
-    }
-
     public void OnJoinedRoom() {
         Debug.Log("joined room. checking for previous players!");
 
-        foreach (PhotonPlayer ply in PhotonNetwork.otherPlayers) {
-            int playerId = ply.ID;
-            Debug.Log("spawning " + playerId);
+        //foreach (PhotonPlayer ply in PhotonNetwork.otherPlayers) {
+        //    int playerId = ply.ID;
+        //    Debug.Log("spawning " + playerId);
 
-            spawnPlayer(playerId);
-        }
+        //    spawnPlayer(playerId);
+        //}
 
         sendPlayerInitDataRequest();
     }
@@ -86,8 +76,8 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
     void OnPhotonPlayerConnected(PhotonPlayer player) {
         Debug.Log("playerJoined");
 
-        int playerId = player.ID;
-        spawnPlayer(playerId);
+        //int playerId = player.ID;
+        //spawnPlayer(playerId);
         sendPlayerInitDataRequest();
     }
 
@@ -96,7 +86,8 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
     }
 
     int nextPlayerNumber = 0;
-    private void spawnPlayer(int playerId) {
+    private void spawnPlayer(int playerId, int colorChoiceIndex) {
+        Debug.Log("new spawn");
         if (spawnedPlayersTable.Contains(playerId)) {
             // skip it
             Debug.Log("skipping the repeat spawning of player: " + playerId);
@@ -105,19 +96,42 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 
         spawnedPlayersTable.Add(playerId);
         nextPlayerNumber++;
-		Vector3 spawnpoint = spawnpointsPrefab.transform.GetChild(count).transform.position;
-		if (count < 8) {
-			count++;
-		} else {
-			Debug.Log("too many players counter reset to 0");
-			count = 0;
-		}
-		GameObject playerGameObject = Instantiate(playerPrefab, spawnpoint, Quaternion.identity) as GameObject;
+        Vector3 spawnpoint = spawnpointsPrefab.transform.GetChild(count).transform.position;
+        if (count < 8) {
+            count++;
+        } else {
+            Debug.Log("too many players counter reset to 0");
+            count = 0;
+        }
+        GameObject playerGameObject = Instantiate(playerPrefab, spawnpoint, Quaternion.identity) as GameObject;
 
         // initialize the player values
         playerClass playerScript = playerGameObject.GetComponent<playerClass>();
         playerScript.setNetworkPlayerId(playerId);
         playerScript.IS_LOCALLY_CONTROLLED = false;
         playerScript.PlayerNumber = nextPlayerNumber;
+        playerScript.setColor(colorChoiceIndex);
+        playerScript.teamNum = nextPlayerNumber;
+
+        playerScript.paintUnderMe(10);
+    }
+
+    private void OnPhotonNetworkEvent(byte eventcode, object content, int senderid) {
+        // everything is in json format
+
+        PhotonPlayer sender = PhotonPlayer.Find(senderid);  // who sent this?
+
+        byte[] byteContent;
+        string contentStringJson;
+
+        switch (eventcode) {
+            case Constants.PLAYER_DATA_INIT_EVENT_CODE:
+                byteContent = (byte[])content;
+                contentStringJson = Encoding.UTF8.GetString(byteContent);
+                playerDataInitEvent playerInitEvent = playerDataInitEvent.CreateFromJSON(contentStringJson);
+
+                spawnPlayer(sender.ID, playerInitEvent.startingColor);
+                break;
+        }
     }
 }
