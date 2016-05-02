@@ -1,17 +1,21 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MenuUiController : MonoBehaviour {
     public static int PLAYER_COLOR_CHOICE_VALUE = 0;
     public static string lobbyName = "";
 
+    public InputField lobbyNameInputField;
+
     void Start() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
     }
 
-    public void onEditTextChange(string currentLobby) {
-        lobbyName = currentLobby;
+    public void onEditTextChange() {
+        MenuUiController.lobbyName = lobbyNameInputField.text;
+        Debug.Log("lobby set to: " + lobbyName);
     }
 
     public void onStartAsServerButtonPressed() {

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class colorSweep2 : MonoBehaviour
 {
     public bool isSweeping;
+    public bool dontSweep = false;
     public HSBColor col;
     public Image image;
     public float h = 0f;

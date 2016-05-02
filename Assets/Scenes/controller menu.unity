@@ -194,6 +194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isSweeping: 1
+  dontSweep: 0
   col:
     h: 0
     s: 0
@@ -451,7 +452,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1890720402}
         m_MethodName: onEditTextChange
-        m_Mode: 5
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -523,6 +524,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isSweeping: 0
+  dontSweep: 0
   col:
     h: 0
     s: 0
@@ -3034,9 +3036,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1890720397}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e996e224b87120d4090efc559d416702, type: 3}
+  m_Script: {fileID: 11500000, guid: c8627f44a30a39c4ab26611eee940281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lobbyNameInputField: {fileID: 267020891}
 --- !u!1001 &1901718931
 Prefab:
   m_ObjectHideFlags: 0
