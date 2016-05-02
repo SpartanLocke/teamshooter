@@ -127,6 +127,7 @@ public class PlayerNetworkStatusHandler : MonoBehaviour
         playerScript.IS_LOCALLY_CONTROLLED = false;
         playerScript.PlayerNumber = nextPlayerNumber;
         playerScript.setColor(colorChoiceIndex);
+        playerScript.colorChoiceNumber = colorChoiceIndex;
         playerScript.teamNum = nextPlayerNumber;
 
         playerScript.paintUnderMe(10);
