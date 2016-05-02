@@ -194,19 +194,19 @@ public class ScoreManager : MonoBehaviour {
 
     public void changeColorCount(int oldTeamNum, int newTeamNum, string username)
 	{
-		
-		//Debug.Log (username);
-		//Debug.Log (oldTeamNum);
-		//Debug.Log (currentColors.Count);
-		//foreach(var item in currentColors)
-		//{
-		//	Debug.Log("changeColorCount key: " + item.Key);
-		//	Debug.Log("changeColorCount value: " + item.Value);
-		//}
-		//Debug.Log (currentColors [oldTeamNum - 1].Count);
-  //      Debug.Log(oldTeamNum + " " + newTeamNum + " "+currentColors.Keys.Count);
+
+        //Debug.Log(username);
+        //Debug.Log(oldTeamNum);
+        //Debug.Log(currentColors.Count);
+        //foreach (var item in currentColors)
+        //{
+        //    Debug.Log("changeColorCount key: " + item.Key);
+        //    Debug.Log("changeColorCount value: " + item.Value);
+        //}
+        //Debug.Log(currentColors[oldTeamNum - 1].Count);
+        //Debug.Log(oldTeamNum + " " + newTeamNum + " " + currentColors.Keys.Count);
         currentColors[oldTeamNum - 1].Remove(username);
-        currentColors [newTeamNum - 1].Add (username);
+        currentColors[newTeamNum - 1].Add(username);
 		checkEndCondition ();
     }
 
@@ -240,7 +240,6 @@ public class ScoreManager : MonoBehaviour {
         foreach (int key in currentColors.Keys)
         {
             List<string> converts = currentColors[key];
-			//Debug.Log (converts.Count);
             if (converts.Count == numPlayers) //everyone is one color
             {
                 for (int i=0; i < converts.Count; i++)

@@ -123,5 +123,6 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
         playerScript.setNetworkPlayerId(playerId);
         playerScript.IS_LOCALLY_CONTROLLED = false;
         playerScript.PlayerNumber = nextPlayerNumber;
+        playerScript.teamNum = nextPlayerNumber;
     }
 }
