@@ -74,7 +74,7 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
     }
 
     void OnPhotonPlayerConnected(PhotonPlayer player) {
-        Debug.Log("playerJoined");
+        Debug.Log("playerJoined: " + player.ID);
 
         //int playerId = player.ID;
         //spawnPlayer(playerId);

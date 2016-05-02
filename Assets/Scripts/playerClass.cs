@@ -108,15 +108,17 @@ public class playerClass : MonoBehaviour {
 
     void Start() {
         Debug.Log("Start was called");
-        if (IS_LOCALLY_CONTROLLED) {
+        if (IS_LOCALLY_CONTROLLED)
+        {
             colorNumber = PlayerNumber - 1;
             colorChoiceNumber = colorNumber;
+
+            setColor(colorNumber);
+            originalPaintColor = Constants.paintColors[colorNumber];
+            originalLightColor = Constants.lightColors[colorNumber];
+            originalFiredColor = Constants.firedColors[colorNumber];
+            paintUnderMe(10);
         }
-        setColor(colorNumber);
-		originalPaintColor = Constants.paintColors [colorNumber];
-		originalLightColor = Constants.lightColors [colorNumber];
-		originalFiredColor = Constants.firedColors [colorNumber];
-        paintUnderMe(10);
         scoreManager = GameObject.FindObjectOfType<ScoreManager>();
 		scoreboardPosition = new Vector3((float)(scoreManager.leftStart + scoreManager.spaceBetweenPlayers * (PlayerNumber - 1)), (float)1.5,(float)0);
     }
@@ -442,7 +444,7 @@ public class playerClass : MonoBehaviour {
             //StartCoroutine(fire(direction));
             shootSource.Play();
             StartCoroutine(fireAnimation());
-            paintUnderMe(3);
+            paintUnderMe(4);
             Vector3 temp = transform.position + direction.normalized * offset;
             float x = Mathf.Round(temp.x / gridSize)*gridSize;
             float y = Mathf.Round(temp.y / gridSize)*gridSize;
@@ -520,15 +522,22 @@ public class playerClass : MonoBehaviour {
     }
 
     void move(Vector3 direction) {
-		if (hitWall) {
-			transform.Translate (-playerSpeed * direction * Time.deltaTime * (float) 1.3);
-			hitWall = false;
-		}
+        if (hitWall) {
+            transform.Translate(-playerSpeed * direction * Time.deltaTime * (float)1.3);
+            hitWall = false;
+        }
 
         else if (isValidPosition(gameObject.transform.position + playerSpeed * direction * Time.deltaTime)) {
             transform.Translate(playerSpeed * direction * Time.deltaTime);
         }
-
+        else if (isValidPosition(gameObject.transform.position + new Vector3(0, playerSpeed * direction.y * Time.deltaTime)))
+        {
+            transform.Translate(playerSpeed * new Vector3(0, playerSpeed * direction.y).normalized * Time.deltaTime);
+        }
+        else if (isValidPosition(gameObject.transform.position + new Vector3 (playerSpeed * direction.x * Time.deltaTime, 0)))
+        {
+            transform.Translate(playerSpeed * new Vector3(playerSpeed * direction.x,0 ).normalized * Time.deltaTime);
+        }
     }
 
     public void resetTeamNum()
@@ -578,6 +587,7 @@ public class playerClass : MonoBehaviour {
     }
 
     public void setColor(int i) {
+        Debug.Log("Inman is a bitch x " + i);
         colorNumber = i;
         normal = Constants.playerColorChoices[i];
         spriteRenderer.color = normal;
@@ -712,19 +722,19 @@ public class playerClass : MonoBehaviour {
                 break;
 
             case Constants.PLAYER_DATA_INIT_EVENT_CODE:
-                if (!hasReceievedNetworkInitData) {
-                    byteContent = (byte[])content;
-                    contentStringJson = Encoding.UTF8.GetString(byteContent);
-                    playerDataInitEvent playerInitEvent = playerDataInitEvent.CreateFromJSON(contentStringJson);
+                //////if (!hasreceievednetworkinitdata) {
+                //////    bytecontent = (byte[])content;
+                //////    contentstringjson = encoding.utf8.getstring(bytecontent);
+                //////    playerdatainitevent playerinitevent = playerdatainitevent.createfromjson(contentstringjson);
 
-                    // just set the color for now
-                    setColor(playerInitEvent.startingColor);
-                    Debug.Log("set init color to: " + playerInitEvent.startingColor);
+                //////    // just set the color for now
+                //////    setcolor(playerinitevent.startingcolor);
+                //////    debug.log("set init color to: " + playerinitevent.startingcolor);
 
-                    colorChoiceNumber = playerInitEvent.startingColor;
+                //////    colorchoicenumber = playerinitevent.startingcolor;
 
-                    hasReceievedNetworkInitData = true;
-                }
+                //////    hasreceievednetworkinitdata = true;
+                //////}
 
                 break;
         }
