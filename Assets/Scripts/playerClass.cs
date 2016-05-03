@@ -18,7 +18,7 @@ public class playerClass : MonoBehaviour {
     private AudioSource[] source;
     private AudioSource shootSource;
     private AudioSource convertSource;
-
+    
 	//Debug tool for the type of movement
 	//If movementType = "touchblock", a player only needs to be touching their color to move
 	//If movementType = "immerse", a player has to be surrounded by their color to move
@@ -46,6 +46,7 @@ public class playerClass : MonoBehaviour {
     public GameObject projectile;
     public GameObject projectileParent;
     public GameObject explosion;
+    private GameObject fireDirectionIndicator;
     public int colorNumber;
     public int colorChoiceNumber;           //BE SURE TO SET THIS UPON INSTANTIATION OF NEW PLAYER
     public Color normal;
@@ -65,7 +66,7 @@ public class playerClass : MonoBehaviour {
     private float gridSize;
     private gridController gridController;
     private SpriteRenderer spriteRenderer;
-
+    private SpriteRenderer indicatorRenderer;
     private Vector3 oldInput = new Vector3(0, 0);
     private float nextTaunt = 0.0f;
 	private double speed = 1.0;
@@ -120,6 +121,8 @@ public class playerClass : MonoBehaviour {
         }
         scoreManager = GameObject.FindObjectOfType<ScoreManager>();
 		scoreboardPosition = new Vector3((float)(scoreManager.leftStart + scoreManager.spaceBetweenPlayers * (PlayerNumber - 1)), (float)1.5,(float)0);
+        fireDirectionIndicator = transform.GetChild(1).gameObject;
+        indicatorRenderer = fireDirectionIndicator.GetComponent<SpriteRenderer>();
     }
 
     void Update() {
@@ -438,6 +441,16 @@ public class playerClass : MonoBehaviour {
             fireButton = (Input.GetButton(axes[2, (PlayerNumber - 1)]) || (m8s4 || m8s8 || twoJoystick || gridMovement));
         }
 
+        float angle = Vector3.Angle(Vector3.right, direction);
+        if (direction.y < 0)
+        {
+            angle = 360 - angle;
+        }
+        angle -= 90;
+        Debug.Log("the angle is: " + angle);
+        fireDirectionIndicator.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+
+
         if (fireButton &&  myProjectile == null && !dodging) {
             //StartCoroutine(cooldownIndicator());
             //StartCoroutine(fire(direction));
@@ -511,7 +524,7 @@ public class playerClass : MonoBehaviour {
     }
 
     IEnumerator cooldownIndicator() {
-        spriteRenderer.color = fired;
+        indicatorRenderer.color = fired;
         //transform.GetChild(0).gameObject.SetActive(false);
         //light.color = Color.white;
         //light.intensity = 1.25f;
@@ -519,7 +532,7 @@ public class playerClass : MonoBehaviour {
         //light.intensity = normalIntensity;
         //light.color = normal;
         //transform.GetChild(0).gameObject.SetActive(true);
-        spriteRenderer.color = normal;
+        indicatorRenderer.color = normal;
     }
 
     void move(Vector3 direction) {
