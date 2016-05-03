@@ -107,7 +107,6 @@ public class playerClass : MonoBehaviour {
     }
 
     void Start() {
-        Debug.Log("Start was called");
         if (IS_LOCALLY_CONTROLLED)
         {
             colorNumber = PlayerNumber - 1;
@@ -589,7 +588,6 @@ public class playerClass : MonoBehaviour {
     }
 
     public void setColor(int i) {
-        Debug.Log("Inman is a bitch x " + i);
         colorNumber = i;
         normal = Constants.playerColorChoices[i];
         spriteRenderer.color = normal;
@@ -685,8 +683,14 @@ public class playerClass : MonoBehaviour {
         return networkPlayerId;
     }
 
-    private bool isAcceptingNetworkActions() {
-        return ScoreManager.getInstance().getCurrentGameState() == ScoreManager.gameState.Gameplay;
+    private bool isAcceptingNetworkMovement() {
+        ScoreManager.gameState state = ScoreManager.getInstance().getCurrentGameState();
+        return (state == ScoreManager.gameState.Gameplay || state == ScoreManager.gameState.InLobby);
+    }
+
+    private bool isAcceptingNetworkFiring() {
+        ScoreManager.gameState state = ScoreManager.getInstance().getCurrentGameState();
+        return (state == ScoreManager.gameState.Gameplay);
     }
 
     // handle events
@@ -705,20 +709,23 @@ public class playerClass : MonoBehaviour {
         switch (eventcode) {
             // player input for 0
             case Constants.PLAYER_INPUT_EVENT_CODE:
-                if (isAcceptingNetworkActions()) {
-                    byteContent = (byte[])content;
-                    contentStringJson = Encoding.UTF8.GetString(byteContent);
-                    PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
+                byteContent = (byte[])content;
+                contentStringJson = Encoding.UTF8.GetString(byteContent);
+                PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
 
-                    // now we have what we need
+                // now we have what we need
+                if (isAcceptingNetworkMovement()) {
                     lastNetworkInputLeftEvent = new Vector3(playerInput.left_x, playerInput.left_y);
+                }
+
+                if (isAcceptingNetworkFiring()) {
                     lastNetworkInputRightEvent = new Vector3(playerInput.right_x, playerInput.right_y);
                 }
                 break;
 
             case Constants.PLAYER_TAUNT_EVENT_CODE:
                 //Debug.Log("got network taunt");
-                if (isAcceptingNetworkActions()) {
+                if (isAcceptingNetworkMovement()) {
                     taunt();
                 }
                 break;
