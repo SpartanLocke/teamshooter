@@ -117,10 +117,6 @@ public class ScoreManager : MonoBehaviour {
         myGameState = gameState.Wait;
     }
 
-    void OnGUI() {
-        GUI.Label(new Rect(10, 10, 100, 20), "state " + getCurrentGameState());
-    }
-
     public void startGameButton() {
         Debug.Log("startGameButton pressed");
         startGame();
