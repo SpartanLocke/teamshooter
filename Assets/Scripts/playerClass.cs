@@ -132,22 +132,32 @@ public class playerClass : MonoBehaviour {
 
 		switch (scoreManager.myGameState) 
 		{
-		case ScoreManager.gameState.Gameplay:
-			if (IS_LOCALLY_CONTROLLED) {
-				doLocalUpdate ();
-			} else {
-				doNetworkUpdate ();
-			}
-			break;
-		case ScoreManager.gameState.SetUpScoreboard:
-			setUpScoreboard ();
-			break;
-		case ScoreManager.gameState.ExecuteScoreboard:
-			executeScoreboard ();
-			break;
-		case ScoreManager.gameState.Reset:
-			playerReset ();
-			break;
+		    case ScoreManager.gameState.Gameplay:
+			    if (IS_LOCALLY_CONTROLLED) {
+				    doLocalUpdate ();
+			    } else {
+				    doNetworkUpdate (true);
+			    }
+			    break;
+		    case ScoreManager.gameState.SetUpScoreboard:
+			    setUpScoreboard ();
+			    break;
+		    case ScoreManager.gameState.ExecuteScoreboard:
+			    executeScoreboard ();
+			    break;
+		    case ScoreManager.gameState.Reset:
+			    playerReset ();
+			    break;
+            case ScoreManager.gameState.InLobby:
+                if (IS_LOCALLY_CONTROLLED)
+                {
+                    doLocalUpdate();
+                }
+                else {
+                    doNetworkUpdate(false);
+                }
+                break;
+
 		}
     }
 
@@ -179,13 +189,13 @@ public class playerClass : MonoBehaviour {
     /// <summary>
     ///  Using the dual joystick control scheme.
     /// </summary>
-    private void doNetworkUpdate() {
-        if (lastNetworkInputRightEvent.magnitude > shootThreshold) {
+    /// 
+    private void doNetworkUpdate(bool allowedToShoot) {
+        if (lastNetworkInputRightEvent.magnitude > shootThreshold && allowedToShoot) {
             shoot(lastNetworkInputRightEvent);
         }
         move(lastNetworkInputLeftEvent);
     }
-
     void doLocalUpdate() {
         getInputs();
 
