@@ -10,7 +10,7 @@ public class MenuUiController : MonoBehaviour {
     public InputField lobbyNameInputField;
 
     void Start() {
-        PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
+        //PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
     }
 
     public void onEditTextChange() {
@@ -22,7 +22,7 @@ public class MenuUiController : MonoBehaviour {
         ConnectAndJoinRandom.setJoinRandomRooms(true);
         Debug.Log("started as server");
         //SceneManager.LoadScene("main");
-        PhotonNetwork.OnEventCall -= this.OnPhotonNetworkEvent;
+        //PhotonNetwork.OnEventCall -= this.OnPhotonNetworkEvent;
         StartCoroutine(LoadLevel("main"));
     }
 
@@ -52,6 +52,6 @@ public class MenuUiController : MonoBehaviour {
 
     // handle events
     private void OnPhotonNetworkEvent(byte eventcode, object content, int senderid) {
-        Debug.Log("got networking event inside the menu!");
+        //Debug.Log("got networking event inside the menu!");
     }
 }

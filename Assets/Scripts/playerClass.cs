@@ -456,6 +456,8 @@ public class playerClass : MonoBehaviour {
             parent.teamNum = teamNum;
             parent.playerNumber = PlayerNumber;
             parent.colorNumber = colorNumber;
+
+            sendControllerSimpleVibrate();
         }
 
     }
@@ -720,24 +722,15 @@ public class playerClass : MonoBehaviour {
                     taunt();
                 }
                 break;
-
-            case Constants.PLAYER_DATA_INIT_EVENT_CODE:
-                //////if (!hasreceievednetworkinitdata) {
-                //////    bytecontent = (byte[])content;
-                //////    contentstringjson = encoding.utf8.getstring(bytecontent);
-                //////    playerdatainitevent playerinitevent = playerdatainitevent.createfromjson(contentstringjson);
-
-                //////    // just set the color for now
-                //////    setcolor(playerinitevent.startingcolor);
-                //////    debug.log("set init color to: " + playerinitevent.startingcolor);
-
-                //////    colorchoicenumber = playerinitevent.startingcolor;
-
-                //////    hasreceievednetworkinitdata = true;
-                //////}
-
-                break;
         }
+    }
+
+    private void sendControllerSimpleVibrate() {
+        Debug.Log("sending over the vibrate");
+        controllerPerformVibrateEvent hapticEvent = new controllerPerformVibrateEvent(getNetworkPlayerId());
+        byte[] haptic = hapticEvent.getBytes();
+        bool isHaptic = false;
+        sendNetworkEvent(Constants.PLAYER_CONTROLLER_VIBRATE_SIMPLE, haptic, isHaptic);
     }
 
     // If the player's color changed, then send that as a network event.
