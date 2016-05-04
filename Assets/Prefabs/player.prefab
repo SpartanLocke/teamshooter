@@ -385,6 +385,7 @@ MonoBehaviour:
   light: {fileID: 0}
   grid: {fileID: 0}
   teamNum: 2
+  slowFactor: 0.2
 --- !u!212 &21211564
 SpriteRenderer:
   m_ObjectHideFlags: 1
