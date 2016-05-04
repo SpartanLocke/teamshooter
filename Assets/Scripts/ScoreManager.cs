@@ -15,7 +15,7 @@ public class ScoreManager : MonoBehaviour {
 	public static ScoreManager Instance;
 	public GameObject playerPrefab;
 	private GameObject ScoreboardCanvas;
-	public enum gameState {Gameplay, SetUpScoreboard, ExecuteScoreboard, Reset, Wait};
+	public enum gameState {Gameplay, SetUpScoreboard, ExecuteScoreboard, Reset, Wait, InLobby};
 	public gameState myGameState;
 
 	Dictionary< string, Dictionary<string, int> > playerScores;
@@ -74,7 +74,7 @@ public class ScoreManager : MonoBehaviour {
 		gridCenter = Grid.transform.position.x + gridScript.width/2.0;
 		spaceBetweenPlayers = 2;
 		leftStart = gridCenter - spaceBetweenPlayers * (numPlayers / 2.0);
-
+        myGameState = gameState.InLobby;
 	}
 
     public gameState getCurrentGameState() {
@@ -275,7 +275,8 @@ public class ScoreManager : MonoBehaviour {
     }
     IEnumerator scoreboard()
     {
-        yield return new WaitForSeconds(1);
+        myGameState = gameState.Wait;
+        yield return new WaitForSeconds(2.0f);
         SaveScoresBetweenRounds();
         Destroy(currentLevel);
         destroyProjectiles();
@@ -328,21 +329,21 @@ public class ScoreManager : MonoBehaviour {
             if (playerScores[playerNumber.ToString()]["score"] == maxScore)
             {
                 shotDistance = (GetScore(playerScript.PlayerNumber.ToString(), "score") / maxScore) * (gridScript.height - 5);
-                StartCoroutine(ShootAfterDelay(8.0f, shotDistance, thisPlayer, true, true));
+                StartCoroutine(ShootAfterDelay(10.0f, shotDistance, thisPlayer, true, true));
             }
             shotDistance = (GetScore(playerScript.PlayerNumber.ToString(), "score") / maxScore) * (gridScript.height - 5);
-            StartCoroutine(ShootAfterDelay(8.0f, shotDistance, thisPlayer,true,false));
+            StartCoroutine(ShootAfterDelay(10.0f, shotDistance, thisPlayer,true,false));
             
             
         }
-        StartCoroutine(scaleAfterDelay(ScoreText,"Kills", .1f, 1f, .08f, 3.0f, true, 10.0f,.08f,2.5f));
+        StartCoroutine(scaleAfterDelay(ScoreText,"Kills", .1f, 1f, .08f, 3.0f, true, 10.0f,.08f,3.5f));
         if (final)
         {
-            StartCoroutine(scaleAfterDelay(ScoreText, "Final Score", .1f, 1f, .08f, 6.3f, true, 10.0f, .08f, 5.0f));
+            StartCoroutine(scaleAfterDelay(ScoreText, "Final Score", .1f, 1f, .08f, 8.3f, true, 10.0f, .08f, 4.0f));
         }
         else
         {
-            StartCoroutine(scaleAfterDelay(ScoreText, "Time On Winning Team", .1f, 1f, .08f, 6.3f, true, 10.0f, .08f, 3.0f));
+            StartCoroutine(scaleAfterDelay(ScoreText, "Time On Winning Team", .1f, 1f, .08f, 8.3f, true, 10.0f, .08f, 4.0f));
         }
         myGameState = gameState.SetUpScoreboard;
 		gridScript.resetGrid();
@@ -363,8 +364,10 @@ public class ScoreManager : MonoBehaviour {
             StartCoroutine(MoveBackToStartAfterDelay(4.0f, 1.5f));
         }
         else if (second && final) {
-            disconnectFromNetworking();
+            //Debug.Log("shit went down");
             yield return new WaitForSeconds(4.0f);
+            disconnectFromNetworking();
+            
             StartCoroutine(LoadLevel("controller menu"));
         }
 	}
@@ -390,7 +393,7 @@ public class ScoreManager : MonoBehaviour {
         //Load a new level;
         if (roundNumber != 1)
         {
-            currentLevel = Instantiate(levels[Random.Range(0, levels.Length)]) as GameObject;
+            currentLevel = Instantiate(levels[roundNumber - 1]) as GameObject;
         }
         
 

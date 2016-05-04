@@ -9,6 +9,7 @@ public class Constants : MonoBehaviour {
     public const byte PLAYER_TAUNT_EVENT_CODE = 2;
     public const byte PLAYER_DATA_INIT_EVENT_CODE = 3;
     public const byte SERVER_REQUEST_INIT_DATA_EVENT_CODE = 4;
+    public const byte PLAYER_CONTROLLER_VIBRATE_SIMPLE = 5;
 
 
     // The player chooses their color from this list

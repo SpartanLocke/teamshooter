@@ -88,26 +88,43 @@ public class PlayerVirtualJoystickInputController : MonoBehaviour {
         PhotonNetwork.RaiseEvent(eventCode, content, reliable, null);
     }
 
+    private void performHapticEvent() {
+        // throw some fat directives to the compiler
+#if UNITY_IPHONE || UNITY_ANDROID
+        Debug.Log("vibrated");
+        Handheld.Vibrate();
+#endif
+    }
+
     // handle events
     private void OnPhotonNetworkEvent(byte eventcode, object content, int senderid) {
+        byte[] byteContent;
+        string contentStringJson;
+
         // everything is in json format
         switch (eventcode) {
             case Constants.PLAYER_COLOR_CHANGE_EVENT_CODE:
-                byte[] byteContent = (byte[])content;
-                string contentStringJson = Encoding.UTF8.GetString(byteContent);
+                byteContent = (byte[])content;
+                contentStringJson = Encoding.UTF8.GetString(byteContent);
                 controllerColorChangeEvent colorChangeEvent = controllerColorChangeEvent.CreateFromJSON(contentStringJson);
 
                 if (colorChangeEvent.sendingPlayerId == PhotonNetwork.player.ID) {
-                    //Color newPlayerColor = Constants.lightColors[colorChangeEvent.newPlayerColor];
-                    //setControllerColor(newPlayerColor);
-
                     setControllerColor(colorChangeEvent.newPlayerColor);
-                    //Debug.Log(newPlayerColor);
                 }
                 break;
 
             case Constants.SERVER_REQUEST_INIT_DATA_EVENT_CODE:
                 sendPlayerInitializationData();
+                break;
+
+            case Constants.PLAYER_CONTROLLER_VIBRATE_SIMPLE:
+                byteContent = (byte[])content;
+                contentStringJson = Encoding.UTF8.GetString(byteContent);
+                controllerPerformVibrateEvent vibEvent = controllerPerformVibrateEvent.CreateFromJSON(contentStringJson);
+
+                if (vibEvent.sendingPlayerId == PhotonNetwork.player.ID) {
+                    performHapticEvent();
+                }
                 break;
         }
     }

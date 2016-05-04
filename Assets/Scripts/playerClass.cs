@@ -4,6 +4,7 @@ using System.Text;
 using System;
 
 public class playerClass : MonoBehaviour {
+    
     public bool IS_LOCALLY_CONTROLLED;
     public int PlayerNumber;
     public int tauntNum;
@@ -18,7 +19,7 @@ public class playerClass : MonoBehaviour {
     private AudioSource[] source;
     private AudioSource shootSource;
     private AudioSource convertSource;
-
+    
 	//Debug tool for the type of movement
 	//If movementType = "touchblock", a player only needs to be touching their color to move
 	//If movementType = "immerse", a player has to be surrounded by their color to move
@@ -39,6 +40,8 @@ public class playerClass : MonoBehaviour {
     private int frames;
     public int frameDelay;
     public float fireRate;
+    public bool coolDown;
+    private float nextFire=0.0f;
     public float tauntRate;
     public int numShots;
     public float offset;
@@ -46,6 +49,7 @@ public class playerClass : MonoBehaviour {
     public GameObject projectile;
     public GameObject projectileParent;
     public GameObject explosion;
+    private GameObject fireDirectionIndicator;
     public int colorNumber;
     public int colorChoiceNumber;           //BE SURE TO SET THIS UPON INSTANTIATION OF NEW PLAYER
     public Color normal;
@@ -65,7 +69,7 @@ public class playerClass : MonoBehaviour {
     private float gridSize;
     private gridController gridController;
     private SpriteRenderer spriteRenderer;
-
+    private SpriteRenderer indicatorRenderer;
     private Vector3 oldInput = new Vector3(0, 0);
     private float nextTaunt = 0.0f;
 	private double speed = 1.0;
@@ -107,18 +111,21 @@ public class playerClass : MonoBehaviour {
     }
 
     void Start() {
-        Debug.Log("Start was called");
-        if (IS_LOCALLY_CONTROLLED) {
+        if (IS_LOCALLY_CONTROLLED)
+        {
             colorNumber = PlayerNumber - 1;
             colorChoiceNumber = colorNumber;
+
+            setColor(colorNumber);
+            originalPaintColor = Constants.paintColors[colorNumber];
+            originalLightColor = Constants.lightColors[colorNumber];
+            originalFiredColor = Constants.firedColors[colorNumber];
+            paintUnderMe(10);
         }
-        setColor(colorNumber);
-		originalPaintColor = Constants.paintColors [colorNumber];
-		originalLightColor = Constants.lightColors [colorNumber];
-		originalFiredColor = Constants.firedColors [colorNumber];
-        paintUnderMe(10);
         scoreManager = GameObject.FindObjectOfType<ScoreManager>();
 		scoreboardPosition = new Vector3((float)(scoreManager.leftStart + scoreManager.spaceBetweenPlayers * (PlayerNumber - 1)), (float)1.5,(float)0);
+        fireDirectionIndicator = transform.GetChild(1).gameObject;
+        indicatorRenderer = fireDirectionIndicator.GetComponent<SpriteRenderer>();
     }
 
     void Update() {
@@ -128,27 +135,41 @@ public class playerClass : MonoBehaviour {
 
 		switch (scoreManager.myGameState) 
 		{
-		case ScoreManager.gameState.Gameplay:
-			if (IS_LOCALLY_CONTROLLED) {
-				doLocalUpdate ();
-			} else {
-				doNetworkUpdate ();
-			}
-			break;
-		case ScoreManager.gameState.SetUpScoreboard:
-			setUpScoreboard ();
-			break;
-		case ScoreManager.gameState.ExecuteScoreboard:
-			executeScoreboard ();
-			break;
-		case ScoreManager.gameState.Reset:
-			playerReset ();
-			break;
+		    case ScoreManager.gameState.Gameplay:
+			    if (IS_LOCALLY_CONTROLLED) {
+				    doLocalUpdate ();
+			    } else {
+				    doNetworkUpdate (true);
+			    }
+			    break;
+		    case ScoreManager.gameState.SetUpScoreboard:
+			    setUpScoreboard ();
+                doNetworkUpdate(false);
+                break;
+		    case ScoreManager.gameState.ExecuteScoreboard:
+			    executeScoreboard ();
+                doNetworkUpdate(false);
+                break;
+		    case ScoreManager.gameState.Reset:
+			    playerReset ();
+                doNetworkUpdate(false);
+                break;
+            case ScoreManager.gameState.InLobby:
+                if (IS_LOCALLY_CONTROLLED)
+                {
+                    doLocalUpdate();
+                }
+                else {
+                    doNetworkUpdate(false);
+                }
+                break;
+
 		}
     }
 
 	void playerReset () {
         // Debug.Log (Time.deltaTime);
+        fireDirectionIndicator.SetActive(true);
         Vector3 targetPosition = scoreManager.currentLevel.transform.GetChild(1).GetChild(PlayerNumber-1).transform.position;
 		double distToTarget = (transform.position - targetPosition).magnitude;
 		if (distToTarget == 0) {
@@ -159,8 +180,9 @@ public class playerClass : MonoBehaviour {
 	}
 
 	void setUpScoreboard () {
-		// Debug.Log ("setupScoreboard called");
-		// Debug.Log (Time.deltaTime);
+        // Debug.Log ("setupScoreboard called");
+        // Debug.Log (Time.deltaTime);
+        fireDirectionIndicator.SetActive(false);
 		double distToTarget = (this.transform.position - scoreboardPosition).magnitude;
 
 		this.transform.position = Vector3.MoveTowards(this.transform.position, scoreboardPosition, (float)10.0 * Time.deltaTime); 
@@ -175,13 +197,16 @@ public class playerClass : MonoBehaviour {
     /// <summary>
     ///  Using the dual joystick control scheme.
     /// </summary>
-    private void doNetworkUpdate() {
+    /// 
+    private void doNetworkUpdate(bool allowedToMove) {
         if (lastNetworkInputRightEvent.magnitude > shootThreshold) {
             shoot(lastNetworkInputRightEvent);
         }
-        move(lastNetworkInputLeftEvent);
+        if (allowedToMove)
+        {
+            move(lastNetworkInputLeftEvent);
+        }
     }
-
     void doLocalUpdate() {
         getInputs();
 
@@ -437,25 +462,53 @@ public class playerClass : MonoBehaviour {
             fireButton = (Input.GetButton(axes[2, (PlayerNumber - 1)]) || (m8s4 || m8s8 || twoJoystick || gridMovement));
         }
 
-        if (fireButton &&  myProjectile == null && !dodging) {
-            //StartCoroutine(cooldownIndicator());
-            //StartCoroutine(fire(direction));
-            shootSource.Play();
-            StartCoroutine(fireAnimation());
-            paintUnderMe(3);
-            Vector3 temp = transform.position + direction.normalized * offset;
-            float x = Mathf.Round(temp.x / gridSize)*gridSize;
-            float y = Mathf.Round(temp.y / gridSize)*gridSize;
-            GameObject paint = Instantiate(projectileParent, new Vector3(x, y) , Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
-            projectileParent parent = paint.GetComponent<projectileParent>();
-            myProjectile = paint;
-            parent.myColor = paintColor;
-            parent.grid = grid;
-            parent.teamNum = teamNum;
-            parent.playerNumber = PlayerNumber;
-            parent.colorNumber = colorNumber;
+        float angle = Vector3.Angle(Vector3.right, direction);
+        if (direction.y < 0)
+        {
+            angle = 360 - angle;
+        }
+        angle -= 90;
+        Debug.Log("the angle is: " + angle);
+        fireDirectionIndicator.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+
+        if (coolDown)
+        {
+
+            if (fireButton && Time.time > nextFire && !dodging && scoreManager.myGameState == ScoreManager.gameState.Gameplay)
+            {
+                nextFire = Time.time + fireRate;
+                fire(direction);
+            }
+        }
+        else {
+            if (fireButton && myProjectile == null && !dodging && scoreManager.myGameState == ScoreManager.gameState.Gameplay)
+            {
+                //StartCoroutine(cooldownIndicator());
+                //StartCoroutine(fire(direction));
+                fire(direction);
+            }
         }
 
+    }
+
+    void fire(Vector3 direction)
+    {
+        shootSource.Play();
+        StartCoroutine(fireAnimation());
+        paintUnderMe(4);
+        Vector3 temp = transform.position + direction.normalized * offset;
+        float x = Mathf.Round(temp.x / gridSize) * gridSize;
+        float y = Mathf.Round(temp.y / gridSize) * gridSize;
+        GameObject paint = Instantiate(projectileParent, new Vector3(x, y), Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+        projectileParent parent = paint.GetComponent<projectileParent>();
+        myProjectile = paint;
+        parent.myColor = paintColor;
+        parent.grid = grid;
+        parent.teamNum = teamNum;
+        parent.playerNumber = PlayerNumber;
+        parent.colorNumber = colorNumber;
+
+        
     }
 
 	public void scoreboardShoot(double distance) {
@@ -508,7 +561,7 @@ public class playerClass : MonoBehaviour {
     }
 
     IEnumerator cooldownIndicator() {
-        spriteRenderer.color = fired;
+        indicatorRenderer.color = fired;
         //transform.GetChild(0).gameObject.SetActive(false);
         //light.color = Color.white;
         //light.intensity = 1.25f;
@@ -516,19 +569,26 @@ public class playerClass : MonoBehaviour {
         //light.intensity = normalIntensity;
         //light.color = normal;
         //transform.GetChild(0).gameObject.SetActive(true);
-        spriteRenderer.color = normal;
+        indicatorRenderer.color = normal;
     }
 
     void move(Vector3 direction) {
-		if (hitWall) {
-			transform.Translate (-playerSpeed * direction * Time.deltaTime * (float) 1.3);
-			hitWall = false;
-		}
+        if (hitWall) {
+            transform.Translate(-playerSpeed * direction * Time.deltaTime * (float)1.3);
+            hitWall = false;
+        }
 
         else if (isValidPosition(gameObject.transform.position + playerSpeed * direction * Time.deltaTime)) {
             transform.Translate(playerSpeed * direction * Time.deltaTime);
         }
-
+        else if (isValidPosition(gameObject.transform.position + new Vector3(0, playerSpeed * direction.y * Time.deltaTime)))
+        {
+            transform.Translate(playerSpeed * new Vector3(0, playerSpeed * direction.y).normalized * Time.deltaTime);
+        }
+        else if (isValidPosition(gameObject.transform.position + new Vector3 (playerSpeed * direction.x * Time.deltaTime, 0)))
+        {
+            transform.Translate(playerSpeed * new Vector3(playerSpeed * direction.x,0 ).normalized * Time.deltaTime);
+        }
     }
 
     public void resetTeamNum()
@@ -641,6 +701,7 @@ public class playerClass : MonoBehaviour {
         //    spriteRenderer.color = normal;
         if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != paintColor && !dodging) {
             convertSource.Play();
+            sendControllerSimpleVibrate();
             setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
             
             //coll.transform.parent.gameObject.GetComponentInParent<playerClass>().shadeChange();
@@ -673,8 +734,14 @@ public class playerClass : MonoBehaviour {
         return networkPlayerId;
     }
 
-    private bool isAcceptingNetworkActions() {
-        return ScoreManager.getInstance().getCurrentGameState() == ScoreManager.gameState.Gameplay;
+    private bool isAcceptingNetworkMovement() {
+        ScoreManager.gameState state = ScoreManager.getInstance().getCurrentGameState();
+        return (state == ScoreManager.gameState.Gameplay || state == ScoreManager.gameState.InLobby);
+    }
+
+    private bool isAcceptingNetworkFiring() {
+        ScoreManager.gameState state = ScoreManager.getInstance().getCurrentGameState();
+        return (state == ScoreManager.gameState.Gameplay);
     }
 
     // handle events
@@ -693,41 +760,35 @@ public class playerClass : MonoBehaviour {
         switch (eventcode) {
             // player input for 0
             case Constants.PLAYER_INPUT_EVENT_CODE:
-                if (isAcceptingNetworkActions()) {
-                    byteContent = (byte[])content;
-                    contentStringJson = Encoding.UTF8.GetString(byteContent);
-                    PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
+                byteContent = (byte[])content;
+                contentStringJson = Encoding.UTF8.GetString(byteContent);
+                PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
 
-                    // now we have what we need
+                // now we have what we need
+                if (isAcceptingNetworkMovement()) {
                     lastNetworkInputLeftEvent = new Vector3(playerInput.left_x, playerInput.left_y);
+                }
+
+                if (isAcceptingNetworkFiring()) {
                     lastNetworkInputRightEvent = new Vector3(playerInput.right_x, playerInput.right_y);
                 }
                 break;
 
             case Constants.PLAYER_TAUNT_EVENT_CODE:
                 //Debug.Log("got network taunt");
-                if (isAcceptingNetworkActions()) {
+                if (isAcceptingNetworkMovement()) {
                     taunt();
                 }
                 break;
-
-            case Constants.PLAYER_DATA_INIT_EVENT_CODE:
-                if (!hasReceievedNetworkInitData) {
-                    byteContent = (byte[])content;
-                    contentStringJson = Encoding.UTF8.GetString(byteContent);
-                    playerDataInitEvent playerInitEvent = playerDataInitEvent.CreateFromJSON(contentStringJson);
-
-                    // just set the color for now
-                    setColor(playerInitEvent.startingColor);
-                    Debug.Log("set init color to: " + playerInitEvent.startingColor);
-
-                    colorChoiceNumber = playerInitEvent.startingColor;
-
-                    hasReceievedNetworkInitData = true;
-                }
-
-                break;
         }
+    }
+
+    private void sendControllerSimpleVibrate() {
+        Debug.Log("sending over the vibrate");
+        controllerPerformVibrateEvent hapticEvent = new controllerPerformVibrateEvent(getNetworkPlayerId());
+        byte[] haptic = hapticEvent.getBytes();
+        bool isHaptic = false;
+        sendNetworkEvent(Constants.PLAYER_CONTROLLER_VIBRATE_SIMPLE, haptic, isHaptic);
     }
 
     // If the player's color changed, then send that as a network event.
