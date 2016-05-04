@@ -495,7 +495,7 @@ public class playerClass : MonoBehaviour {
     {
         shootSource.Play();
         StartCoroutine(fireAnimation());
-        paintUnderMe(4);
+        paintUnderMe(3);
         Vector3 temp = transform.position + direction.normalized * offset;
         float x = Mathf.Round(temp.x / gridSize) * gridSize;
         float y = Mathf.Round(temp.y / gridSize) * gridSize;
@@ -763,15 +763,16 @@ public class playerClass : MonoBehaviour {
                 byteContent = (byte[])content;
                 contentStringJson = Encoding.UTF8.GetString(byteContent);
                 PlayerInputEvent playerInput = PlayerInputEvent.CreateFromJSON(contentStringJson);
-
+                lastNetworkInputLeftEvent = new Vector3(playerInput.left_x, playerInput.left_y);
+                lastNetworkInputRightEvent = new Vector3(playerInput.right_x, playerInput.right_y);
                 // now we have what we need
-                if (isAcceptingNetworkMovement()) {
-                    lastNetworkInputLeftEvent = new Vector3(playerInput.left_x, playerInput.left_y);
-                }
+                //if (isAcceptingNetworkMovement()) {
+                //    lastNetworkInputLeftEvent = new Vector3(playerInput.left_x, playerInput.left_y);
+                //}
 
-                if (isAcceptingNetworkFiring()) {
-                    lastNetworkInputRightEvent = new Vector3(playerInput.right_x, playerInput.right_y);
-                }
+                //if (isAcceptingNetworkFiring()) {
+                //    lastNetworkInputRightEvent = new Vector3(playerInput.right_x, playerInput.right_y);
+                //}
                 break;
 
             case Constants.PLAYER_TAUNT_EVENT_CODE:

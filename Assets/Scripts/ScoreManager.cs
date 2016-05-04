@@ -257,13 +257,15 @@ public class ScoreManager : MonoBehaviour {
                 StartCoroutine(scoreboard());
 			} else {
                 final = true;
-				// ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
-				// ScoreboardCanvas.GetComponent<CanvasGroup> ().alpha = 1f;
-				// GameObject.Find ("Reset Button").SetActive (true);
-				// Destroy (gameObject);
-				// GameObject resetButton = GameObject.Find("ResetButton");
-				// resetButton.SetActive (true);
-				Debug.Log ("final round");
+                // ScoreboardCanvas = GameObject.Find ("ScoreboardCanvas");
+                // ScoreboardCanvas.GetComponent<CanvasGroup> ().alpha = 1f;
+                // GameObject.Find ("Reset Button").SetActive (true);
+                // Destroy (gameObject);
+                // GameObject resetButton = GameObject.Find("ResetButton");
+                // resetButton.SetActive (true);
+                
+                currentLevel = Instantiate(levels[roundNumber - 1]) as GameObject;
+                Debug.Log ("final round");
                 StartCoroutine(scoreboard());
             }
 		}

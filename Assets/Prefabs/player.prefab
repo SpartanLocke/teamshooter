@@ -344,7 +344,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IS_LOCALLY_CONTROLLED: 1
   PlayerNumber: 2
-  tauntNum: 1
+  tauntNum: 2
   playerSpeed: 3
   playerSpeedAlt: 50
   timeDelay: 0
