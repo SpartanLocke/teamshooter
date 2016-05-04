@@ -73,6 +73,7 @@ public class playerClass : MonoBehaviour {
     private Vector3 oldInput = new Vector3(0, 0);
     private float nextTaunt = 0.0f;
 	private double speed = 1.0;
+    public float slowFactor;
 
     // network data
     private Vector3 lastNetworkInputLeftEvent = new Vector3(0, 0);
@@ -581,13 +582,17 @@ public class playerClass : MonoBehaviour {
         else if (isValidPosition(gameObject.transform.position + playerSpeed * direction * Time.deltaTime)) {
             transform.Translate(playerSpeed * direction * Time.deltaTime);
         }
-        else if (isValidPosition(gameObject.transform.position + new Vector3(0, playerSpeed * direction.y * Time.deltaTime)))
+        //else if (isValidPosition(gameObject.transform.position + new Vector3(0, playerSpeed * direction.y * Time.deltaTime)))
+        //{
+        //    transform.Translate(playerSpeed * new Vector3(0, playerSpeed * direction.y).normalized * Time.deltaTime);
+        //}
+        //else if (isValidPosition(gameObject.transform.position + new Vector3 (playerSpeed * direction.x * Time.deltaTime, 0)))
+        //{
+        //    transform.Translate(playerSpeed * new Vector3(playerSpeed * direction.x,0 ).normalized * Time.deltaTime);
+        //}
+        else
         {
-            transform.Translate(playerSpeed * new Vector3(0, playerSpeed * direction.y).normalized * Time.deltaTime);
-        }
-        else if (isValidPosition(gameObject.transform.position + new Vector3 (playerSpeed * direction.x * Time.deltaTime, 0)))
-        {
-            transform.Translate(playerSpeed * new Vector3(playerSpeed * direction.x,0 ).normalized * Time.deltaTime);
+            transform.Translate(slowFactor * playerSpeed * direction * Time.deltaTime);
         }
     }
 
