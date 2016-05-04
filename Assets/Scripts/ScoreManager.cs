@@ -275,7 +275,8 @@ public class ScoreManager : MonoBehaviour {
     }
     IEnumerator scoreboard()
     {
-        yield return new WaitForSeconds(1);
+        myGameState = gameState.Wait;
+        yield return new WaitForSeconds(2.0f);
         SaveScoresBetweenRounds();
         Destroy(currentLevel);
         destroyProjectiles();
@@ -328,21 +329,21 @@ public class ScoreManager : MonoBehaviour {
             if (playerScores[playerNumber.ToString()]["score"] == maxScore)
             {
                 shotDistance = (GetScore(playerScript.PlayerNumber.ToString(), "score") / maxScore) * (gridScript.height - 5);
-                StartCoroutine(ShootAfterDelay(8.0f, shotDistance, thisPlayer, true, true));
+                StartCoroutine(ShootAfterDelay(10.0f, shotDistance, thisPlayer, true, true));
             }
             shotDistance = (GetScore(playerScript.PlayerNumber.ToString(), "score") / maxScore) * (gridScript.height - 5);
-            StartCoroutine(ShootAfterDelay(8.0f, shotDistance, thisPlayer,true,false));
+            StartCoroutine(ShootAfterDelay(10.0f, shotDistance, thisPlayer,true,false));
             
             
         }
-        StartCoroutine(scaleAfterDelay(ScoreText,"Kills", .1f, 1f, .08f, 3.0f, true, 10.0f,.08f,2.5f));
+        StartCoroutine(scaleAfterDelay(ScoreText,"Kills", .1f, 1f, .08f, 3.0f, true, 10.0f,.08f,3.5f));
         if (final)
         {
             StartCoroutine(scaleAfterDelay(ScoreText, "Final Score", .1f, 1f, .08f, 6.3f, true, 10.0f, .08f, 5.0f));
         }
         else
         {
-            StartCoroutine(scaleAfterDelay(ScoreText, "Time On Winning Team", .1f, 1f, .08f, 6.3f, true, 10.0f, .08f, 3.0f));
+            StartCoroutine(scaleAfterDelay(ScoreText, "Time On Winning Team", .1f, 1f, .08f, 8.3f, true, 10.0f, .08f, 4.0f));
         }
         myGameState = gameState.SetUpScoreboard;
 		gridScript.resetGrid();
