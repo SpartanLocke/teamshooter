@@ -8,11 +8,11 @@ using System.Text;
 public class PlayerNetworkStatusHandler : MonoBehaviour {
     private gridController gridController;
     private HashSet<int> spawnedPlayersTable;
-	private int count = 0;
+    private int count = 0;
 
     public GameObject playerPrefab;
     public GameObject hideableStartGamePrompt;
-	public GameObject spawnpointsPrefab;
+    public GameObject spawnpointsPrefab;
 
     void Awake() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
@@ -74,7 +74,7 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
     }
 
     void OnPhotonPlayerConnected(PhotonPlayer player) {
-        Debug.Log("playerJoined");
+        Debug.Log("playerJoined: " + player.ID);
 
         //int playerId = player.ID;
         //spawnPlayer(playerId);
@@ -87,12 +87,13 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 
     int nextPlayerNumber = 0;
     private void spawnPlayer(int playerId, int colorChoiceIndex) {
-        Debug.Log("new spawn");
         if (spawnedPlayersTable.Contains(playerId)) {
             // skip it
-            Debug.Log("skipping the repeat spawning of player: " + playerId);
+            Debug.Log("skipping the repeat spawning of network playerid: " + playerId + " with colorChoiceIndex: " + colorChoiceIndex);
             return;
         }
+
+        Debug.Log("new spawn of colorChoiceIndex: " + colorChoiceIndex);
 
         spawnedPlayersTable.Add(playerId);
         nextPlayerNumber++;
@@ -111,6 +112,7 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
         playerScript.IS_LOCALLY_CONTROLLED = false;
         playerScript.PlayerNumber = nextPlayerNumber;
         playerScript.setColor(colorChoiceIndex);
+        playerScript.colorChoiceNumber = colorChoiceIndex;
         playerScript.teamNum = nextPlayerNumber;
 
         playerScript.paintUnderMe(10);
@@ -130,7 +132,9 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
                 contentStringJson = Encoding.UTF8.GetString(byteContent);
                 playerDataInitEvent playerInitEvent = playerDataInitEvent.CreateFromJSON(contentStringJson);
 
-                spawnPlayer(sender.ID, playerInitEvent.startingColor);
+                if (!spawnedPlayersTable.Contains(sender.ID)) {
+                    spawnPlayer(sender.ID, playerInitEvent.startingColor);
+                }
                 break;
         }
     }

@@ -15,7 +15,7 @@ public class ScoreManager : MonoBehaviour {
 	public static ScoreManager Instance;
 	public GameObject playerPrefab;
 	private GameObject ScoreboardCanvas;
-	public enum gameState {Gameplay, SetUpScoreboard, ExecuteScoreboard, Reset, Wait};
+	public enum gameState {Gameplay, SetUpScoreboard, ExecuteScoreboard, Reset, Wait, InLobby};
 	public gameState myGameState;
 
 	Dictionary< string, Dictionary<string, int> > playerScores;
@@ -74,7 +74,7 @@ public class ScoreManager : MonoBehaviour {
 		gridCenter = Grid.transform.position.x + gridScript.width/2.0;
 		spaceBetweenPlayers = 2;
 		leftStart = gridCenter - spaceBetweenPlayers * (numPlayers / 2.0);
-
+        myGameState = gameState.InLobby;
 	}
 
     public gameState getCurrentGameState() {
