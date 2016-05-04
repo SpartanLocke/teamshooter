@@ -468,7 +468,7 @@ public class playerClass : MonoBehaviour {
             angle = 360 - angle;
         }
         angle -= 90;
-        Debug.Log("the angle is: " + angle);
+        //Debug.Log("the angle is: " + angle);
         fireDirectionIndicator.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
 
         if (coolDown)

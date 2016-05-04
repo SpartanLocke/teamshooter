@@ -83,6 +83,20 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player) {
         Debug.Log("player left!");
+
+        ScoreManager.gameState state = ScoreManager.getInstance().getCurrentGameState();
+        if (state == ScoreManager.gameState.InLobby) {
+            Debug.Log("removing the leaver since we're in the lobby!");
+            // delete the leaving player
+            GameObject[] gos = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject go in gos) {
+                playerClass playerScript = go.GetComponent<playerClass>();
+                if (playerScript.getNetworkPlayerId() == player.ID) {
+                    Destroy(playerScript.gameObject);
+                    return;
+                }
+            }
+        }
     }
 
     int nextPlayerNumber = 0;
