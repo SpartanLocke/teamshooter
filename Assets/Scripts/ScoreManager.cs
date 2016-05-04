@@ -264,7 +264,7 @@ public class ScoreManager : MonoBehaviour {
                 // GameObject resetButton = GameObject.Find("ResetButton");
                 // resetButton.SetActive (true);
                 
-                currentLevel = Instantiate(levels[roundNumber - 1]) as GameObject;
+                //currentLevel = Instantiate(levels[0]) as GameObject;
                 Debug.Log ("final round");
                 StartCoroutine(scoreboard());
             }
