@@ -575,24 +575,24 @@ public class playerClass : MonoBehaviour {
 
     void move(Vector3 direction) {
         if (hitWall) {
-            transform.Translate(-playerSpeed * direction * Time.deltaTime * (float)1.3);
+            transform.Translate(-playerSpeed * direction.normalized * Time.deltaTime * (float)1.3);
             hitWall = false;
         }
 
         else if (isValidPosition(gameObject.transform.position + playerSpeed * direction * Time.deltaTime)) {
-            transform.Translate(playerSpeed * direction * Time.deltaTime);
+            transform.Translate(playerSpeed * direction.normalized * Time.deltaTime);
         }
-        //else if (isValidPosition(gameObject.transform.position + new Vector3(0, playerSpeed * direction.y * Time.deltaTime)))
-        //{
-        //    transform.Translate(playerSpeed * new Vector3(0, playerSpeed * direction.y).normalized * Time.deltaTime);
-        //}
-        //else if (isValidPosition(gameObject.transform.position + new Vector3 (playerSpeed * direction.x * Time.deltaTime, 0)))
-        //{
-        //    transform.Translate(playerSpeed * new Vector3(playerSpeed * direction.x,0 ).normalized * Time.deltaTime);
-        //}
+        else if (isValidPosition(gameObject.transform.position + new Vector3(0, playerSpeed * direction.y * Time.deltaTime)))
+        {
+            transform.Translate(playerSpeed * new Vector3(0, playerSpeed * direction.y).normalized * Time.deltaTime);
+        }
+        else if (isValidPosition(gameObject.transform.position + new Vector3(playerSpeed * direction.x * Time.deltaTime, 0)))
+        {
+            transform.Translate(playerSpeed * new Vector3(playerSpeed * direction.x, 0).normalized * Time.deltaTime);
+        }
         else
         {
-            transform.Translate(slowFactor * playerSpeed * direction * Time.deltaTime);
+            transform.Translate(slowFactor * playerSpeed * direction.normalized * Time.deltaTime);
         }
     }
 
@@ -603,7 +603,7 @@ public class playerClass : MonoBehaviour {
 
     bool isValidPosition(Vector3 position) {
         float gridSize = gridController.gridBlock.transform.localScale.x;
-
+        //TODO: Must fix. Massive bug.
         //sprite only has to touch color
         if (movementType.Equals("touchblock")) {
             int gridX = Mathf.RoundToInt(position.x / gridSize);
@@ -612,11 +612,18 @@ public class playerClass : MonoBehaviour {
                 // out of bounds, then get outta here
                 return false;
             }
-			if (paintColor == gridController.getGridColor (gridX, gridY)) {
-				return true;
-			} else {
-				return false;
-			}
+            for(int i = -1; i < 2; i++)
+            {
+                for(int j = -1; j < 2; j++)
+                {
+                    if (paintColor == gridController.getGridColor(gridX+i, gridY+j))
+                    {
+                        return true;
+                    }
+                }
+            }
+	        return false;
+			
 		//sprite has to be within color
         } else if (movementType.Equals("immerse")) {
             int gridX = Mathf.RoundToInt(position.x / gridSize);
