@@ -4,6 +4,7 @@ using System.Text;
 using System;
 
 public class playerClass : MonoBehaviour {
+    
     public bool IS_LOCALLY_CONTROLLED;
     public int PlayerNumber;
     public int tauntNum;
@@ -39,6 +40,8 @@ public class playerClass : MonoBehaviour {
     private int frames;
     public int frameDelay;
     public float fireRate;
+    public bool coolDown;
+    private float nextFire=0.0f;
     public float tauntRate;
     public int numShots;
     public float offset;
@@ -141,13 +144,16 @@ public class playerClass : MonoBehaviour {
 			    break;
 		    case ScoreManager.gameState.SetUpScoreboard:
 			    setUpScoreboard ();
-			    break;
+                doNetworkUpdate(false);
+                break;
 		    case ScoreManager.gameState.ExecuteScoreboard:
 			    executeScoreboard ();
-			    break;
+                doNetworkUpdate(false);
+                break;
 		    case ScoreManager.gameState.Reset:
 			    playerReset ();
-			    break;
+                doNetworkUpdate(false);
+                break;
             case ScoreManager.gameState.InLobby:
                 if (IS_LOCALLY_CONTROLLED)
                 {
@@ -163,6 +169,7 @@ public class playerClass : MonoBehaviour {
 
 	void playerReset () {
         // Debug.Log (Time.deltaTime);
+        fireDirectionIndicator.SetActive(true);
         Vector3 targetPosition = scoreManager.currentLevel.transform.GetChild(1).GetChild(PlayerNumber-1).transform.position;
 		double distToTarget = (transform.position - targetPosition).magnitude;
 		if (distToTarget == 0) {
@@ -173,8 +180,9 @@ public class playerClass : MonoBehaviour {
 	}
 
 	void setUpScoreboard () {
-		// Debug.Log ("setupScoreboard called");
-		// Debug.Log (Time.deltaTime);
+        // Debug.Log ("setupScoreboard called");
+        // Debug.Log (Time.deltaTime);
+        fireDirectionIndicator.SetActive(false);
 		double distToTarget = (this.transform.position - scoreboardPosition).magnitude;
 
 		this.transform.position = Vector3.MoveTowards(this.transform.position, scoreboardPosition, (float)10.0 * Time.deltaTime); 
@@ -190,11 +198,14 @@ public class playerClass : MonoBehaviour {
     ///  Using the dual joystick control scheme.
     /// </summary>
     /// 
-    private void doNetworkUpdate(bool allowedToShoot) {
-        if (lastNetworkInputRightEvent.magnitude > shootThreshold && allowedToShoot) {
+    private void doNetworkUpdate(bool allowedToMove) {
+        if (lastNetworkInputRightEvent.magnitude > shootThreshold) {
             shoot(lastNetworkInputRightEvent);
         }
-        move(lastNetworkInputLeftEvent);
+        if (allowedToMove)
+        {
+            move(lastNetworkInputLeftEvent);
+        }
     }
     void doLocalUpdate() {
         getInputs();
@@ -460,28 +471,44 @@ public class playerClass : MonoBehaviour {
         Debug.Log("the angle is: " + angle);
         fireDirectionIndicator.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
 
+        if (coolDown)
+        {
 
-        if (fireButton &&  myProjectile == null && !dodging) {
-            //StartCoroutine(cooldownIndicator());
-            //StartCoroutine(fire(direction));
-            shootSource.Play();
-            StartCoroutine(fireAnimation());
-            paintUnderMe(4);
-            Vector3 temp = transform.position + direction.normalized * offset;
-            float x = Mathf.Round(temp.x / gridSize)*gridSize;
-            float y = Mathf.Round(temp.y / gridSize)*gridSize;
-            GameObject paint = Instantiate(projectileParent, new Vector3(x, y) , Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
-            projectileParent parent = paint.GetComponent<projectileParent>();
-            myProjectile = paint;
-            parent.myColor = paintColor;
-            parent.grid = grid;
-            parent.teamNum = teamNum;
-            parent.playerNumber = PlayerNumber;
-            parent.colorNumber = colorNumber;
-
-            sendControllerSimpleVibrate();
+            if (fireButton && Time.time > nextFire && !dodging && scoreManager.myGameState == ScoreManager.gameState.Gameplay)
+            {
+                nextFire = Time.time + fireRate;
+                fire(direction);
+            }
+        }
+        else {
+            if (fireButton && myProjectile == null && !dodging && scoreManager.myGameState == ScoreManager.gameState.Gameplay)
+            {
+                //StartCoroutine(cooldownIndicator());
+                //StartCoroutine(fire(direction));
+                fire(direction);
+            }
         }
 
+    }
+
+    void fire(Vector3 direction)
+    {
+        shootSource.Play();
+        StartCoroutine(fireAnimation());
+        paintUnderMe(4);
+        Vector3 temp = transform.position + direction.normalized * offset;
+        float x = Mathf.Round(temp.x / gridSize) * gridSize;
+        float y = Mathf.Round(temp.y / gridSize) * gridSize;
+        GameObject paint = Instantiate(projectileParent, new Vector3(x, y), Quaternion.LookRotation(Vector3.forward, direction)) as GameObject;
+        projectileParent parent = paint.GetComponent<projectileParent>();
+        myProjectile = paint;
+        parent.myColor = paintColor;
+        parent.grid = grid;
+        parent.teamNum = teamNum;
+        parent.playerNumber = PlayerNumber;
+        parent.colorNumber = colorNumber;
+
+        
     }
 
 	public void scoreboardShoot(double distance) {
@@ -674,6 +701,7 @@ public class playerClass : MonoBehaviour {
         //    spriteRenderer.color = normal;
         if (coll.gameObject.tag == "paint" && coll.gameObject.GetComponent<SpriteRenderer>().color != paintColor && !dodging) {
             convertSource.Play();
+            sendControllerSimpleVibrate();
             setColor(coll.gameObject.GetComponent<shotMovement>().colorNumber);
             
             //coll.transform.parent.gameObject.GetComponentInParent<playerClass>().shadeChange();

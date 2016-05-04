@@ -339,7 +339,7 @@ public class ScoreManager : MonoBehaviour {
         StartCoroutine(scaleAfterDelay(ScoreText,"Kills", .1f, 1f, .08f, 3.0f, true, 10.0f,.08f,3.5f));
         if (final)
         {
-            StartCoroutine(scaleAfterDelay(ScoreText, "Final Score", .1f, 1f, .08f, 6.3f, true, 10.0f, .08f, 5.0f));
+            StartCoroutine(scaleAfterDelay(ScoreText, "Final Score", .1f, 1f, .08f, 8.3f, true, 10.0f, .08f, 4.0f));
         }
         else
         {
@@ -364,8 +364,10 @@ public class ScoreManager : MonoBehaviour {
             StartCoroutine(MoveBackToStartAfterDelay(4.0f, 1.5f));
         }
         else if (second && final) {
-            disconnectFromNetworking();
+            //Debug.Log("shit went down");
             yield return new WaitForSeconds(4.0f);
+            disconnectFromNetworking();
+            
             StartCoroutine(LoadLevel("controller menu"));
         }
 	}
@@ -391,7 +393,7 @@ public class ScoreManager : MonoBehaviour {
         //Load a new level;
         if (roundNumber != 1)
         {
-            currentLevel = Instantiate(levels[Random.Range(0, levels.Length)]) as GameObject;
+            currentLevel = Instantiate(levels[roundNumber - 1]) as GameObject;
         }
         
 

@@ -364,6 +364,7 @@ MonoBehaviour:
   gridMovement: 0
   frameDelay: 3
   fireRate: 0.7
+  coolDown: 1
   tauntRate: 0.7
   numShots: 7
   offset: 0.6
