@@ -161,7 +161,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 74b551600875a124d8991b650eafeca3, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.15
   m_Pitch: 3
   Loop: 0
   Mute: 0
@@ -322,7 +322,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -385,7 +385,8 @@ MonoBehaviour:
   light: {fileID: 0}
   grid: {fileID: 0}
   teamNum: 2
-  slowFactor: 0.4
+  slowFactor: 0.2
+  range: 1
 --- !u!212 &21211564
 SpriteRenderer:
   m_ObjectHideFlags: 1

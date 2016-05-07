@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using System.Text;
 
 public class PlayerNetworkStatusHandler : MonoBehaviour {
+    private GameObject grid;
     private gridController gridController;
     private HashSet<int> spawnedPlayersTable;
     private int count = 0;
@@ -17,7 +18,8 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
     void Awake() {
         PhotonNetwork.OnEventCall += this.OnPhotonNetworkEvent;
 
-        gridController = GameObject.FindGameObjectWithTag("gridGameObject").GetComponent<gridController>();
+        grid = GameObject.FindGameObjectWithTag("gridGameObject");
+        gridController = grid.GetComponent<gridController>();
 
         spawnedPlayersTable = new HashSet<int>();
 
@@ -130,6 +132,7 @@ public class PlayerNetworkStatusHandler : MonoBehaviour {
         playerScript.teamNum = nextPlayerNumber;
 
         playerScript.paintUnderMe(10);
+        playerGameObject.GetComponent<SpriteRenderer>().sprite = grid.GetComponent<Constants>().playerSprites[nextPlayerNumber-1];
     }
 
     private void OnPhotonNetworkEvent(byte eventcode, object content, int senderid) {

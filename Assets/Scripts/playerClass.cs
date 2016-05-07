@@ -74,7 +74,7 @@ public class playerClass : MonoBehaviour {
     private float nextTaunt = 0.0f;
 	private double speed = 1.0;
     public float slowFactor;
-
+    public int range;
     // network data
     private Vector3 lastNetworkInputLeftEvent = new Vector3(0, 0);
     private Vector3 lastNetworkInputRightEvent = new Vector3(0, 0);
@@ -612,9 +612,9 @@ public class playerClass : MonoBehaviour {
                 // out of bounds, then get outta here
                 return false;
             }
-            for(int i = -1; i < 2; i++)
+            for(int i = -range; i < range+1; i++)
             {
-                for(int j = -1; j < 2; j++)
+                for(int j = -range; j < range+1; j++)
                 {
                     if (paintColor == gridController.getGridColor(gridX+i, gridY+j))
                     {

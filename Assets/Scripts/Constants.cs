@@ -71,4 +71,5 @@ public class Constants : MonoBehaviour {
       HSBColor.ToColor(new HSBColor(6.1f/8.0f, 1f, 1f, 1f)),
       HSBColor.ToColor(new HSBColor(7.35f/8.0f, 1f, 1f, 1f))
    };
+    public Sprite[] playerSprites;
 }
