@@ -5,6 +5,8 @@ public class MenuButtonFunctions : MonoBehaviour {
     public GameObject lobbySelectButtons;
     public GameObject menuButtons;
     public GameObject UI;
+    public GameObject credits;
+    public GameObject howToPlay;
     public GameObject colorSelect;
     public AudioSource buttonSound;
     void Start()
@@ -29,10 +31,37 @@ public class MenuButtonFunctions : MonoBehaviour {
         colorSelect.SetActive(true);
         buttonSound.Play();
     }
+    
     public void backFromColorSelect()
     {
         UI.SetActive(true);
         colorSelect.SetActive(false);
+        buttonSound.Play();
+    }
+    public void toCredits()
+    {
+        UI.SetActive(false);
+        credits.SetActive(true);
+        buttonSound.Play();
+    }
+
+    public void backFromCredits()
+    {
+        UI.SetActive(true);
+        credits.SetActive(false);
+        buttonSound.Play();
+    }
+    public void toHowToPlay()
+    {
+        UI.SetActive(false);
+        howToPlay.SetActive(true);
+        buttonSound.Play();
+    }
+
+    public void backFromHowToPlay()
+    {
+        UI.SetActive(true);
+        howToPlay.SetActive(false);
         buttonSound.Play();
     }
 
