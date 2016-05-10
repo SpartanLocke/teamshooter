@@ -5,9 +5,14 @@ using UnityEngine.UI;
 
 public class colorSweep2 : MonoBehaviour
 {
+    public bool blackSweeping = true;
+    public int rowToSweep;
+    public int bandWidth;
+    public bool isRowSweeping;
     public bool isSweeping;
     public bool dontSweep = false;
     public HSBColor col;
+    public GameObject imageObject;
     public Image image;
     public float h = 0f;
     public GameObject[,] grid;
@@ -16,14 +21,30 @@ public class colorSweep2 : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        image = gameObject.GetComponent<Image>();
+        image = imageObject.GetComponent<Image>();
+        grid = gameObject.GetComponent<gridController>().grid;
+        if (isRowSweeping)
+        {
+            int delay = 2;
+            int rowToSweep2 = rowToSweep+1;
+            for(int i = 0; i < 5; i++)
+            {
+                StartCoroutine(sweepRow(rowToSweep, i*delay));
+                StartCoroutine(sweepRowBlack(rowToSweep, bandWidth, i*delay));
+                StartCoroutine(sweepRow(rowToSweep2, i * delay));
+                StartCoroutine(sweepRowBlack(rowToSweep2, bandWidth, i * delay));
+                rowToSweep--;
+                rowToSweep2++;
+            }
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         
-        if (isSweeping)
+        
+        if (isSweeping || isRowSweeping)
         {
             h += .005f;
         }
@@ -43,6 +64,8 @@ public class colorSweep2 : MonoBehaviour
 
     public void gridSweep(int num)
     {
+        blackSweeping = false;
+        isRowSweeping = false;
         input = num;
         h = 0;
         grid = gameObject.GetComponent<gridController>().grid;
@@ -81,5 +104,45 @@ public class colorSweep2 : MonoBehaviour
         
         
     }
-
+    IEnumerator sweepRow(int row,int delayFrames)
+    {
+        for (int i = 0; i < delayFrames; i++)
+        {
+            yield return null;
+        }
+        for (int i = 0; i < grid.GetLength(0); i++)
+        {
+            grid[i, row].GetComponent<SpriteRenderer>().color = HSBColor.ToColor(new HSBColor(h, 1f, 1f, 1f));
+            yield return null;
+        }
+        StartCoroutine(sweepRow(row,0));
+        StartCoroutine(sweepRowBlack(row, bandWidth,0));
+    }
+    IEnumerator sweepRowBlack(int row, int width, int delayFrames)
+    {
+        for (int i = 0; i < delayFrames+width; i++)
+        {
+            yield return null;
+        }
+        for (int i = 0; i < grid.GetLength(0); i++)
+        {
+            if (blackSweeping)
+            {
+                grid[i, row].GetComponent<SpriteRenderer>().color = HSBColor.ToColor(new HSBColor(h, 1f, 0f, 1f));
+            }
+            yield return null;
+        }
+        
+    }
+    public void blackSweep()
+    {
+        if (blackSweeping)
+        {
+            blackSweeping = false;
+        }
+        else
+        {
+            blackSweeping = true;
+        }
+    }
 }

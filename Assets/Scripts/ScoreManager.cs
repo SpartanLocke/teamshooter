@@ -395,7 +395,7 @@ public class ScoreManager : MonoBehaviour {
         //Load a new level;
         if (roundNumber != 1)
         {
-            currentLevel = Instantiate(levels[roundNumber - 1]) as GameObject;
+            currentLevel = Instantiate(levels[roundNumber - 2]) as GameObject;
         }
         
 

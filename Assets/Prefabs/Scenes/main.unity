@@ -1089,7 +1089,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: c5f9e0b933c457847bc9f2959742c59c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f34f8aaf84efbb4468caa16778277feb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1180,7 +1180,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: c5f9e0b933c457847bc9f2959742c59c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f34f8aaf84efbb4468caa16778277feb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1903,7 +1903,7 @@ MonoBehaviour:
   myGameState: 0
   conversionScores: 0a000000060000000300000003000000020000000200000001000000010000000100000000000000
   roundNumber: 0
-  numRounds: 3
+  numRounds: 2
   delayBetweenRounds: 8
   Grid: {fileID: 1569415822}
   gridCenter: 0
@@ -1912,11 +1912,10 @@ MonoBehaviour:
   countdown: {fileID: 877180958}
   ScoreText: {fileID: 1254713218}
   levels:
-  - {fileID: 130238, guid: 2fc38f7fb6552b34fa7f2f5c5dfcd526, type: 2}
-  - {fileID: 130238, guid: 2fc38f7fb6552b34fa7f2f5c5dfcd526, type: 2}
+  - {fileID: 187168, guid: c1b7dbcfe17fafd41a9d7dba0c723811, type: 2}
   - {fileID: 105564, guid: 0363b30166aac3b448172659b42b7852, type: 2}
   - {fileID: 140950, guid: 5b1d443de247abb4a9d8bb96611dec6f, type: 2}
-  - {fileID: 181506, guid: 51e0531db6e9cf34199627ca535f9f5d, type: 2}
+  - {fileID: 130238, guid: 2fc38f7fb6552b34fa7f2f5c5dfcd526, type: 2}
   currentLevel: {fileID: 969306792}
 --- !u!4 &997709056
 Transform:
@@ -2500,7 +2499,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: c5f9e0b933c457847bc9f2959742c59c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f34f8aaf84efbb4468caa16778277feb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3403,7 +3402,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: c5f9e0b933c457847bc9f2959742c59c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f34f8aaf84efbb4468caa16778277feb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
